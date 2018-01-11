@@ -1,0 +1,46 @@
+{
+	"name": "charliedev/blockonomicon",
+	"description": "Export and import entire matrix blocks and manage/render their views.",
+	"type": "craft-plugin",
+	"version": "0.0.1",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Charlie Development",
+			"email": "support@charliedev.com",
+			"homepage": "http://charliedev.com/"
+		}
+	],
+	"keywords": [
+		"craft",
+		"cms",
+		"craftcms",
+		"matrix",
+		"export",
+		"import",
+		"templating"
+	],
+	"support": {
+		"issues": "https://github.com/charliedevelopment/craft3-blockonomicon/issues?state=open",
+		"source": "https://github.com/charliedevelopment/craft3-blockonomicon",
+		"email": "support@charliedev.com"
+	},
+	"require": {
+		"craftcms/cms": "^3.0.0-RC1"
+	},
+	"autoload": {
+		"psr-4": {
+			"charliedev\\blockonomicon\\": "src/"
+		}
+	},
+	"extra": {
+		"name": "Blockonomicon",
+		"handle": "blockonomicon",
+		"changelogUrl": "https://raw.githubusercontent.com/charliedevelopment/craft3-blockonomicon/master/CHANGELOG.md",
+		"downloadUrl": "https://github.com/charliedevelopment/craft3-blockonomicon/archive/master.zip",
+		"schemaVersion": "0.0.1",
+		"hasCpSettings": true,
+		"hasCpSection": true,
+		"class": "charliedev\\blockonomicon\\Blockonomicon"
+	}
+}
