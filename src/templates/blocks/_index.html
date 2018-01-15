@@ -1,0 +1,19 @@
+{% extends '_layouts/cp' %}
+{# Block settings overview, lists blocks and their usage/info. #}
+
+{% set title = 'Blockonomicon - ' ~ 'Blocks Overview' | t('blockonomicon') %}
+{% set selectedSubnavItem = 'blocks' %}
+
+{% set sidebar %}
+	{% include "blockonomicon/blocks/_sidebar" %}
+{% endset %}
+
+{% block content %}
+	<div class="buttons">
+		<div id="bncnrebuildfilesbtn" class="btn">
+			<span class="label">{{ 'Rebuild Minified JS/CSS' | t('blockonomicon') }}</span>
+		</div>
+	</div>
+
+	<p>Blocks Overview</p>
+{% endblock %}

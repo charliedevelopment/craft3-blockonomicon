@@ -1,0 +1,26 @@
+<nav>
+	<ul>
+		<li>
+			<a href="{{ url('blockonomicon/blocks') }}"{% if matrixId is null %} class="sel"{% endif %}>
+				<span class="label">{{ 'Block Overview' | t('blockonomicon') }}</span>
+			</a>
+		</li>
+		{% if fields | length %}
+			<li class="heading">
+				<span>{{ 'Matrix Fields' | t('blockonomicon') }}</span>
+			</li>
+		{% endif %}
+		{% for field in fields %}
+			<li>
+				<a href="{{ url('blockonomicon/blocks/' ~ field.id) }}"{% if matrixId == field.id %} class="sel"{% endif %}>
+					<span class="label">{{ field.name | t('site') }}</span>
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+</nav>
+<div class="buttons">
+	<div id="bncnnewmatrixbtn" class="btn add icon">
+		<span class="label">{{ 'New Matrix' | t('blockonomicon') }}</span>
+	</div>
+</div>

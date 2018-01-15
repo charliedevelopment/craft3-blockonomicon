@@ -1,0 +1,15 @@
+{% extends '_layouts/cp' %}
+{# Editor for blocks on a given matrix. #}
+
+{% set matrixName = matrix.name | t('site') %}
+
+{% set title = 'Blockonomicon - ' ~ 'Blocks for {matrixName}' | t('blockonomicon', {matrixName: matrixName}) %}
+{% set selectedSubnavItem = 'blocks' %}
+
+{% set sidebar %}
+	{% include "blockonomicon/blocks/_sidebar" %}
+{% endset %}
+
+{% block content %}
+	<p>Matrix Editor for {{ matrixName }}</p>
+{% endblock %}
