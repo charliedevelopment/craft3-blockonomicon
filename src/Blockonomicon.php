@@ -8,10 +8,12 @@ namespace charliedev\blockonomicon;
 
 use Craft;
 use craft\base\Plugin;
+use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
+use craft\web\View;
 
 use yii\base\Event;
 
@@ -26,6 +28,7 @@ class Blockonomicon extends Plugin
 	 */
 	public function init()
 	{
+		// Register plugin services.
 		$this->setComponents([
 			'blocks' => \charliedev\blockonomicon\services\Blocks::class,
 		]);
@@ -47,6 +50,7 @@ class Blockonomicon extends Plugin
 		}
 		*/
 
+		// Add routes for the plugin control panels.
 		Event::on(
 			UrlManager::class,
 			UrlManager::EVENT_REGISTER_CP_URL_RULES,
@@ -55,6 +59,15 @@ class Blockonomicon extends Plugin
 				$event->rules['blockonomicon/blocks/<matrixId:\d+>'] = 'blockonomicon/settings/edit-matrix';
 				$event->rules['blockonomicon/settings'] = 'blockonomicon/settings/global';
 				$event->rules['blockonomicon/documentation'] = 'blockonomicon/settings/documentation';
+			}
+		);
+
+		// Route template requests for frontend Blockonomicon resoruces.
+		Event::on(
+			View::class,
+			View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
+			function(RegisterTemplateRootsEvent $event) {
+				$event->roots['blockonomicon'] = $this->blocks->getBlockPath();
 			}
 		);
 

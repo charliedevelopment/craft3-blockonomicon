@@ -7,7 +7,6 @@
 namespace charliedev\blockonomicon\services;
 
 use Craft;
-use craft\helpers\FileHelper;
 
 use yii\base\Component;
 
@@ -37,17 +36,50 @@ class Blocks extends Component {
 	}
 
 	/**
+	 * Retrieves the path used for block storage.
+	 * @return string The full path to the Blockonomicon storage folder.
+	 */
+	public function getStoragePath()
+	{
+		return Craft::$app->getPath()->getStoragePath() . DIRECTORY_SEPARATOR . 'blockonomicon';
+	}
+
+	/**
+	 * Retrieves the path used for block storage.
+	 * @return string The full path to the Blockonomicon storage folder.
+	 */
+	public function getBlockPath()
+	{
+		return $this->getStoragePath() . DIRECTORY_SEPARATOR . 'blocks';
+	}
+
+	/**
 	 * Retrieves all available Blockonomicon blocks and their associated metadata.
+	 * @param bool $force Set to true to force updating the block cache, otherwise defaults to false.
 	 * @return array An array, each element being metadata for a block, loaded from its respective json file.
 	 */
-	public function getBlocks()
+	public function getBlocks($force = false)
 	{
-		$path = Craft::$app->getPath()->getStoragePath() . DIRECTORY_SEPARATOR . 'blockonomicon';
+		$blocks = Craft::$app->getCache()->get('blockonomicon_blocks'); // Retrieve our block set cache.
+		
+		if ($force === true || $blocks === false) {
+			$blocks = array(); // Storage for all block handles.
+			$path = $this->getBlockPath(); // Get block path.
+			$dirs = glob($path . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR); // Retrieve all blocks in block directory.
 
-		FileHelper::createDirectory($path);
-
-		$blocks = [];
-
+			print_r($dirs);
+			die();
+			
+			foreach ($dirs as $dir) {
+				$blockname = basename($dir);
+				$meta = @file_get_contents($dir . $blockname . '/' . $blockname . '.json');
+				$blocks[basename($dir)] = $blockname;
+			}
+			
+			craft()->cache->delete('blockonomicon_blocks');
+			craft()->cache->add('blockonomicon_blocks', $blocks, 21600); // Cache for 6 hours (60 seconds * 60 minutes * 6 hours = 21600).
+		}
+		
 		return $blocks;
 	}
 }
