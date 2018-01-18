@@ -56,7 +56,8 @@ class Blockonomicon extends Plugin
 			UrlManager::EVENT_REGISTER_CP_URL_RULES,
 			function(RegisterUrlRulesEvent $event) {
 				$event->rules['blockonomicon/blocks'] = 'blockonomicon/settings/blocks-overview';
-				$event->rules['blockonomicon/blocks/<matrixId:\d+>'] = 'blockonomicon/settings/edit-matrix';
+				$event->rules['blockonomicon/blocks/<blockHandle:{handle}>'] = 'blockonomicon/settings/edit-block';
+				$event->rules['blockonomicon/matrix/<matrixId:\d+>'] = 'blockonomicon/settings/edit-matrix';
 				$event->rules['blockonomicon/settings'] = 'blockonomicon/settings/global';
 				$event->rules['blockonomicon/documentation'] = 'blockonomicon/settings/documentation';
 			}
@@ -101,7 +102,7 @@ class Blockonomicon extends Plugin
 				'url' => 'blockonomicon/blocks',
 			],
 			'settings' => [
-				'label' => Craft::t('blockonomicon', 'Global Settings'),
+				'label' => Craft::t('blockonomicon', 'Settings'),
 				'url' => 'blockonomicon/settings',
 			],
 			'documentation' => [

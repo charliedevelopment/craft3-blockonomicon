@@ -1,7 +1,11 @@
 {% extends '_layouts/cp' %}
-{% set title = 'Blockonomicon - ' ~ 'Global Settings' | t('blockonomicon') %}
+{% set title = 'Settings' | t('app') %}
 {% set selectedSubnavItem = 'settings' %}
 
+{% set crumbs = [
+    { label: 'Blockomonicon', url: url('blockonomicon') }
+] %}
+
 {% block content %}
-	<p>Global Settings</p>
+	<p>Blockonomicon Settings</p>
 {% endblock %}

@@ -1,6 +1,10 @@
 {% extends '_layouts/cp' %}
-{% set title = 'Blockonomicon - ' ~ 'Documentation' | t('blockonomicon') %}
+{% set title = 'Documentation' | t('blockonomicon') %}
 {% set selectedSubnavItem = 'documentation' %}
+
+{% set crumbs = [
+    { label: 'Blockomonicon', url: url('blockonomicon/blocks') }
+] %}
 
 {% block content %}
 	<p>Documentation</p>

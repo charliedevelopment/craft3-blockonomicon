@@ -32,12 +32,29 @@ class SettingsController extends Controller
 	public function actionBlocksOverview(): Response
 	{
 		$matrices = Blockonomicon::getInstance()->blocks->getMatrixFields();
-		$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
+		$blocks = Blockonomicon::getInstance()->blocks->getBlocks(true);
 
 		return $this->renderTemplate('blockonomicon/blocks/_index', [
 			'matrixId' => null,
 			'fields' => $matrices,
 			'blocks' => $blocks,
+		]);
+	}
+
+	public function actionEditBlock(string $blockHandle): Response
+	{
+		$matrices = Blockonomicon::getInstance()->blocks->getMatrixFields();
+		$blocks = Blockonomicon::getInstance()->blocks->getBlocks(true);
+
+		// Make sure the block handle provided is for an actual block.
+		if (!isset($blocks[$blockHandle])) {
+			throw new \yii\web\NotFoundHttpException;
+		}
+
+		return $this->renderTemplate('blockonomicon/blocks/_edit', [
+			'matrixId' => null,
+			'fields' => $matrices,
+			'block' => $blocks[$blockHandle],
 		]);
 	}
 
@@ -50,7 +67,7 @@ class SettingsController extends Controller
 			throw new \yii\web\NotFoundHttpException;
 		}
 
-		return $this->renderTemplate('blockonomicon/blocks/_edit', [
+		return $this->renderTemplate('blockonomicon/blocks/_matrix', [
 			'matrixId' => $matrixId,
 			'fields' => $matrices,
 			'matrix' => $matrices[$matrixId],

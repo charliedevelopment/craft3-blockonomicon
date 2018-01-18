@@ -1,19 +1,61 @@
 {% extends '_layouts/cp' %}
 {# Block settings overview, lists blocks and their usage/info. #}
 
-{% set title = 'Blockonomicon - ' ~ 'Blocks Overview' | t('blockonomicon') %}
+{% set title = 'Blocks' | t('blockonomicon') %}
 {% set selectedSubnavItem = 'blocks' %}
+
+{% set crumbs = [
+    { label: 'Blockomonicon', url: url('blockonomicon/blocks') }
+] %}
 
 {% set sidebar %}
 	{% include "blockonomicon/blocks/_sidebar" %}
 {% endset %}
 
 {% block content %}
+
+	<h2>Quick Controls</h2>
+
 	<div class="buttons">
-		<div id="bncnrebuildfilesbtn" class="btn">
+		<div id="bncnrebuildfilesbtn" class="btn submit">
 			<span class="label">{{ 'Rebuild Minified JS/CSS' | t('blockonomicon') }}</span>
 		</div>
 	</div>
 
-	<p>Blocks Overview</p>
+	<h2>Blocks Overview</h2>
+
+	<table id="blocks" class="data fullwidth collapsible">
+		<thead>
+			<th scope="col">{{ 'Name' | t('app') }}</th>
+			<th scope="col">{{ 'Handle' | t('app') }}</th>
+			<th scope="col">{{ 'Description' | t('app') }}</th>
+			<th scope="col">{{ 'Fields' | t('app') }}</th>
+			<th scope="col"><span data-icon="edit" title="Edit"></span></th>
+		</thead>
+		<tbody>
+			{% for handle, block in blocks %}
+				<tr>
+					{% if block.state == 'good' %}
+						<td>{{ block.name }}</td>
+						<td><code>{{ handle }}</code></td>
+						<td>
+							{% if block.description is defined %}
+								{{ block.description }}
+							{% else %}
+								-
+							{% endif %}
+						</td>
+						<td>{{ block.fields | length }}</td>
+						<td><a href="{{ url('blockonomicon/blocks/' ~ handle) }}" data-icon="edit" title="Edit block"></a></td>
+					{% else %}
+						<td class="error {{ block.state }}"><span data-icon="alert"></span></td>
+						<td><code>{{ handle }}</code></td>
+						<td>This block has a configuration error and has not been loaded.</td>
+						<td>-</td>
+						<td>-</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 {% endblock %}

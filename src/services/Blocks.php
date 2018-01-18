@@ -41,7 +41,7 @@ class Blocks extends Component {
 	 */
 	public function getStoragePath()
 	{
-		return Craft::$app->getPath()->getStoragePath() . DIRECTORY_SEPARATOR . 'blockonomicon';
+		return Craft::$app->getPath()->getStoragePath() . '/blockonomicon';
 	}
 
 	/**
@@ -50,7 +50,7 @@ class Blocks extends Component {
 	 */
 	public function getBlockPath()
 	{
-		return $this->getStoragePath() . DIRECTORY_SEPARATOR . 'blocks';
+		return $this->getStoragePath() . '/blocks';
 	}
 
 	/**
@@ -63,21 +63,32 @@ class Blocks extends Component {
 		$blocks = Craft::$app->getCache()->get('blockonomicon_blocks'); // Retrieve our block set cache.
 		
 		if ($force === true || $blocks === false) {
-			$blocks = array(); // Storage for all block handles.
+			$blocks = []; // Storage for all block handles.
 			$path = $this->getBlockPath(); // Get block path.
-			$dirs = glob($path . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR); // Retrieve all blocks in block directory.
+			$dirs = glob($path . '/*', GLOB_ONLYDIR); // Retrieve all blocks in block directory.
 
-			print_r($dirs);
-			die();
-			
 			foreach ($dirs as $dir) {
 				$blockname = basename($dir);
-				$meta = @file_get_contents($dir . $blockname . '/' . $blockname . '.json');
-				$blocks[basename($dir)] = $blockname;
+				$meta = @file_get_contents($dir . '/' . '_' . $blockname . '.json', false, null, 0, 1024 * 512); // Read up to 512k, should be safe.
+				if ($meta === false) { // No meta information, not a valid block file.
+					$blocks[$blockname] = [
+						'state' => 'no-config'
+					];
+					continue;
+				}
+				$meta = json_decode($meta, true);
+				if ($meta == null) {
+					$blocks[$blockname] = [
+						'state' => 'bad-config'
+					];
+					continue;
+				}
+				$meta['state'] = 'good';
+				$blocks[$blockname] = $meta;
 			}
-			
-			craft()->cache->delete('blockonomicon_blocks');
-			craft()->cache->add('blockonomicon_blocks', $blocks, 21600); // Cache for 6 hours (60 seconds * 60 minutes * 6 hours = 21600).
+
+			Craft::$app->getCache()->delete('blockonomicon_blocks');
+			Craft::$app->getCache()->add('blockonomicon_blocks', $blocks, 21600); // Cache for 6 hours (60 seconds * 60 minutes * 6 hours = 21600).
 		}
 		
 		return $blocks;

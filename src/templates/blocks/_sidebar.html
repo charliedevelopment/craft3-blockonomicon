@@ -12,7 +12,7 @@
 		{% endif %}
 		{% for field in fields %}
 			<li>
-				<a href="{{ url('blockonomicon/blocks/' ~ field.id) }}"{% if matrixId == field.id %} class="sel"{% endif %}>
+				<a href="{{ url('blockonomicon/matrix/' ~ field.id) }}"{% if matrixId == field.id %} class="sel"{% endif %}>
 					<span class="label">{{ field.name | t('site') }}</span>
 				</a>
 			</li>
