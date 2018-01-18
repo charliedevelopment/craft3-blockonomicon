@@ -90,7 +90,7 @@ class Blocks extends Component {
 			Craft::$app->getCache()->delete('blockonomicon_blocks');
 			Craft::$app->getCache()->add('blockonomicon_blocks', $blocks, 21600); // Cache for 6 hours (60 seconds * 60 minutes * 6 hours = 21600).
 		}
-		
+
 		return $blocks;
 	}
 }

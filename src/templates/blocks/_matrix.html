@@ -3,8 +3,9 @@
 
 {% set matrixName = matrix.name | t('site') %}
 
-{% set title = matrixName | t('site') %}
+{% set title = matrixName %}
 {% set selectedSubnavItem = 'blocks' %}
+{% set fullPageForm = true %}
 
 {% set crumbs = [
 	{ label: 'Blockomonicon', url: url('blockonomicon') },
@@ -16,5 +17,58 @@
 {% endset %}
 
 {% block content %}
-	<p>Matrix Editor for {{ matrixName }}</p>
+	<input type="hidden" name="action" value="blockonomicon/settings/save-matrix">
+	{{ redirectInput('blockonomicon/blocks') }}
+	<table id="matrixblocks" class="data fullwidth collapsible">
+		<thead>
+			<th>Name</th>
+			<th>Handle</th>
+			<th>Description</th>
+			<th>Fields</th>
+			<th>Actions</th>
+		</thead>
+		<tbody>
+			{% for block in blocks %}
+				<tr>
+					<td>
+						<a class="move icon" title="Reorder" role="button"></a>
+						{% if block.status == 'saved' %}
+							<span class="status green" title="Attached and Saved"></span>
+						{% elseif block.status == 'not-saved' %}
+							<span class="status yellow" title="Not Saved"></span>
+						{% else %}
+							<span class="status none" title="Not Attached"></span>
+						{% endif %}
+						{{ block.name }}</td>
+					<td><code>{{ block.handle }}</code></td>
+					<td>{{ block.description }}</td>
+					<td>{{ block.fields }}</td>
+					<td>
+						<span class="buttons">
+							{% if block.status == 'saved' %}
+								<span class="btn import" role="button">Import</span>
+								<span class="btn export" role="button">Export</span>
+								<span class="btn delete submit" role="button">Delete</span>
+							{% elseif block.status == 'not-saved' %}
+								<span class="btn import disabled" role="button" title="{{ 'Cannot import, no matching block files exist.' | t('blockonomicon') }}">Import</span>
+								<span class="btn export" role="button">Export</span>
+								<span class="btn delete submit" role="button">Delete</span>
+							{% else %}
+								<span class="btn import" role="button">Import</span>
+								<span class="btn export disabled" role="button" title="{{ 'Cannot export, block is not attached.' | t('blockonomicon') }}">Export</span>
+								<span class="btn delete submit disabled" role="button" title="{{ 'Cannot delete, block is not attached.' | t('blockonomicon') }}">Delete</span>
+							{% endif %}
+						</span>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 {% endblock %}
+
+{% js on ready %}
+	new Craft.DataTableSorter($('#matrixblocks'), {
+		helperClass: 'matrixblocksorthelper',
+		copyDraggeeInputValuesToHelper: true
+	});
+{% endjs %}

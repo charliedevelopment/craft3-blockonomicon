@@ -1,0 +1,24 @@
+#matrixblocks .move,
+.matrixblocksorthelper .move {
+	font-size: 11px;
+}
+
+body.ltr #matrixblocks .move,
+body.ltr .matrixblocksorthelper .move {
+	margin-right: 7px;
+}
+
+body.rtl #matrixblocks .move,
+body.rtl .matrixblocksorthelper .move {
+	margin-left: 7px;
+}
+
+body.ltr #matrixblocks .status,
+body.ltr .matrixblocksorthelper .status {
+	margin-right: 4px;
+}
+
+body.rtl #matrixblocks .status,
+body.rtl .matrixblocksorthelper .status {
+	margin-left: 4px;
+}

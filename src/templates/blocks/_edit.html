@@ -1,8 +1,11 @@
 {% extends '_layouts/cp' %}
 {# Editor/inspector for individual block configuration. #}
 
-{% set title = block.name | t('site') %}
+{% set blockName = block.name | t('site') %}
+
+{% set title = blockName %}
 {% set selectedSubnavItem = 'blocks' %}
+{% set fullPageForm = true %}
 
 {% set crumbs = [
 	{ label: 'Blockomonicon', url: url('blockonomicon') },
@@ -10,5 +13,5 @@
 ] %}
 
 {% block content %}
-	<p>Block Editor for {{ block.name | t('site') }}</p>
+	<p>Block Editor for {{ blockName }}</p>
 {% endblock %}
