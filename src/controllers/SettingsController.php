@@ -43,14 +43,14 @@ class SettingsController extends Controller
 
 	public function actionEditBlock(string $blockHandle): Response
 	{
-		$matrices = Blockonomicon::getInstance()->blocks->getMatrixFields(); // All matrix fields installed in Craft.
+		$blocks = Blockonomicon::getInstance()->blocks->getBlocks(); // All installed blocks, from the cache.
 
 		// Make sure the block handle provided is for an actual block.
 		if (!isset($blocks[$blockHandle])) {
 			throw new \yii\web\NotFoundHttpException;
 		}
 
-		$blocks = Blockonomicon::getInstance()->blocks->getBlocks(); // All installed blocks, from the cache.
+		$matrices = Blockonomicon::getInstance()->blocks->getMatrixFields(); // All matrix fields installed in Craft.
 
 		return $this->renderTemplate('blockonomicon/blocks/_edit', [
 			'matrixId' => null,
@@ -107,6 +107,14 @@ class SettingsController extends Controller
 			];
 		}
 
+		$this->getView()->registerTranslations('blockonomicon', [
+			'Are you sure you want to import the {handle} block?',
+			'Are you sure you want to re-import the {handle} block? You may lose data if fields have changed significantly.',
+			'Are you sure you want to save {handle} as a new block?',
+			'Are you sure you want to overwrite the {handle} block definition with this new one?',
+			'Are you sure you want to delete the {handle} block? This cannot be reversed.',
+		]);
+
 		return $this->renderTemplate('blockonomicon/blocks/_matrix', [
 			'matrixId' => $matrixId,
 			'fields' => $matrices,
@@ -115,7 +123,17 @@ class SettingsController extends Controller
 		]);
 	}
 
-	public function actionSaveMatrix()
+	public function actionUpdateMatrixBlockOrder(): Response
+	{
+		$this->requirePostRequest();
+		$this->requireAcceptsJson();
+
+		return $this->asErrorJson('Everything melted!');
+
+		return $this->asJson(['success' => true]);
+	}
+
+	public function actionSaveMatrix(): Response
 	{
 		$this->requirePostRequest();
 
