@@ -82,6 +82,7 @@ class SettingsController extends Controller
 				'status' => isset($allblocks[$block->handle]) ? 'saved' : 'not-saved',
 				'name' => $block->name,
 				'handle' => $block->handle,
+				'id' => $block->id,
 				'description' => isset($allblocks[$block->handle]) ? $allblocks[$block->handle]['description'] : '-',
 				'fields' => count($block->getFieldLayout()->getFieldIds()),
 			];
@@ -102,6 +103,7 @@ class SettingsController extends Controller
 				'status' => 'not-loaded',
 				'name' => $block['name'],
 				'handle' => $block['handle'],
+				'id' => null,
 				'description' => isset($block['description']) ? $block['description'] : '-',
 				'fields' => count($block['fields']),
 			];
@@ -128,7 +130,35 @@ class SettingsController extends Controller
 		$this->requirePostRequest();
 		$this->requireAcceptsJson();
 
-		return $this->asErrorJson('Everything melted!');
+		// Retrieve parameters for the request.
+		$matrixid = Craft::$app->getRequest()->getRequiredBodyParam('matrix');
+
+		// Retrieve the field.
+		$field = Craft::$app->getFields()->getFieldById($matrixid);
+		if (!$field) { // If it doesn't exist, error out.
+			return $this->asErrorJson('Matrix ' . $matrixid . ' does not exist');
+		}
+
+		$blocks = Craft::$app->getRequest()->getRequiredBodyParam('blocks');
+		if (!is_array($blocks)) {
+			return $this->asErrorJson('`blocks` must be an array');
+		}
+		foreach ($blocks as $key => $val) {
+			if (!is_numeric($val)) {
+				return $this->asErrorJson('`blocks` must only contain numbers');
+			}
+			$blocks[$key] = intval($val);
+		}
+		
+		// Manually update the table, instead of going through craft's own update methods.
+		// This way things like SuperTable don't lose their data.
+		$order = 1;
+		foreach ($blocks as $block) {
+			Craft::$app->getDb()->createCommand()
+				->update('{{%matrixblocktypes}}', ['sortOrder' => $order], ['id' => $block])
+				->execute();
+			$order += 1;
+		}
 
 		return $this->asJson(['success' => true]);
 	}

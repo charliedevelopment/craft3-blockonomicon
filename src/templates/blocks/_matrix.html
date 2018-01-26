@@ -17,7 +17,7 @@
 
 {% block content %}
 	{{ redirectInput('blockonomicon/blocks') }}
-	<table id="matrixblocks" class="data fullwidth collapsible">
+	<table id="matrixblocks" class="data fullwidth collapsible" data-id="{{ matrixId }}">
 		<thead>
 			<th>Name</th>
 			<th>Handle</th>
@@ -27,7 +27,7 @@
 		</thead>
 		<tbody>
 			{% for block in blocks %}
-				<tr data-status="{{ block.status }}" data-handle="{{ block.handle }}">
+				<tr data-status="{{ block.status }}" data-id="{{ block.id }}" data-handle="{{ block.handle }}">
 					<td>
 						<a class="move icon" title="Reorder" role="button"></a>
 						{% if block.status == 'saved' %}
@@ -62,6 +62,9 @@
 			{% endfor %}
 		</tbody>
 	</table>
+	<buttons>
+		<a class="btn quicksort submit">Sort Alphabetically</a>
+	</buttons>
 {% endblock %}
 
 {% js on ready %}
