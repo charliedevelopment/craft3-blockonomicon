@@ -136,16 +136,16 @@ class SettingsController extends Controller
 		// Retrieve the field.
 		$field = Craft::$app->getFields()->getFieldById($matrixid);
 		if (!$field) { // If it doesn't exist, error out.
-			return $this->asErrorJson('Matrix ' . $matrixid . ' does not exist');
+			return $this->asErrorJson(Craft::t('blockonomicon' 'Matrix {id} does not exist.', ['id' => $matrixid]));
 		}
 
 		$blocks = Craft::$app->getRequest()->getRequiredBodyParam('blocks');
 		if (!is_array($blocks)) {
-			return $this->asErrorJson('`blocks` must be an array');
+			return $this->asErrorJson(Craft::t('blockonomicon', '`blocks` must be an array.'));
 		}
 		foreach ($blocks as $key => $val) {
 			if (!is_numeric($val)) {
-				return $this->asErrorJson('`blocks` must only contain numbers');
+				return $this->asErrorJson(Craft::t('blockonomicon', '`blocks` must only contain numbers.'));
 			}
 			$blocks[$key] = intval($val);
 		}
@@ -160,7 +160,7 @@ class SettingsController extends Controller
 			$order += 1;
 		}
 
-		return $this->asJson(['success' => true]);
+		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block order updated.')]);
 	}
 
 	public function actionSaveMatrix(): Response

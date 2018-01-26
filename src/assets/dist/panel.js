@@ -39,7 +39,7 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 			var $block = $(event.target).closest('tr');
 			var handle = $block.find('td:eq(1)').text();
 
-			var message = ''
+			var message = '';
 			if ($block.data('status') == 'not-loaded') { // First time export.
 				message = 'Are you sure you want to import the {handle} block?';
 			} else if ($block.data('status') == 'saved') { // Export overwrite.
@@ -69,7 +69,7 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 			var $block = $(event.target).closest('tr');
 			var handle = $block.find('td:eq(1)').text();
 
-			var message = ''
+			var message = '';
 			if ($block.data('status') == 'not-saved') { // First time export.
 				message = 'Are you sure you want to save {handle} as a new block?';
 			} else if ($block.data('status') == 'saved') { // Export overwrite.
@@ -78,7 +78,12 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 				return;
 			}
 			if (confirm(Craft.t('blockonomicon', message, {handle: handle}))) {
-				Craft.cp.displayNotice('Export goes here');
+				var data = {
+					block: $block.data('id')
+				};
+				Craft.postActionRequest('blockonomicon/settings/export-block', data, $.proxy(function(response, status) {
+					Craft.cp.displayNotice('Export goes here');
+				}));
 			}
 		},
 		/**
@@ -113,7 +118,7 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 			Craft.postActionRequest('blockonomicon/settings/update-matrix-block-order', data, $.proxy(function(response, status) {
 				if (status === 'success') {
 					if (response.success) {
-						Craft.cp.displayNotice('Block order updated!');
+						Craft.cp.displayNotice(response.message);
 					} else {
 						Craft.cp.displayError(response.error);
 					}
