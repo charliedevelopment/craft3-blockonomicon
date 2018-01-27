@@ -6,6 +6,8 @@
 
 namespace charliedev\blockonomicon;
 
+use charliedev\blockonomicon\events\RegisterFieldSettingHandlersEvent;
+
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterTemplateRootsEvent;
@@ -22,6 +24,14 @@ use yii\base\Event;
  */
 class Blockonomicon extends Plugin
 {
+
+	/**
+	 * @event RegisterFieldSettingHandlersEvent The event triggered when field setting conversion handlers should be registered.
+	 * 
+	 * [[RegisterFieldSettingHandlersEvent::handlers]] should be set with corresponding key => value pairs of field classes and callables that convert their settings values, respectively.
+	 */
+	public const EVENT_REGISTER_FIELD_SETTING_HANDLERS = 'registerFieldSettingHandlers';
+
 	/**
 	 * @inheritdoc
 	 * @see craft\base\Plugin
@@ -71,6 +81,24 @@ class Blockonomicon extends Plugin
 				$event->roots['blockonomicon'] = $this->blocks->getBlockPath();
 			}
 		);
+
+		/*
+		// Example of special per-field functionality for saving/loading.
+		Event::on(
+			Blockonomicon::class,
+			Blockonomicon::EVENT_REGISTER_FIELD_SETTING_HANDLERS,
+			function(RegisterFieldSettingHandlersEvent $event) {
+				$event->handlers[\craft\fields\PlainText::class] = [
+					'saveCustomSettings' => function($field, &$settings) {
+						$settings['custom'] = '!!' . $field->name . '!!';
+					},
+					'loadCustomSettings' => function($field, $settings) {
+						Blockonomicon::log(print_r($settings, true));
+					},
+				];
+			}
+		);
+		*/
 
 		parent::init();
 	}

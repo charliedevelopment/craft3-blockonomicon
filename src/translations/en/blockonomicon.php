@@ -14,4 +14,6 @@ return [
 	'`blocks` must be an array.' => '`blocks` must be an array.',
 	'`blocks` must only contain numbers.' => '`blocks` must only contain numbers.',
 	'Block order updated.' => 'Block order updated.',
+	'Could not create directory for block.' => 'Could not create directory for block.',
+	'Could not write to block settings file.' => 'Could not write to block settings file.',
 ];

@@ -29,6 +29,9 @@ class SettingsController extends Controller
 		parent::init();
 	}
 
+	/**
+	 * Renders the Blockonomicon overview control panel.
+	 */
 	public function actionBlocksOverview(): Response
 	{
 		$matrices = Blockonomicon::getInstance()->blocks->getMatrixFields(); // All matrix fields installed in Craft.
@@ -41,9 +44,12 @@ class SettingsController extends Controller
 		]);
 	}
 
+	/**
+	 * Renders the individual block editing panel.
+	 */
 	public function actionEditBlock(string $blockHandle): Response
 	{
-		$blocks = Blockonomicon::getInstance()->blocks->getBlocks(); // All installed blocks, from the cache.
+		$blocks = Blockonomicon::getInstance()->blocks->getBlocks(true); // All installed blocks.
 
 		// Make sure the block handle provided is for an actual block.
 		if (!isset($blocks[$blockHandle])) {
@@ -59,6 +65,9 @@ class SettingsController extends Controller
 		]);
 	}
 
+	/**
+	 * Renders the Matrix block editor.
+	 */
 	public function actionEditMatrix(int $matrixId): Response
 	{
 		$matrices = Blockonomicon::getInstance()->blocks->getMatrixFields(); // All matrix fields installed in Craft.
@@ -68,7 +77,7 @@ class SettingsController extends Controller
 			throw new \yii\web\NotFoundHttpException;
 		}
 
-		$allblocks = Blockonomicon::getInstance()->blocks->getBlocks(); // All installed blocks, from the cache.
+		$allblocks = Blockonomicon::getInstance()->blocks->getBlocks(true); // All installed blocks.
 		$matrix = $matrices[$matrixId]; // The currently edited Matrix.
 		$matrixblocks = $matrix->getBlockTypes(); // Blocks attached to the matrix.
 		$blocks = []; // Set of block information to render for the matrix being edited.
@@ -83,7 +92,7 @@ class SettingsController extends Controller
 				'name' => $block->name,
 				'handle' => $block->handle,
 				'id' => $block->id,
-				'description' => isset($allblocks[$block->handle]) ? $allblocks[$block->handle]['description'] : '-',
+				'description' => isset($allblocks[$block->handle]['description']) ? $allblocks[$block->handle]['description'] : '-',
 				'fields' => count($block->getFieldLayout()->getFieldIds()),
 			];
 		}
@@ -125,20 +134,15 @@ class SettingsController extends Controller
 		]);
 	}
 
+	/**
+	 * Saves an updated block order for a matrix..
+	 */
 	public function actionUpdateMatrixBlockOrder(): Response
 	{
 		$this->requirePostRequest();
 		$this->requireAcceptsJson();
 
-		// Retrieve parameters for the request.
-		$matrixid = Craft::$app->getRequest()->getRequiredBodyParam('matrix');
-
-		// Retrieve the field.
-		$field = Craft::$app->getFields()->getFieldById($matrixid);
-		if (!$field) { // If it doesn't exist, error out.
-			return $this->asErrorJson(Craft::t('blockonomicon' 'Matrix {id} does not exist.', ['id' => $matrixid]));
-		}
-
+		// Retrieve the blocks and their respective order.
 		$blocks = Craft::$app->getRequest()->getRequiredBodyParam('blocks');
 		if (!is_array($blocks)) {
 			return $this->asErrorJson(Craft::t('blockonomicon', '`blocks` must be an array.'));
@@ -163,15 +167,35 @@ class SettingsController extends Controller
 		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block order updated.')]);
 	}
 
-	public function actionSaveMatrix(): Response
+	/**
+	 * Creates/updates a block's settings file.
+	 */
+	public function actionExportBlock(): Response
 	{
 		$this->requirePostRequest();
 
-		$request = Craft::$app->getRequest();
+		// Retrieve the ID of the block to export.
+		$blockid = Craft::$app->getRequest()->getRequiredBodyParam('block');
 
-		return $this->redirectToPostedUrl();
+		// Retrieve the block itself.
+		$block = Craft::$app->getMatrix()->getBlockTypeById($blockid);
+		if (!$block) { // If it doesn't exist, error out.
+			return $this->asErrorJson(Craft::t('blockonomicon', 'Block {id} does not exist.', ['id' => $blockid]));
+		}
+
+		$blockdata = Blockonomicon::getInstance()->blocks->getBlockData($block);
+
+		$result = Blockonomicon::getInstance()->blocks->saveBlockData($blockdata);
+		if ($result !== true) {
+			return $this->asErrorJson($result);
+		}
+		
+		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block exported.')]);
 	}
 
+	/**
+	 * Renders the Blockonomicon global settings panel.
+	 */
 	public function actionGlobal(): Response
 	{
 		return $this->renderTemplate('blockonomicon/_settings', [
@@ -179,6 +203,9 @@ class SettingsController extends Controller
 		]);
 	}
 
+	/**
+	 * Renders the Blockonomicon documentation panel.
+	 */
 	public function actionDocumentation(): Response
 	{
 		return $this->renderTemplate('blockonomicon/_documentation');

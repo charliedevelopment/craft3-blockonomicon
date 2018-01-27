@@ -82,7 +82,16 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 					block: $block.data('id')
 				};
 				Craft.postActionRequest('blockonomicon/settings/export-block', data, $.proxy(function(response, status) {
-					Craft.cp.displayNotice('Export goes here');
+					if (status === 'success') {
+						if (response.success) {
+							Craft.cp.displayNotice(response.message);
+							$block.data('status', 'saved');
+							$block.find('td:eq(0) .status').removeClass('yellow').addClass('green');
+							$block.find('td:eq(4) .buttons .btn.import').removeClass('disabled').attr('title', '');
+						} else {
+							Craft.cp.displayError(response.error);
+						}
+					}
 				}));
 			}
 		},
@@ -106,7 +115,6 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 		saveBlockOrder: function() {
 			this.updateBlockList();
 			var data = {
-				matrix: $('#matrixblocks').data('id'),
 				blocks: this.$blocks.toArray().reduce(function(arr, val) {
 					val = $(val);
 					if (val.data('status') == 'saved' || val.data('status') == 'not-saved') {
@@ -125,6 +133,9 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 				}
 			}, this));
 		},
+		/**
+		 * Sorts blocks alphabetically by title, saving the order immediately afterward.
+		 */
 		sortBlocksAlphabetically: function() {
 			var sorted = this.$blocks.toArray().sort(function(a, b) {
 				a = $(a).find('td:eq(0)').text();

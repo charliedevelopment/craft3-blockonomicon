@@ -1,0 +1,8 @@
+<div class="module module--{{ name | kebab }}">
+
+</div>
+{{ '{#' }}
+{% for field in fields %}
+{{ '{{' }} block.{{ field.handle }} {{ '}}' }}
+{% endfor %}
+{{ '#}' }}
