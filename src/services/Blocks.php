@@ -124,7 +124,7 @@ class Blocks extends Component {
 	
 	/**
 	 * Creates an array representing a field and all of its associated settings.
-	 * @param \Craft\base\Field $field The field to create a representation of.
+	 * @param \craft\base\Field $field The field to create a representation of.
 	 * @return array The field data, as an array.
 	 */
 	public function getFieldData(\Craft\base\Field $field): array
@@ -133,6 +133,7 @@ class Blocks extends Component {
 			'name' => $field->name,
 			'handle' => $field->handle,
 			'translationMethod' => $field->translationMethod,
+			'translationKeyFormat' => $field->translationKeyFormat,
 			'instructions' => $field->instructions,
 			'required' => $field->required,
 			'type' => get_class($field),
@@ -145,7 +146,62 @@ class Blocks extends Component {
 	}
 
 	/**
+	 * Creates/updates a block on a matrix.
+	 * @param \craft\fields\Matrix $matrix The matrix to attach the block to.
+	 * @param array $blockdata An array containing exported block data.
+	 * @param int $order The 0-indexed integer position where the block should be created within the matrix.
+	 */
+	public function rebuildBlock(\craft\fields\Matrix $matrix, array $blockdata, int $order)
+	{
+		$transaction = Craft::$app->getDb()->beginTransaction();
+
+		// If this is a new block, not updating an existing block.
+		$blockhandle = $blockdata['handle'];
+
+		$blocktypes = $matrix->getBlockTypes();
+
+		// Determine if the block being built already exists or not.
+		$block = null;
+		foreach ($blocktypes as $blocktype) {
+			if ($blocktype->handle == $blockhandle) {
+				$block = $blocktype;
+			}
+		}
+
+
+		if ($block) { // Block already exists, update fields.
+		} else { // New block, create fields, create block, and attach to matrix.
+
+			// Create the underlying block.
+			$block = new \craft\models\MatrixBlockType();
+			$block->fieldId = $matrix->id;
+			$block->name = $blockdata['name'];
+			$block->handle = $blockhandle;
+
+			// Create the new fields.
+			$fields = [];
+			foreach ($blockdata['fields'] as $field) {
+				$fields[] = Craft::$app->getFields()->createField($field);
+			}
+			$block->setFields($fields);
+
+			// Save the new block, with all its new fields.
+			Craft::$app->getMatrix()->saveBlockType($block);
+
+			// Add to the matrix in order, and save the updated block list.
+			array_splice($blocktypes, $order, 0, [$block]);
+			$matrix->setBlockTypes($blocktypes);
+			Craft::$app->getMatrix()->saveSettings($matrix);
+		}
+
+		$transaction->commit();
+
+		return true;
+	}
+
+	/**
 	 * Stores a block definition in plugin storage, creating additional supporting files if necessary.
+	 * @param array $blockdata An array containing exported block data.
 	 */
 	public function saveBlockData($blockdata)
 	{

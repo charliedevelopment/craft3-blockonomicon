@@ -49,16 +49,24 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 			}
 
 			if (confirm(Craft.t('blockonomicon', message, {handle: handle}))) {
-				Craft.postActionRequest('blockonomicon/settings/update-matrix-block-order', {}, $.proxy(function(response, status) {
+				var data = {
+					matrix: $('#matrixblocks').data('id'),
+					handle: $block.data('handle'),
+					order: $block.prevAll('[data-status="saved"]').length + 1,
+				};
+				Craft.postActionRequest('blockonomicon/settings/import-block', data, $.proxy(function(response, status) {
 					if (status === 'success') {
 						if (response.success) {
-							Craft.cp.displayNotice('Block imported!');
+							Craft.cp.displayNotice(response.message);
+							$block.data('status', 'saved');
+							$block.attr('data-status', 'saved');
+							$block.find('td:eq(0) .status').removeClass('none').addClass('green');
+							$block.find('td:eq(4) .buttons .btn.import').removeClass('disabled').attr('title', '');
 						} else {
 							Craft.cp.displayError(response.error);
 						}
 					}
 				}, this));
-				Craft.cp.displayNotice('Import goes here');
 			}
 		},
 		/**
@@ -79,13 +87,14 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 			}
 			if (confirm(Craft.t('blockonomicon', message, {handle: handle}))) {
 				var data = {
-					block: $block.data('id')
+					block: $block.data('id'),
 				};
 				Craft.postActionRequest('blockonomicon/settings/export-block', data, $.proxy(function(response, status) {
 					if (status === 'success') {
 						if (response.success) {
 							Craft.cp.displayNotice(response.message);
 							$block.data('status', 'saved');
+							$block.attr('data-status', 'saved');
 							$block.find('td:eq(0) .status').removeClass('yellow').addClass('green');
 							$block.find('td:eq(4) .buttons .btn.import').removeClass('disabled').attr('title', '');
 						} else {
@@ -105,7 +114,27 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 
 			if ($block.data('status') == 'saved' || $block.data('status') == 'not-saved') {
 				if (confirm(Craft.t('blockonomicon', 'Are you sure you want to delete the {handle} block? This cannot be reversed.', {handle: handle}))) {
-					Craft.cp.displayNotice('Delete goes here');
+					var data = {
+						block: $block.data('id'),
+					};
+					Craft.postActionRequest('blockonomicon/settings/delete-block', data, $.proxy(function(response, status) {
+						if (status === 'success') {
+							if (response.success) {
+								Craft.cp.displayNotice(response.message);
+								if ($block.data('status') == 'not-saved') {
+									$block.remove();
+								} else {
+									$block.data('status', 'not-loaded');
+									$block.attr('data-status', 'not-loaded');
+									$block.find('td:eq(0) .status').removeClass('green').addClass('none');
+									$block.find('td:eq(4) .buttons .btn.export').addClass('disabled').attr('title', Craft.t('blockonomicon', 'Cannot export, block is not attached.'));
+									$block.find('td:eq(4) .buttons .btn.delete').addClass('disabled').attr('title', Craft.t('blockonomicon', 'Cannot delete, block is not attached.'));
+								}
+							} else {
+								Craft.cp.displayError(response.error);
+							}
+						}
+					}));
 				}
 			}
 		},

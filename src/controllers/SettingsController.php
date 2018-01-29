@@ -167,6 +167,43 @@ class SettingsController extends Controller
 		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block order updated.')]);
 	}
 
+	public function actionImportBlock(): Response
+	{
+		$this->requirePostRequest();
+
+		// Retrieve the ID of the matrix to import to.
+		$matrixid = Craft::$app->getRequest()->getRequiredBodyParam('matrix');
+
+		$matrix = Craft::$app->getFields()->getFieldById($matrixid);
+		if (!$matrix) {
+			return $this->asErrorJson(Craft::t('blockonomicon', 'Matrix {id} does not exist.', ['id' => $matrixid]));
+		}
+
+		// Retrieve the handle of the block to import..
+		$blockhandle = Craft::$app->getRequest()->getRequiredBodyParam('handle');
+
+		// Retrieve the block definition.
+		$allblocks = Blockonomicon::getInstance()->blocks->getBlocks(true); // All installed blocks.
+		if (!isset($allblocks[$blockhandle])) {
+			return $this->asErrorJson(Craft::t('blockonomicon', 'Block {id} does not exist.', ['id' => $blockhandle]));
+		}
+		$block = $allblocks[$blockhandle];
+
+		// Retrieve the position in the current block list to insert the new block.
+		$order = Craft::$app->getRequest()->getRequiredBodyParam('order');
+		if (!is_numeric($order)) {
+			return $this->asErrorJson(Craft::t('blockonomicon', '`order` must be a number.'));
+		}
+		$order = intval($order);
+
+		$result = Blockonomicon::getInstance()->blocks->rebuildBlock($matrix, $block, $order);
+		if ($result !== true) {
+			return $this->asErrorJson($result);
+		}
+		
+		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block imported.')]);
+	}
+
 	/**
 	 * Creates/updates a block's settings file.
 	 */
@@ -179,7 +216,7 @@ class SettingsController extends Controller
 
 		// Retrieve the block itself.
 		$block = Craft::$app->getMatrix()->getBlockTypeById($blockid);
-		if (!$block) { // If it doesn't exist, error out.
+		if (!$block) {
 			return $this->asErrorJson(Craft::t('blockonomicon', 'Block {id} does not exist.', ['id' => $blockid]));
 		}
 
