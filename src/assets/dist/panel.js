@@ -61,7 +61,8 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 							$block.data('status', 'saved');
 							$block.attr('data-status', 'saved');
 							$block.find('td:eq(0) .status').removeClass('none').addClass('green');
-							$block.find('td:eq(4) .buttons .btn.import').removeClass('disabled').attr('title', '');
+							$block.find('td:eq(4) .buttons .btn.export').removeClass('disabled').attr('title', '');
+							$block.find('td:eq(4) .buttons .btn.delete').removeClass('disabled').attr('title', '');
 						} else {
 							Craft.cp.displayError(response.error);
 						}
