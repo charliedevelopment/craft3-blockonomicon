@@ -52,7 +52,7 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 				var data = {
 					matrix: $('#matrixblocks').data('id'),
 					handle: $block.data('handle'),
-					order: $block.prevAll('[data-status="saved"]').length + 1,
+					order: $block.prevAll('[data-status="saved"], [data-status="not-saved"]').length,
 				};
 				Craft.postActionRequest('blockonomicon/settings/import-block', data, $.proxy(function(response, status) {
 					if (status === 'success') {

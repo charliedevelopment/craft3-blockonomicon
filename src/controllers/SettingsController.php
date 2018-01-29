@@ -231,6 +231,25 @@ class SettingsController extends Controller
 	}
 
 	/**
+	 * Deletes a block.
+	 */
+	public function actionDeleteBlock(): Response
+	{
+		// Retrieve the ID of the block to export.
+		$blockid = Craft::$app->getRequest()->getRequiredBodyParam('block');
+
+		// Retrieve the block itself.
+		$block = Craft::$app->getMatrix()->getBlockTypeById($blockid);
+		if (!$block) {
+			return $this->asErrorJson(Craft::t('blockonomicon', 'Block {id} does not exist.', ['id' => $blockid]));
+		}
+
+		Craft::$app->getMatrix()->deleteBlockType($block);
+
+		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block deleted.')]);
+	}
+
+	/**
 	 * Renders the Blockonomicon global settings panel.
 	 */
 	public function actionGlobal(): Response
