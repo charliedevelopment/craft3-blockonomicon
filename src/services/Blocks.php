@@ -196,7 +196,7 @@ class Blocks extends Component {
 
 		$transaction->commit();
 
-		return true;
+		return $block;
 	}
 
 	/**

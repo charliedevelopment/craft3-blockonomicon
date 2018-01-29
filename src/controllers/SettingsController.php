@@ -197,11 +197,11 @@ class SettingsController extends Controller
 		$order = intval($order);
 
 		$result = Blockonomicon::getInstance()->blocks->rebuildBlock($matrix, $block, $order);
-		if ($result !== true) {
+		if (!is_a($result, \craft\models\MatrixBlockType::class)) {
 			return $this->asErrorJson($result);
 		}
 		
-		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block imported.')]);
+		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block imported.'), 'id' => $result->id]);
 	}
 
 	/**

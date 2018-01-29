@@ -58,6 +58,8 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 					if (status === 'success') {
 						if (response.success) {
 							Craft.cp.displayNotice(response.message);
+							$block.data('id', response.id);
+							$block.attr('data-id', response.id);
 							$block.data('status', 'saved');
 							$block.attr('data-status', 'saved');
 							$block.find('td:eq(0) .status').removeClass('none').addClass('green');
