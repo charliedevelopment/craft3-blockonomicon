@@ -152,6 +152,9 @@ BNCN.MatrixEditor = Garnish.Base.extend(
 					return arr;
 				}, []),
 			};
+			if (data.blocks.length == 0) { // Ignore reorder updates if there are no blocks in the matrix.
+				return;
+			}
 			Craft.postActionRequest('blockonomicon/settings/update-matrix-block-order', data, $.proxy(function(response, status) {
 				if (status === 'success') {
 					if (response.success) {
