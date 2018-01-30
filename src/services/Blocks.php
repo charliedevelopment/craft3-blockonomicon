@@ -7,7 +7,9 @@
 namespace charliedev\blockonomicon\services;
 
 use charliedev\blockonomicon\Blockonomicon;
-use charliedev\blockonomicon\events\RegisterFieldSettingHandlersEvent;
+use charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent;
+use charliedev\blockonomicon\events\RegisterFieldSettingLoadHandlersEvent;
+use charliedev\blockonomicon\events\RegisterFieldSettingConstructHandlersEvent;
 
 use Craft;
 use craft\helpers\FileHelper;
@@ -140,7 +142,15 @@ class Blocks extends Component {
 			'settings' => $field->getSettings(),
 		];
 
-		$this->modifyCustomFieldSettings($field, $settings);
+		// Allow additional transformations to be made to settings for fields before returning.
+		$event = new RegisterFieldSettingSaveHandlersEvent();
+		Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_SAVE_HANDLERS, $event); // Gather handlers.
+
+		// Find a handler for this field, if one exists, and run it.
+		$fieldclass = get_class($field);
+		if (isset($event->handlers[$fieldclass])) {
+			$event->handlers[$fieldclass]($field, $settings);
+		}
 
 		return $settings;
 	}
@@ -168,8 +178,8 @@ class Blocks extends Component {
 			}
 		}
 
-
 		if ($block) { // Block already exists, update fields.
+			
 		} else { // New block, create fields, create block, and attach to matrix.
 
 			// Create the underlying block.
@@ -181,7 +191,30 @@ class Blocks extends Component {
 			// Create the new fields.
 			$fields = [];
 			foreach ($blockdata['fields'] as $field) {
-				$fields[] = Craft::$app->getFields()->createField($field);
+
+				// Allow additional transformations to be made to settings for fields before building the field.
+				$event = new RegisterFieldSettingLoadHandlersEvent();
+				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_LOAD_HANDLERS, $event); // Gather handlers.
+
+				// Find a handler for this field, if one exists, and run it.
+				$fieldclass = get_class($field);
+				if (isset($event->handlers[$fieldclass])) {
+					$event->handlers[$fieldclass]($field);
+				}
+
+				$newfield = Craft::$app->getFields()->createField($field);
+
+				// Allow additional transformations to be made to fields after being built.
+				$event = new RegisterFieldSettingConstructHandlersEvent();
+				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_CONSTRUCT_HANDLERS, $event); // Gather handlers.
+
+				// Find a handler for this field, if one exists, and run it.
+				$fieldclass = get_class($field);
+				if (isset($event->handlers[$fieldclass])) {
+					$event->handlers[$fieldclass]($newfield, $field);
+				}
+
+				$fields[] = $newfield;
 			}
 			$block->setFields($fields);
 
@@ -272,19 +305,5 @@ class Blocks extends Component {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Allows additional modification to the settings array on field export, based on registered handlers.
-	 */
-	private function modifyCustomFieldSettings($field, &$settings)
-	{
-		$event = new RegisterFieldSettingHandlersEvent();
-		Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_HANDLERS, $event);
-
-		$fieldclass = get_class($field);
-		if (isset($event->handlers[$fieldclass])) {
-			$event->handlers[$fieldclass]['saveCustomSettings']($field, $settings);
-		}
 	}
 }

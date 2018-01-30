@@ -6,7 +6,7 @@
 
 namespace charliedev\blockonomicon;
 
-use charliedev\blockonomicon\events\RegisterFieldSettingHandlersEvent;
+use charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent;
 
 use Craft;
 use craft\base\Plugin;
@@ -26,11 +26,22 @@ class Blockonomicon extends Plugin
 {
 
 	/**
-	 * @event RegisterFieldSettingHandlersEvent The event triggered when field setting conversion handlers should be registered.
-	 * 
-	 * [[RegisterFieldSettingHandlersEvent::handlers]] should be set with corresponding key => value pairs of field classes and callables that convert their settings values, respectively.
+	 * @event RegisterFieldSettingSaveHandlersEvent Register save handlers on this event.
+	 * @see [[charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent]]
 	 */
-	public const EVENT_REGISTER_FIELD_SETTING_HANDLERS = 'registerFieldSettingHandlers';
+	public const EVENT_REGISTER_FIELD_SETTING_SAVE_HANDLERS = 'registerFieldSettingSaveHandlers';
+
+	/**
+	 * @event RegisterFieldSettingLoadHandlersEvent Register load handlers on this event.
+	 * @see [[charliedev\blockonomicon\events\RegisterFieldSettingLoadHandlersEvent]]
+	 */
+	public const EVENT_REGISTER_FIELD_SETTING_LOAD_HANDLERS = 'registerFieldSettingLoadHandlers';
+
+	/**
+	 * @event RegisterFieldSettingConstructHandlersEvent Register construct handlers on this event.
+	 * @see [[charliedev\blockonomicon\events\RegisterFieldSettingConstructHandlersEvent]]
+	 */
+	public const EVENT_REGISTER_FIELD_SETTING_CONSTRUCT_HANDLERS = 'registerFieldSettingConstructHandlers';
 
 	/**
 	 * @inheritdoc
@@ -83,11 +94,11 @@ class Blockonomicon extends Plugin
 		);
 
 		/*
-		// Example of special per-field functionality for saving/loading.
+		// Example of special per-field functionality for saving.
 		Event::on(
 			Blockonomicon::class,
-			Blockonomicon::EVENT_REGISTER_FIELD_SETTING_HANDLERS,
-			function(RegisterFieldSettingHandlersEvent $event) {
+			Blockonomicon::EVENT_REGISTER_FIELD_SETTING_SAVE_HANDLERS,
+			function(RegisterFieldSettingSaveHandlersEvent $event) {
 				$event->handlers[\craft\fields\PlainText::class] = [
 					'saveCustomSettings' => function($field, &$settings) {
 						$settings['custom'] = '!!' . $field->name . '!!';
