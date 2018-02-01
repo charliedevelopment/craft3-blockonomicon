@@ -39,7 +39,7 @@
 						<td>{{ block.name }}</td>
 						<td><code>{{ handle }}</code></td>
 						<td>
-							{% if block.description is defined %}
+							{% if block.description is defined and block.description %}
 								{{ block.description }}
 							{% else %}
 								-

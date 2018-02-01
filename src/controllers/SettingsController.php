@@ -64,7 +64,7 @@ class SettingsController extends Controller
 			$block = new StoredBlock();
 			$block->handle = $blocks[$blockhandle]['handle'];
 			$block->name = $blocks[$blockhandle]['name'];
-			$block->description = $blocks[$blockhandle]['description'];
+			$block->description = empty($blocks[$blockhandle]['description']) ? $blocks[$blockhandle]['description'] : '';
 			$block->fields = $blocks[$blockhandle]['fields'];
 		}
 
@@ -104,7 +104,7 @@ class SettingsController extends Controller
 				'name' => $block->name,
 				'handle' => $block->handle,
 				'id' => $block->id,
-				'description' => isset($allblocks[$block->handle]['description']) ? $allblocks[$block->handle]['description'] : '-',
+				'description' => empty($allblocks[$block->handle]['description']) ? $allblocks[$block->handle]['description'] : null,
 				'fields' => count($block->getFieldLayout()->getFieldIds()),
 			];
 		}
@@ -125,7 +125,7 @@ class SettingsController extends Controller
 				'name' => $block['name'],
 				'handle' => $block['handle'],
 				'id' => null,
-				'description' => isset($block['description']) ? $block['description'] : '-',
+				'description' => empty($block['description']) ? $block['description'] : null,
 				'fields' => count($block['fields']),
 			];
 		}
