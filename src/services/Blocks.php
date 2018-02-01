@@ -9,10 +9,10 @@ namespace charliedev\blockonomicon\services;
 use charliedev\blockonomicon\Blockonomicon;
 use charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent;
 use charliedev\blockonomicon\events\RegisterFieldSettingLoadHandlersEvent;
-use charliedev\blockonomicon\events\RegisterFieldSettingConstructHandlersEvent;
 
 use Craft;
 use craft\helpers\FileHelper;
+use craft\base\FieldInterface;
 
 use yii\base\Component;
 
@@ -132,14 +132,14 @@ class Blocks extends Component {
 	public function getFieldData(\Craft\base\Field $field): array
 	{
 		$settings = [
+			'type' => get_class($field),
 			'name' => $field->name,
 			'handle' => $field->handle,
-			'translationMethod' => $field->translationMethod,
-			'translationKeyFormat' => $field->translationKeyFormat,
 			'instructions' => $field->instructions,
 			'required' => $field->required,
-			'type' => get_class($field),
-			'settings' => $field->getSettings(),
+			'translationMethod' => $field->translationMethod,
+			'translationKeyFormat' => $field->translationKeyFormat,
+			'typesettings' => $field->getSettings(),
 		];
 
 		// Allow additional transformations to be made to settings for fields before returning.
@@ -168,68 +168,76 @@ class Blocks extends Component {
 		// If this is a new block, not updating an existing block.
 		$blockhandle = $blockdata['handle'];
 
+		// Get the existing block types, extract the existing block from the array, if one exists.
 		$blocktypes = $matrix->getBlockTypes();
-
-		// Determine if the block being built already exists or not.
 		$block = null;
-		foreach ($blocktypes as $blocktype) {
-			if ($blocktype->handle == $blockhandle) {
-				$block = $blocktype;
+		$blocktypes = array_reduce($blocktypes, function($in, $val) use($blockhandle) {
+			if ($val->handle == $blockhandle) {
+				$block = $val;
+			} else {
+				$in[] = $val;
 			}
+			return $in;
+		}, []);
+
+		// Make sure the order is valid.
+		if ($order < 0 || $order > count($blocktypes)) {
+			return '`order` out of range.';
 		}
 
 		if ($block) { // Block already exists, update fields.
+
+			// Store a list of the block fields, keyed by handle.
+			$blockfields = $block->getFields();
+			$blockfields = array_reduce($blockfields, function($in, $val) {
+				$in[$val->handle] = $val;
+				return $in;
+			}, []);
+
+			// Create an updated field set from the combined existing fields and the new settings.
+			$fields = []; // Storage for updated field set.
+			foreach ($blockdata['fields'] as $field) {
+				if (isset($blockfields[$field['handle']])) { // Existing field, key by field id, but otherwise update in-place.
+					$currentfield = $blockfields[$field['handle']];
+
+					// Allow additional transformations to be made to settings for existing fields.
+					$event = new RegisterFieldSettingLoadHandlersEvent();
+					Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_LOAD_HANDLERS, $event); // Gather handlers.
+
+					// Find a handler for this field, if one exists, and run it.
+					$fieldclass = get_class($currentfield);
+					if (isset($event->handlers[$fieldclass])) {
+						$event->handlers[$fieldclass]($currentfield, $field);
+					}
+
+					$fields[$currentfield->id] = $field;
+				} else { // New field.
+					$fields['new' . count($fields)] = $field; // Add field with new ID index.
+				}
+			}
+
+			$blocktypes = $fields; // Swap out existing block type list with new.
 			
 		} else { // New block, create fields, create block, and attach to matrix.
 
-			// Create the underlying block.
-			$block = new \craft\models\MatrixBlockType();
-			$block->fieldId = $matrix->id;
-			$block->name = $blockdata['name'];
-			$block->handle = $blockhandle;
+			// Make sure fields are keyed with 'new' IDs.
+			$blockdata['fields'] = array_reduce($blockdata['fields'], function($in, $val) {
+				$in['new' . (count($in) + 1)] = $val;
+				return $in;
+			}, []);
 
-			// Create the new fields.
-			$fields = [];
-			foreach ($blockdata['fields'] as $field) {
-
-				// Allow additional transformations to be made to settings for fields before building the field.
-				$event = new RegisterFieldSettingLoadHandlersEvent();
-				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_LOAD_HANDLERS, $event); // Gather handlers.
-
-				// Find a handler for this field, if one exists, and run it.
-				$fieldclass = get_class($field);
-				if (isset($event->handlers[$fieldclass])) {
-					$event->handlers[$fieldclass]($field);
-				}
-
-				$newfield = Craft::$app->getFields()->createField($field);
-
-				// Allow additional transformations to be made to fields after being built.
-				$event = new RegisterFieldSettingConstructHandlersEvent();
-				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_CONSTRUCT_HANDLERS, $event); // Gather handlers.
-
-				// Find a handler for this field, if one exists, and run it.
-				$fieldclass = get_class($field);
-				if (isset($event->handlers[$fieldclass])) {
-					$event->handlers[$fieldclass]($newfield, $field);
-				}
-
-				$fields[] = $newfield;
-			}
-			$block->setFields($fields);
-
-			// Save the new block, with all its new fields.
-			Craft::$app->getMatrix()->saveBlockType($block);
-
-			// Add to the matrix in order, and save the updated block list.
-			array_splice($blocktypes, $order, 0, [$block]);
-			$matrix->setBlockTypes($blocktypes);
-			Craft::$app->getMatrix()->saveSettings($matrix);
+			// Add the block to the existing block list.
+			$blocktypes = array_slice($blocktypes, 0, $order, true)
+				+ array('new1' => $blockdata)
+				+ array_slice($blocktypes, $order, null, true);
 		}
+
+		$matrix->setBlockTypes($blocktypes);
+		Craft::$app->getMatrix()->saveSettings($matrix);
 
 		$transaction->commit();
 
-		return $block;
+		return $matrix->getBlockTypes()[$order];
 	}
 
 	/**
@@ -277,7 +285,7 @@ class Blocks extends Component {
 			}
 
 			// Render base HTML file for the block.
-			$outfile = @fopen($blockpath . '/' . $blockhandle . '.html', 'w');
+			$outfile = @fopen($blockpath . '/_' . $blockhandle . '.html', 'w');
 			if ($outfile === false) {
 				return Craft::t('blockonomicon', 'Could not write to block settings file.');
 			}
@@ -305,5 +313,23 @@ class Blocks extends Component {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Updates file names of block files in preparation for a handle change.
+	 * @param string $oldhandle The old handle of the block.
+	 * @param string $newhandle The new handle of the block.
+	 */
+	public function changeBlockHandle($oldhandle, $newhandle)
+	{
+		$oldpath = $this->getBlockPath() . '/' . $oldhandle;
+		$newpath = $this->getBlockPath() . '/' . $newhandle;
+
+		@rename($oldpath, $newpath);
+		@rename($newpath . '/_' . $oldhandle . '.json', $newpath . '/_' . $newhandle . '.json');
+		@rename($newpath . '/_' . $oldhandle . '.json.bak', $newpath . '/_' . $newhandle . '.json.bak');
+		@rename($newpath . '/_' . $oldhandle . '.html', $newpath . '/_' . $newhandle . '.html');
+		@rename($newpath . '/' . $oldhandle . '.css', $newpath . '/' . $newhandle . '.css');
+		@rename($newpath . '/' . $oldhandle . '.js', $newpath . '/' . $newhandle . '.js');
 	}
 }

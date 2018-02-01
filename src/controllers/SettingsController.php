@@ -7,8 +7,10 @@
 namespace charliedev\blockonomicon\controllers;
 
 use charliedev\blockonomicon\Blockonomicon;
+use charliedev\blockonomicon\models\StoredBlock;
 
 use Craft;
+use craft\helpers\Json;
 use craft\web\Controller;
 
 use yii\web\Response;
@@ -38,7 +40,7 @@ class SettingsController extends Controller
 		$blocks = Blockonomicon::getInstance()->blocks->getBlocks(true); // All installed blocks, forced to refresh to the absolute newest information.
 
 		return $this->renderTemplate('blockonomicon/blocks/_index', [
-			'matrixId' => null,
+			'matrixid' => null,
 			'fields' => $matrices,
 			'blocks' => $blocks,
 		]);
@@ -47,38 +49,48 @@ class SettingsController extends Controller
 	/**
 	 * Renders the individual block editing panel.
 	 */
-	public function actionEditBlock(string $blockHandle): Response
+	public function actionEditBlock(string $blockhandle = null, StoredBlock $block = null): Response
 	{
-		$blocks = Blockonomicon::getInstance()->blocks->getBlocks(true); // All installed blocks.
+		// No block provided, use the handle instead.
+		if ($block === null) {
+			$blocks = Blockonomicon::getInstance()->blocks->getBlocks(true); // All installed blocks.
 
-		// Make sure the block handle provided is for an actual block.
-		if (!isset($blocks[$blockHandle])) {
-			throw new \yii\web\NotFoundHttpException;
+			// Make sure the block handle provided is for an actual block.
+			if (!isset($blocks[$blockhandle])) {
+				throw new \yii\web\NotFoundHttpException;
+			}
+
+			// Create the block model to use.
+			$block = new StoredBlock();
+			$block->handle = $blocks[$blockhandle]['handle'];
+			$block->name = $blocks[$blockhandle]['name'];
+			$block->description = $blocks[$blockhandle]['description'];
+			$block->fields = $blocks[$blockhandle]['fields'];
 		}
 
 		$matrices = Blockonomicon::getInstance()->blocks->getMatrixFields(); // All matrix fields installed in Craft.
 
 		return $this->renderTemplate('blockonomicon/blocks/_edit', [
-			'matrixId' => null,
+			'matrixid' => null,
 			'fields' => $matrices,
-			'block' => $blocks[$blockHandle],
+			'block' => $block,
 		]);
 	}
 
 	/**
 	 * Renders the Matrix block editor.
 	 */
-	public function actionEditMatrix(int $matrixId): Response
+	public function actionEditMatrix(int $matrixid): Response
 	{
 		$matrices = Blockonomicon::getInstance()->blocks->getMatrixFields(); // All matrix fields installed in Craft.
 
 		// Make sure the field ID provided is for an actual matrix.
-		if (!isset($matrices[$matrixId])) {
+		if (!isset($matrices[$matrixid])) {
 			throw new \yii\web\NotFoundHttpException;
 		}
 
 		$allblocks = Blockonomicon::getInstance()->blocks->getBlocks(true); // All installed blocks.
-		$matrix = $matrices[$matrixId]; // The currently edited Matrix.
+		$matrix = $matrices[$matrixid]; // The currently edited Matrix.
 		$matrixblocks = $matrix->getBlockTypes(); // Blocks attached to the matrix.
 		$blocks = []; // Set of block information to render for the matrix being edited.
 
@@ -127,11 +139,29 @@ class SettingsController extends Controller
 		]);
 
 		return $this->renderTemplate('blockonomicon/blocks/_matrix', [
-			'matrixId' => $matrixId,
+			'matrixid' => $matrixid,
 			'fields' => $matrices,
 			'matrix' => $matrix,
 			'blocks' => $blocks,
 		]);
+	}
+
+	/**
+	 * Renders the Blockonomicon global settings panel.
+	 */
+	public function actionGlobal(): Response
+	{
+		return $this->renderTemplate('blockonomicon/_settings', [
+			'settings' => Blockonomicon::getInstance()->getSettings(),
+		]);
+	}
+
+	/**
+	 * Renders the Blockonomicon documentation panel.
+	 */
+	public function actionDocumentation(): Response
+	{
+		return $this->renderTemplate('blockonomicon/_documentation');
 	}
 
 	/**
@@ -235,6 +265,8 @@ class SettingsController extends Controller
 	 */
 	public function actionDeleteBlock(): Response
 	{
+		$this->requirePostRequest();
+
 		// Retrieve the ID of the block to export.
 		$blockid = Craft::$app->getRequest()->getRequiredBodyParam('block');
 
@@ -250,20 +282,57 @@ class SettingsController extends Controller
 	}
 
 	/**
-	 * Renders the Blockonomicon global settings panel.
+	 * Updates block information saved to the block file.
 	 */
-	public function actionGlobal(): Response
+	public function actionSaveBlock()
 	{
-		return $this->renderTemplate('blockonomicon/_settings', [
-			'settings' => Blockonomicon::getInstance()->getSettings(),
-		]);
-	}
+		$this->requirePostRequest();
 
-	/**
-	 * Renders the Blockonomicon documentation panel.
-	 */
-	public function actionDocumentation(): Response
-	{
-		return $this->renderTemplate('blockonomicon/_documentation');
+		$name = Craft::$app->getRequest()->getRequiredBodyParam('name');
+		$oldhandle = Craft::$app->getRequest()->getRequiredBodyParam('oldhandle');
+		$handle = Craft::$app->getRequest()->getRequiredBodyParam('handle');
+		$description = Craft::$app->getRequest()->getBodyParam('description');
+		if (empty($description)) {
+			$description = '';
+		}
+
+		// Find the block being edited.
+		$block = Blockonomicon::getInstance()->blocks->getBlocks();
+		if (!isset($block[$oldhandle])) {
+			return $this->asErrorJson(Craft::t('blockonomicon', 'Block {id} does not exist.', ['id' => $oldhandle]));
+		}
+		$block = $block[$oldhandle];
+
+		// Validate the block settings.
+		$blockmodel = new StoredBlock();
+		$blockmodel->name = $name;
+		$blockmodel->oldhandle = $oldhandle;
+		$blockmodel->handle = $handle;
+		$blockmodel->description = $description;
+		$blockmodel->fields = $block['fields'];
+
+		if (!$blockmodel->validate()) {
+
+			Craft::$app->getSession()->setError(Craft::t('blockonomicon', 'Couldn’t save block.'));
+
+			Craft::$app->getUrlManager()->setRouteParams([
+				'block' => $blockmodel
+			]);
+			return null;
+		}
+		
+		// Update block properties.
+		$block['name'] = $name;
+		$block['handle'] = $handle;
+		$block['description'] = $description;
+		
+		if ($oldhandle != $handle) {
+			Blockonomicon::getInstance()->blocks->changeBlockHandle($oldhandle, $handle);
+		}
+		Blockonomicon::getInstance()->blocks->saveBlockData($block);
+
+		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Block saved.'));
+
+		return $this->redirectToPostedUrl();
 	}
 }

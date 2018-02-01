@@ -38,12 +38,6 @@ class Blockonomicon extends Plugin
 	public const EVENT_REGISTER_FIELD_SETTING_LOAD_HANDLERS = 'registerFieldSettingLoadHandlers';
 
 	/**
-	 * @event RegisterFieldSettingConstructHandlersEvent Register construct handlers on this event.
-	 * @see [[charliedev\blockonomicon\events\RegisterFieldSettingConstructHandlersEvent]]
-	 */
-	public const EVENT_REGISTER_FIELD_SETTING_CONSTRUCT_HANDLERS = 'registerFieldSettingConstructHandlers';
-
-	/**
 	 * @inheritdoc
 	 * @see craft\base\Plugin
 	 */
@@ -77,8 +71,8 @@ class Blockonomicon extends Plugin
 			UrlManager::EVENT_REGISTER_CP_URL_RULES,
 			function(RegisterUrlRulesEvent $event) {
 				$event->rules['blockonomicon/blocks'] = 'blockonomicon/settings/blocks-overview';
-				$event->rules['blockonomicon/blocks/<blockHandle:{handle}>'] = 'blockonomicon/settings/edit-block';
-				$event->rules['blockonomicon/matrix/<matrixId:\d+>'] = 'blockonomicon/settings/edit-matrix';
+				$event->rules['blockonomicon/blocks/<blockhandle:{handle}>'] = 'blockonomicon/settings/edit-block';
+				$event->rules['blockonomicon/matrix/<matrixid:\d+>'] = 'blockonomicon/settings/edit-matrix';
 				$event->rules['blockonomicon/settings'] = 'blockonomicon/settings/global';
 				$event->rules['blockonomicon/documentation'] = 'blockonomicon/settings/documentation';
 			}

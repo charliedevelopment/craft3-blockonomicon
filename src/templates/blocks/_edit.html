@@ -1,6 +1,8 @@
 {% extends '_layouts/cp' %}
 {# Editor/inspector for individual block configuration. #}
 
+{% import '_includes/forms' as forms %}
+
 {% set blockName = block.name | t('site') %}
 
 {% set title = blockName %}
@@ -13,5 +15,68 @@
 ] %}
 
 {% block content %}
-	<p>Block Editor for {{ blockName }}</p>
+	<input type="hidden" name="action" value="blockonomicon/settings/save-block">
+	{{ redirectInput('blockonomicon/blocks') }}
+
+	<input type="hidden" name="oldhandle" value="{{ block.handle }}">
+
+	{{ forms.textField({
+		label: 'Name' | t('app'),
+		instructions: 'The name of the block.' | t('blockonomicon'),
+		id: 'name',
+		name: 'name',
+		value: block.name,
+		errors: block.getErrors('name'),
+		required: true,
+		translatable: true,
+		first: true,
+		autofocus: true,
+	}) }}
+
+	{{ forms.textField({
+		label: 'Handle' | t('app'),
+		instructions: 'Internal handle used by the block, tied to the file names of associated export files.' | t('blockonomicon'),
+		id: 'handle',
+		class: 'code',
+		name: 'handle',
+		value: block.handle,
+		errors: block.getErrors('handle'),
+		required: true,
+	}) }}
+
+	{{ forms.textareaField({
+        label: 'Description' | t('app'),
+        instructions: 'Long description used for this block.' | t('blockonomicon'),
+        id: 'description',
+        class: 'nicetext',
+        name: 'description',
+		value: block.description ?? '',
+		errors: block.getErrors('description'),
+        translatable: true,
+	}) }}
+
+	{% set configurator %}
+	<div class="matrix-configurator">
+		<div class="mc-sidebar" style="position: relative;">
+			<div class="col-inner-container">
+				<div class="heading"><h5>{{ 'Field List' | t('blockonomicon') }}</h5></div>
+				{% for field in block.fields %}
+					<div class="matrixconfigitem mci-field">
+						<div class="name{% if field.required %} required{% endif %}">
+							{{ field.name }}
+						&nbsp;</div>
+						<div class="handle code">{{ field.handle }}&nbsp;</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	{% endset %}
+
+	{{ forms.field({
+		label: 'Configuration' | t('app'),
+		instructions: 'Configure the fields within this block.' | t('blockonomicon'),
+		name: 'config'
+	}, configurator) }}
+
 {% endblock %}

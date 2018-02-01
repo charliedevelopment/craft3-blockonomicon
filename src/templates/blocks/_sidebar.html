@@ -1,7 +1,7 @@
 <nav>
 	<ul>
 		<li>
-			<a href="{{ url('blockonomicon/blocks') }}"{% if matrixId is null %} class="sel"{% endif %}>
+			<a href="{{ url('blockonomicon/blocks') }}"{% if matrixid is null %} class="sel"{% endif %}>
 				<span class="label">{{ 'Block Overview' | t('blockonomicon') }}</span>
 			</a>
 		</li>
@@ -12,7 +12,7 @@
 		{% endif %}
 		{% for field in fields %}
 			<li>
-				<a href="{{ url('blockonomicon/matrix/' ~ field.id) }}"{% if matrixId == field.id %} class="sel"{% endif %}>
+				<a href="{{ url('blockonomicon/matrix/' ~ field.id) }}"{% if matrixid == field.id %} class="sel"{% endif %}>
 					<span class="label">{{ field.name | t('site') }}</span>
 				</a>
 			</li>
