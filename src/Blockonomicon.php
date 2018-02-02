@@ -70,11 +70,7 @@ class Blockonomicon extends Plugin
 			UrlManager::class,
 			UrlManager::EVENT_REGISTER_CP_URL_RULES,
 			function(RegisterUrlRulesEvent $event) {
-				$event->rules['blockonomicon/blocks'] = 'blockonomicon/settings/blocks-overview';
-				$event->rules['blockonomicon/blocks/<blockhandle:{handle}>'] = 'blockonomicon/settings/edit-block';
-				$event->rules['blockonomicon/matrix/<matrixid:\d+>'] = 'blockonomicon/settings/edit-matrix';
-				$event->rules['blockonomicon/settings'] = 'blockonomicon/settings/global';
-				$event->rules['blockonomicon/documentation'] = 'blockonomicon/settings/documentation';
+				$this->registerCpUrlRules($event);
 			}
 		);
 
@@ -126,9 +122,18 @@ class Blockonomicon extends Plugin
 		return Craft::$app->getView()->renderTemplate('blockonomicon/index');
 	}
 
+	/**
+	 * @inheritdoc
+	 * @see craft\base\Plugin
+	 */
 	public function getCpNavItem()
 	{
+		if (!$this->canUserAccessSettings()) {
+			return null;
+		}
+
 		$item = parent::getCpNavItem();
+
 		$item['subnav'] = [
 			'blocks' => [
 				'label' => Craft::t('blockonomicon', 'Blocks'),
@@ -144,5 +149,37 @@ class Blockonomicon extends Plugin
 			],
 		];
 		return $item;
+	}
+
+	/**
+	 * Checks to see if the user can access the settings panel or not.
+	 */
+	public function canUserAccessSettings(): bool
+	{
+		// Check config for explicitly allowed users, and if it exists, make sure the current user is in that list.
+		$config = Craft::$app->getConfig()->getConfigFromFile('blockonomicon');
+		if (!empty($config['allowedUsers'])
+			&& (Craft::$app->getUser()->getIdentity() == null
+			|| !in_array(Craft::$app->getUser()->getIdentity()->id, $config['allowedUsers'])
+		)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Registers routes for the Craft control panel.
+	 */
+	private function registerCpUrlRules(RegisterUrlRulesEvent $event)
+	{
+		if (!$this->canUserAccessSettings()) {
+			return;
+		}
+
+		$event->rules['blockonomicon/blocks'] = 'blockonomicon/settings/blocks-overview';
+		$event->rules['blockonomicon/blocks/<blockhandle:{handle}>'] = 'blockonomicon/settings/edit-block';
+		$event->rules['blockonomicon/matrix/<matrixid:\d+>'] = 'blockonomicon/settings/edit-matrix';
+		$event->rules['blockonomicon/settings'] = 'blockonomicon/settings/global';
+		$event->rules['blockonomicon/documentation'] = 'blockonomicon/settings/documentation';
 	}
 }

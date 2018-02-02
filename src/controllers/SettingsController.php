@@ -13,6 +13,7 @@ use Craft;
 use craft\helpers\Json;
 use craft\web\Controller;
 
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
@@ -24,6 +25,10 @@ class SettingsController extends Controller
 	{
 		// All requests require admin privileges.
 		$this->requireAdmin();
+
+		if (!Blockonomicon::getInstance()->canUserAccessSettings()) {
+			throw new ForbiddenHttpException('User is not permitted to perform this action');
+		}
 
 		// Control panel requests will require the Blockonomicon asset bundle.
 		$this->getView()->registerAssetBundle(\charliedev\blockonomicon\assets\BlockonomiconPanelAsset::class);
