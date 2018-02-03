@@ -332,4 +332,40 @@ class Blocks extends Component {
 		@rename($newpath . '/' . $oldhandle . '.css', $newpath . '/' . $newhandle . '.css');
 		@rename($newpath . '/' . $oldhandle . '.js', $newpath . '/' . $newhandle . '.js');
 	}
+
+	/**
+	 * Builds new condensed CSS and JS files from all installed blocks.
+	 * @param bool $force Set to true in order to force rebuilding the files, regardless of their cached state.
+	 */
+	public function condenseFiles($force = false)
+	{
+		$cached = Craft::$app->getCache()->get('blockonomicon_condensed_files'); // Get our caching token.
+
+		if ($force || $cached) { // Cache token still good, rebuild the cached file.
+			return;
+		}
+
+		// Retrieve all cached blocks.
+		$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
+
+		$cssfile = fopen($this->getBlockPath() . '/blocks.css', 'w');
+		$jsfile = fopen($this->getBlockPath() . '/blocks.js', 'w');
+		foreach ($blocks as $handle => $block) { // Combine all block resource files into one.
+			if ($block['state'] != 'good') {
+				continue;
+			}
+			$contents = @file_get_contents($this->getBlockPath() . '/' . $handle . '/' . $handle . '.css');
+			if ($contents !== false) {
+				fwrite($cssfile, $contents . "\n");
+			}
+			$contents = @file_get_contents($this->getBlockPath() . '/' . $handle . '/' . $handle . '.js');
+			if ($contents !== false) {
+				fwrite($jsfile, $contents . "\n");
+			}
+		}
+		fclose($cssfile);
+		fclose($jsfile);
+
+		Craft::$app->getCache()->add('blockonomicon_condensed_files', true, 21600); // Cache for 6 hours (60 seconds * 60 minutes * 6 hours = 21600).
+	}
 }

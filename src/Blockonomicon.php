@@ -6,6 +6,8 @@
 
 namespace charliedev\blockonomicon;
 
+use charliedev\blockonomicon\services\Blocks;
+use charliedev\blockonomicon\services\BlockonomiconVariable;
 use charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent;
 
 use Craft;
@@ -16,6 +18,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use craft\web\View;
+use craft\web\twig\variables\CraftVariable;
 
 use yii\base\Event;
 
@@ -24,7 +27,6 @@ use yii\base\Event;
  */
 class Blockonomicon extends Plugin
 {
-
 	/**
 	 * @event RegisterFieldSettingSaveHandlersEvent Register save handlers on this event.
 	 * @see [[charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent]]
@@ -45,7 +47,7 @@ class Blockonomicon extends Plugin
 	{
 		// Register plugin services.
 		$this->setComponents([
-			'blocks' => \charliedev\blockonomicon\services\Blocks::class,
+			'blocks' => Blocks::class,
 		]);
 
 		/*
@@ -80,6 +82,15 @@ class Blockonomicon extends Plugin
 			View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
 			function(RegisterTemplateRootsEvent $event) {
 				$event->roots['blockonomicon'] = $this->blocks->getBlockPath();
+			}
+		);
+
+		Event::on(
+			CraftVariable::class,
+			CraftVariable::EVENT_INIT,
+			function(Event $event) {
+				$variable = $event->sender;
+				$variable->set('blockonomicon', BlockonomiconVariable::class);
 			}
 		);
 
