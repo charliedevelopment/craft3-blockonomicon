@@ -29,7 +29,7 @@ class BlockonomiconVariable extends Component
 			// Retrieve all cached blocks.
 			$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
 
-			$out = array();
+			$out = [];
 			foreach ($blocks as $handle => $block) { // Build a set of link tags referencing the CSS files of each block.
 				if ($block['state'] != 'good') {
 					continue;
@@ -57,7 +57,7 @@ class BlockonomiconVariable extends Component
 			// Retrieve all cached blocks.
 			$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
 
-			$out = array();
+			$out = [];
 			foreach ($blocks as $handle => $block) { // Build a set of link tags referencing the CSS files of each block.
 				if ($block['state'] != 'good') {
 					continue;
@@ -70,15 +70,34 @@ class BlockonomiconVariable extends Component
 		return Template::raw($out);
 	}
 
-	public function renderMatrix()
+	public function renderMatrix($matrix, $options = [])
 	{
+		// Ensure the matrix provided is either a raw/filtered matrix.
+		if (is_object($matrix) && get_class($matrix) == 'craft\elements\db\MatrixBlockQuery') {
+			$matrix = $matrix->all();
+		}
+		
+		// Or an array of matrix blocks.
+		if (!is_array($matrix)) {
+			return;
+		}
+
+		$out = [];
+		foreach ($matrix as $block) { // Iterate over every block and store the output.
+			if (!is_object($block) || !get_class($block) == 'craft\elements\MatrixBlock') {
+				return;
+			}
+			$out[] = Blockonomicon::getInstance()->blocks->render($block->type, $block);
+		}
+		return Template::raw(implode('', $out));
 	}
 
-	public function renderBlock()
+	public function renderBlock($block, $options = [])
 	{
-	}
+		if (!is_object($block) || !get_class($block) == 'craft\elements\MatrixBlock') {
+			return;
+		}
 
-	public function renderTemplate()
-	{
+		return Template::raw(Blockonomicon::getInstance()->blocks->render($block->type, $block));
 	}
 }

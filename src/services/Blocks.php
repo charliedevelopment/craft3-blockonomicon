@@ -368,4 +368,12 @@ class Blocks extends Component {
 
 		Craft::$app->getCache()->add('blockonomicon_condensed_files', true, 21600); // Cache for 6 hours (60 seconds * 60 minutes * 6 hours = 21600).
 	}
+
+	/**
+	 * Renders a provided template with the given context.
+	 */
+	public function render($template, $data): string
+	{
+		return Craft::$app->getView()->renderTemplate('blockonomicon/' . $template . '/_' . $template . '.html', ['block' => $data]);
+	}
 }
