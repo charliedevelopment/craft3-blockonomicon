@@ -25,8 +25,10 @@ class Install extends Migration
 		// Make sure storage path is created, so it's not having to be checked for creation every call.
 		FileHelper::createDirectory(Blockonomicon::getInstance()->blocks->getBlockPath());
 
-		// Copy the default blockonomicon configuration over to the config directory.
-		@copy(Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/config-example.php', Craft::$app->getConfig()->configDir . '/blockonomicon.php');
+		// Copy the default blockonomicon configuration over to the config directory, if it doesn't exist.
+		if (!file_exists(Craft::$app->getConfig()->configDir . '/blockonomicon.php')) {
+			@copy(Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/config-example.php', Craft::$app->getConfig()->configDir . '/blockonomicon.php');
+		}
     }
 
     /**
@@ -34,10 +36,5 @@ class Install extends Migration
      */
     public function safeDown()
     {
-		// Clean up the storage path.
-		FileHelper::removeDirectory(Blockonomicon::getInstance()->blocks->getStoragePath());
-		
-		// Remove the blockonomicon configuration.
-		@unlink(Craft::$app->getConfig()->configDir . '/blockonomicon.php');
     }
 }
