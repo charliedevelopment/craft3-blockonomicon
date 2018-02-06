@@ -19,7 +19,8 @@ use yii\base\Component;
 /**
  * The main Blockonomicon service.
  */
-class Blocks extends Component {
+class Blocks extends Component
+{
 
 	/**
 	 * Retrieves a list of all Matrix fields.
@@ -29,11 +30,13 @@ class Blocks extends Component {
 	{
 		$fields = Craft::$app->getFields()->getAllFields(); // Start with a list of all fields.
 
-		$fields = array_filter($fields, function($val) { // Remove any field that isn't a Matrix.
+		// Remove any field that isn't a Matrix.
+		$fields = array_filter($fields, function ($val) {
 			return $val instanceof \Craft\Fields\Matrix;
 		});
 
-		$fields = array_reduce($fields, function($in, $val) { // Make sure the fields are keyed by ID.
+		// Make sure the fields are keyed by ID.
+		$fields = array_reduce($fields, function ($in, $val) {
 			$in[$val->id] = $val;
 			return $in;
 		}, []);
@@ -176,7 +179,7 @@ class Blocks extends Component {
 		// Get the existing block types, extract the existing block from the array, if one exists.
 		$blocktypes = $matrix->getBlockTypes();
 		$block = null;
-		$blocktypes = array_reduce($blocktypes, function($in, $val) use($blockhandle) {
+		$blocktypes = array_reduce($blocktypes, function ($in, $val) use ($blockhandle) {
 			if ($val->handle == $blockhandle) {
 				$block = $val;
 			} else {
@@ -191,10 +194,9 @@ class Blocks extends Component {
 		}
 
 		if ($block) { // Block already exists, update fields.
-
 			// Store a list of the block fields, keyed by handle.
 			$blockfields = $block->getFields();
-			$blockfields = array_reduce($blockfields, function($in, $val) {
+			$blockfields = array_reduce($blockfields, function ($in, $val) {
 				$in[$val->handle] = $val;
 				return $in;
 			}, []);
@@ -222,11 +224,9 @@ class Blocks extends Component {
 			}
 
 			$blocktypes = $fields; // Swap out existing block type list with new.
-			
 		} else { // New block, create fields, create block, and attach to matrix.
-
 			// Make sure fields are keyed with 'new' IDs.
-			$blockdata['fields'] = array_reduce($blockdata['fields'], function($in, $val) {
+			$blockdata['fields'] = array_reduce($blockdata['fields'], function ($in, $val) {
 				$in['new' . (count($in) + 1)] = $val;
 				return $in;
 			}, []);

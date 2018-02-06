@@ -23,7 +23,8 @@ class BlockonomiconVariable extends Component
 	 */
 	private $_settings;
 
-	public function init() {
+	public function init()
+	{
 
 		if (Craft::$app->getRequest()->getIsCpRequest()) {
 			$this->_settings = new BlockonomiconSettingsVariable();
@@ -36,7 +37,8 @@ class BlockonomiconVariable extends Component
 	/**
 	 * Retrieves the Twig templating variable used for the backend.
 	 */
-	public function getSettings() {
+	public function getSettings()
+	{
 		return $this->_settings;
 	}
 
@@ -46,12 +48,10 @@ class BlockonomiconVariable extends Component
 	public function renderCss($options = [])
 	{
 		if (isset($options['condense']) && $options['condense'] === true) { // If the files should be condensed into one file.
-			
 			Blockonomicon::getInstance()->blocks->condenseFiles();
 			
 			$out = '<link type="text/css" rel="stylesheet" href="blockonomicon/blocks.css">';
 		} else { // Output individual files.
-
 			// Retrieve all cached blocks.
 			$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
 
@@ -74,12 +74,10 @@ class BlockonomiconVariable extends Component
 	public function renderJs($options = [])
 	{
 		if (isset($options['condense']) && $options['condense'] === true) { // If the files should be condensed into one file.
-			
 			Blockonomicon::getInstance()->blocks->condenseFiles();
 			
 			$out = '<script type="application/javascript" src="blockonomicon/blocks.js"></script>';
 		} else { // Output individual files.
-
 			// Retrieve all cached blocks.
 			$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
 

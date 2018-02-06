@@ -17,24 +17,27 @@ use craft\helpers\FileHelper;
  */
 class Install extends Migration
 {
-    /**
-     * @inheritdoc
-     */
-    public function safeUp()
-    {
+	/**
+	 * @inheritdoc
+	 */
+	public function safeUp()
+	{
 		// Make sure storage path is created, so it's not having to be checked for creation every call.
 		FileHelper::createDirectory(Blockonomicon::getInstance()->blocks->getBlockPath());
 
 		// Copy the default blockonomicon configuration over to the config directory, if it doesn't exist.
 		if (!file_exists(Craft::$app->getConfig()->configDir . '/blockonomicon.php')) {
-			@copy(Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/config-example.php', Craft::$app->getConfig()->configDir . '/blockonomicon.php');
+			@copy(
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/config-example.php',
+				Craft::$app->getConfig()->configDir . '/blockonomicon.php'
+			);
 		}
-    }
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function safeDown()
-    {
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function safeDown()
+	{
+	}
 }

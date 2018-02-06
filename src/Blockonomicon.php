@@ -74,7 +74,7 @@ class Blockonomicon extends Plugin
 		Event::on(
 			UrlManager::class,
 			UrlManager::EVENT_REGISTER_CP_URL_RULES,
-			function(RegisterUrlRulesEvent $event) {
+			function (RegisterUrlRulesEvent $event) {
 				$this->registerCpUrlRules($event);
 			}
 		);
@@ -83,7 +83,7 @@ class Blockonomicon extends Plugin
 		Event::on(
 			View::class,
 			View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
-			function(RegisterTemplateRootsEvent $event) {
+			function (RegisterTemplateRootsEvent $event) {
 				$event->roots['blockonomicon'] = $this->blocks->getBlockPath();
 			}
 		);
@@ -92,7 +92,7 @@ class Blockonomicon extends Plugin
 		Event::on(
 			CraftVariable::class,
 			CraftVariable::EVENT_INIT,
-			function(Event $event) {
+			function (Event $event) {
 				$variable = $event->sender;
 				$variable->set('blockonomicon', BlockonomiconVariable::class);
 			}

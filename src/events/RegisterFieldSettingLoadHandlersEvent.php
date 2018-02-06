@@ -10,7 +10,8 @@ use yii\base\Event;
 
 /**
  * Event sent to gather conversion functions for field settings.
- * Load handlers are registered to allow additional modifications field settings arrays for existing fields before a field object is constructed.
+ * Load handlers are registered to allow additional modifications field settings
+ * arrays for existing fields before a field object is constructed.
  */
 class RegisterFieldSettingLoadHandlersEvent extends Event
 {

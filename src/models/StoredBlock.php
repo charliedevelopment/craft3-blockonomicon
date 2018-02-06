@@ -61,7 +61,7 @@ class StoredBlock extends Model
 			[['handle'], HandleValidator::class],
 			[['handle'], 'validateHandleConflicts'],
 			[['name', 'handle'], 'required'],
-            [['name', 'handle'], 'string', 'max' => 255],
+			[['name', 'handle'], 'string', 'max' => 255],
 		];
 	}
 

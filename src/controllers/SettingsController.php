@@ -317,7 +317,6 @@ class SettingsController extends Controller
 		$blockmodel->fields = $block['fields'];
 
 		if (!$blockmodel->validate()) {
-
 			Craft::$app->getSession()->setError(Craft::t('blockonomicon', 'Couldn’t save block.'));
 
 			Craft::$app->getUrlManager()->setRouteParams([
