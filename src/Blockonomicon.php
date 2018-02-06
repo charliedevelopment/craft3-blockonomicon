@@ -8,6 +8,7 @@ namespace charliedev\blockonomicon;
 
 use charliedev\blockonomicon\services\Blocks;
 use charliedev\blockonomicon\services\BlockonomiconVariable;
+use charliedev\blockonomicon\services\BlockonomiconSettingsVariable;
 use charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent;
 
 use Craft;
@@ -38,6 +39,8 @@ class Blockonomicon extends Plugin
 	 * @see [[charliedev\blockonomicon\events\RegisterFieldSettingLoadHandlersEvent]]
 	 */
 	public const EVENT_REGISTER_FIELD_SETTING_LOAD_HANDLERS = 'registerFieldSettingLoadHandlers';
+
+	private $_config;
 
 	/**
 	 * @inheritdoc
@@ -85,6 +88,7 @@ class Blockonomicon extends Plugin
 			}
 		);
 
+		// Add Blockonomicon to the craft object available via Twig.
 		Event::on(
 			CraftVariable::class,
 			CraftVariable::EVENT_INIT,
@@ -164,18 +168,35 @@ class Blockonomicon extends Plugin
 
 	/**
 	 * Checks to see if the user can access the settings panel or not.
+	 * @return bool True if the user is allowed to access the settings, false if not.
 	 */
 	public function canUserAccessSettings(): bool
 	{
 		// Check config for explicitly allowed users, and if it exists, make sure the current user is in that list.
-		$config = Craft::$app->getConfig()->getConfigFromFile('blockonomicon');
-		if (!empty($config['allowedUsers'])
+		$allowedusers = $this->getConfig('allowedUsers');
+		if ($allowedusers != null
 			&& (Craft::$app->getUser()->getIdentity() == null
-			|| !in_array(Craft::$app->getUser()->getIdentity()->id, $config['allowedUsers'])
+			|| !in_array(Craft::$app->getUser()->getIdentity()->id, $allowedusers)
 		)) {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Retrieves a raw Blockonomicon configuration value.
+	 * @param string $value The key of the value to retrieve.
+	 * @return mixed The value stored, or null if no value exists.
+	 */
+	public function getConfig($value)
+	{
+		if ($this->_config == null) {
+			$this->_config = Craft::$app->getConfig()->getConfigFromFile('blockonomicon');
+		}
+		if (!empty($this->_config[$value])) {
+			return $this->_config[$value];
+		}
+		return null;
 	}
 
 	/**

@@ -7,13 +7,39 @@
 namespace charliedev\blockonomicon\services;
 
 use charliedev\blockonomicon\Blockonomicon;
+use charliedev\blockonomicon\services\BlockonomiconSettingsVariable;
 
+use Craft;
 use craft\helpers\Template;
+use craft\helpers\Component as ComponentHelper;
 
 use yii\base\Component;
 
 class BlockonomiconVariable extends Component
 {
+	/**
+	 * Used to store the BlockonomiconSettingsVariable component that is used on the
+	 * backend to provide additional Twig functionality.
+	 */
+	private $_settings;
+
+	public function init() {
+
+		if (Craft::$app->getRequest()->getIsCpRequest()) {
+			$this->_settings = new BlockonomiconSettingsVariable();
+			$this->_settings->init();
+		}
+
+		parent::init();
+	}
+
+	/**
+	 * Retrieves the Twig templating variable used for the backend.
+	 */
+	public function getSettings() {
+		return $this->_settings;
+	}
+
 	/**
 	 * Renders `link` tags referencing the stylesheets for all loaded blocks.
 	 */

@@ -7,5 +7,37 @@
 ] %}
 
 {% block content %}
-	<p>Blockonomicon Settings</p>
+	<div class="readable">
+		<h2>Configuration Settings</h2>
+
+		<p>See the Blockonomicon configuration stored in the <code>settings/blockonomicon.php</code> file.</p>
+
+		<table class="data fullwidth fixed-layout">
+			<tbody>
+				{% set allowedusers = craft.blockonomicon.settings.getAllowedUsers() %}
+				<tr>
+					<th class="light">User Access Restrictions</th>
+					{% if allowedusers | length %}
+						<td>Enabled</td>
+					{% else %}
+						<td>Disabled</td>
+					{% endif %}
+				</tr>
+				{% if allowedusers | length %}
+					<tr>
+						<th class="light" rowspan="{{ allowedusers | length }}">Allowed Users</th>
+						{% for user in craft.users.id(allowedusers) %}
+							<td>{{ user.name }}</td>
+							{% if not loop.last %}
+					</tr><tr><td class="hidden"></td>{# Otherwise the rowspan causes some styling conflcits with Craft's built in style. #}
+							{% endif %}
+						{% endfor%}
+				{% endif %}
+				<tr>
+					<th class="light">Block Storage Path</th>
+					<td>{{ craft.blockonomicon.settings.getBlockPath() }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 {% endblock %}
