@@ -20,4 +20,5 @@ return [
 	'Could not write to block settings file.' => 'Could not write to block settings file.',
 	'Block exported.' => 'Block exported.',
 	'Block imported.' => 'Block imported.',
+	'Minified files rebuilt.' => 'Minified files rebuilt.',
 ];

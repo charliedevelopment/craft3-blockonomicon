@@ -339,4 +339,16 @@ class SettingsController extends Controller
 
 		return $this->redirectToPostedUrl();
 	}
+
+	/**
+	 * Forces
+	 */
+	public function actionRebuildFiles()
+	{
+		$this->requirePostRequest();
+
+		Blockonomicon::getInstance()->blocks->condenseFiles(true);
+
+		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Minified files rebuilt.')]);
+	}
 }
