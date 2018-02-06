@@ -56,7 +56,12 @@ class Blocks extends Component {
 	 */
 	public function getBlockPath(): string
 	{
-		return $this->getStoragePath() . '/blocks';
+		$config = Craft::$app->getConfig()->getConfigFromFile('blockonomicon');
+		if (!empty($config['blockStorage'])) {
+			return $config['blockStorage'];
+		} else {
+			return $this->getStoragePath() . '/blocks';
+		}
 	}
 
 	/**
