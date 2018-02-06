@@ -26,7 +26,7 @@
 				{% if allowedusers | length %}
 					<tr>
 						<th class="light" rowspan="{{ allowedusers | length }}">Allowed Users</th>
-						{% for user in craft.users.id(allowedusers) %}
+						{% for user in craft.users.id(allowedusers).all() %}
 							<td>{{ user.name }}</td>
 							{% if not loop.last %}
 					</tr><tr><td class="hidden"></td>{# Otherwise the rowspan causes some styling conflcits with Craft's built in style. #}
