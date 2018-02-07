@@ -39,7 +39,13 @@
 						{% endif %}
 						{{ block.name }}</td>
 					<td><code>{{ block.handle }}</code></td>
-					<td>{{ block.description }}</td>
+					<td>
+						{% if block.description is defined and block.description %}
+							{{ block.description }}
+						{% else %}
+							-
+						{% endif %}
+					</td>
 					<td>{{ block.fields }}</td>
 					<td>
 						<span class="buttons">
