@@ -7,5 +7,37 @@
 ] %}
 
 {% block content %}
-	<p>Documentation</p>
+	<div class="readable" style="max-width: 800px; margin: auto;">
+		<h2>Overview</h2>
+		<p>Blockonomicon enhances Craft's own matrix fields with a number of features:</p>
+		<ul>
+			<li>Matrix blocks can be exported to a bundle of HTML, CSS, JS, and configuration files. These bundles allow a block to have a consistent layout, appearance, and behavior on the frontend of a Craft site.</li>
+			<li>These bundles can be imported into other matrix fields without having to manually edit each individual field.</li>
+			<li>Bundles can be downloaded and reused across craft deployments.</li>
+			<li>Optional ease of use functions for templates to allow rendering matrix blocks by their associated HTML in a single command.</li>
+			<li>The ability to sort blocks alphabetically with a single click.</li>
+			<li>Data is still stored in a Craft Matrix field. You can choose to uninstall Blockonomicon at any time without losing access to your data.</li>
+		</ul>
+		<h2>What are Blocks?</h2>
+		<p>If you are familiar with Craft, you have no doubt seen the Matrix field in action. Each of its repeatable sets of fields is called a block. You can think of Blockonomicon's blocks as one and the same, with a few extensions.</p>
+		<p>A block in Blockonomicon may not be part of any particular matrix. A block that has been saved to a set of template and configuration files are simply exported blocks, and not tied to any one matrix field.</p>
+		<h2>Using Blockonomicon</h2>
+		<h3>Exporting and Importing</h3>
+		<p>Blockonomicon's strongest feature is its ability to export and import block configurations. To do this, go to the <em>Blocks</em> subsection of the Blockonomicon control panel. From here you can see the <em>block overview</em>, listing blocks that have been exported and matrix fields that can be edited.</p>
+		<p>Selecting a matrix will shows the <em>matrix editor</em> containing a list of both the blocks already attached to the matrix and blocks that can be imported. In the matrix editor, blocks can be freely reordered, new ones may be imported into the matrix, and existing ones may be exported.</p>
+		<p>From the <em>block overview</em>, clicking a block's <span data-icon="edit" title="Edit block"></a> icon will bring you to the <em>block editor</em>. Here a block's name, handle, and description can be modified. Fields attached to the block are also shown here for quick reference.</p>
+		<h3>Bundles and Templating</h3>
+		<p>By default, blocks are saved to Craft's own <code>storage</code> folder, though this setting can be changed (see <em>Advanced Settings</em> below). These bundles provide not only the block's field configuration (in a <em>handle</em>.json file), but also a set of HTML, CSS, and JS that may be reused alongside each block. When a block is first exported, placeholder files for these resources are created.</p>
+		<p>To use these resources in frontend templates, there are a few convenience methods you can use.</p>
+		<p>For example, if you have a matrix field as part of your current entry called <code>myMatrixField</code>, you could render each matrix block in order, using its own bundled HTML template, with the following Twig tag:</p>
+		<code><pre class="indent">{{ '{{ craft.blockonomicon.renderMatrix(entry.myMatrixField) }}' }}</pre></code>
+		<p>This will search for templates of exported blocks, based on each block's handle. When these templates are rendered, the <code>block</code> Twig variable is set to that block from the matrix being rendered. This means if your <code>myMatrixField</code> has as <code>header</code> plain text field, you can display it in your block template with the following:</p>
+		<code><pre class="indent">{{ '{{ block.header }}' }}</pre></code>
+		<p>It is possible that your blocks not only have a specific template, but also specific styling and scripting you want to use with it across sites and entire Craft installations. With the included CSS and JS files, these bundles can be isolated and portable. In order to generate the <code>&lt;link&gt;</code> tags for CSS or <code>&lt;script&gt;</code> tags for JS the following Twig can be used:</p>
+		<code><pre class="indent">{{ '{{ craft.blockonomicon.renderCSS(options) }}' }}</pre></code>
+		<code><pre class="indent">{{ '{{ craft.blockonomicon.renderJS(options) }}' }}</pre></code>
+		<p>By default, individual <code>&lt;link&gt;</code> and <code>&lt;script&gt;</code> tags are generated for each block, which can be useful for active development. To merge all of the block style and script files together into single JS or CSS files, pass <code>{condense: true}</code> as the <code>options</code>.</p>
+		<h3>Advanced Settings</h3>
+		<p>Blockonomicon has special configuration settings available by editing the <code>blockonomicon.php</code> file under Craft's <code>config</code> folder. These options are visible within the <em>Settings</em> subsection of the Bloconomicon control panel.</p>
+	</div>
 {% endblock %}
