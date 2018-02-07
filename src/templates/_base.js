@@ -1,3 +1,1 @@
-BNCN.blocks['{{ name | kebab }}'] = function (el) {
-
-}
+// {{ name | kebab }} block JS

@@ -1,8 +1,7 @@
-<div class="module module--{{ name | kebab }}">
+<div class="block block--{{ name | kebab }}">
 
 </div>
-{{ '{#' }}
+{{ '{# ' ~ ('Available Fields' | t('blockonomicon')) ~ ' #}' }}
 {% for field in fields %}
-{{ '{{' }} block.{{ field.handle }} {{ '}}' }}
+{{ '{# {{' }} block.{{ field.handle }} {{ '}} -' }} {{ field.type }} {{ '#}' }}
 {% endfor %}
-{{ '#}' }}
