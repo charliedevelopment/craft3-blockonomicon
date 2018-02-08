@@ -11,16 +11,32 @@ use charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent;
 use charliedev\blockonomicon\events\RegisterFieldSettingLoadHandlersEvent;
 
 use Craft;
+use craft\events\RegisterTemplateRootsEvent;
 use craft\helpers\FileHelper;
 use craft\base\FieldInterface;
+use craft\web\View;
 
 use yii\base\Component;
+use yii\base\Event;
 
 /**
  * The main Blockonomicon service.
  */
 class Blocks extends Component
 {
+	public function init()
+	{
+		// Route template requests for frontend Blockonomicon resoruces.
+		Event::on(
+			View::class,
+			View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
+			function (RegisterTemplateRootsEvent $event) {
+				$event->roots['blockonomicon_storage'] = Blockonomicon::getInstance()->blocks->getStoragePath();
+			}
+		);
+
+		parent::init();
+	}
 
 	/**
 	 * Retrieves a list of all Matrix fields.
@@ -270,7 +286,7 @@ class Blocks extends Component
 			if ($outfile === false) {
 				return Craft::t('blockonomicon', 'Could not write to block settings file.');
 			}
-			if (@fwrite($outfile, Craft::$app->getView()->renderTemplate('blockonomicon/_base.css', $blockdata)) === false) {
+			if (@fwrite($outfile, Craft::$app->getView()->renderTemplate('blockonomicon_storage/base.css', $blockdata)) === false) {
 				return Craft::t('blockonomicon', 'Could not write to block settings file.');
 			}
 			if (@fclose($outfile) === false) {
@@ -282,7 +298,7 @@ class Blocks extends Component
 			if ($outfile === false) {
 				return Craft::t('blockonomicon', 'Could not write to block settings file.');
 			}
-			if (@fwrite($outfile, Craft::$app->getView()->renderTemplate('blockonomicon/_base.js', $blockdata)) === false) {
+			if (@fwrite($outfile, Craft::$app->getView()->renderTemplate('blockonomicon_storage/base.js', $blockdata)) === false) {
 				return Craft::t('blockonomicon', 'Could not write to block settings file.');
 			}
 			if (@fclose($outfile) === false) {
@@ -294,7 +310,7 @@ class Blocks extends Component
 			if ($outfile === false) {
 				return Craft::t('blockonomicon', 'Could not write to block settings file.');
 			}
-			if (@fwrite($outfile, Craft::$app->getView()->renderTemplate('blockonomicon/_base.html', $blockdata)) === false) {
+			if (@fwrite($outfile, Craft::$app->getView()->renderTemplate('blockonomicon_storage/base.html', $blockdata)) === false) {
 				return Craft::t('blockonomicon', 'Could not write to block settings file.');
 			}
 			if (@fclose($outfile) === false) {
