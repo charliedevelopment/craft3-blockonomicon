@@ -22,9 +22,14 @@
 		<p>If you are familiar with Craft, you have no doubt seen the Matrix field in action. Each of its repeatable sets of fields is called a block. You can think of Blockonomicon's blocks as one and the same, with a few extensions.</p>
 		<p>A block in Blockonomicon may not be part of any particular matrix. A block that has been saved to a set of template and configuration files are simply exported blocks, and not tied to any one matrix field.</p>
 		<h2>Using Blockonomicon</h2>
-		<h3>Exporting and Importing</h3>
+		<h3>Block Management</h3>
 		<p>Blockonomicon's strongest feature is its ability to export and import block configurations. To do this, go to the <em>Blocks</em> subsection of the Blockonomicon control panel. From here you can see the <em>block overview</em>, listing blocks that have been exported and matrix fields that can be edited.</p>
 		<p>Selecting a matrix will shows the <em>matrix editor</em> containing a list of both the blocks already attached to the matrix and blocks that can be imported. In the matrix editor, blocks can be freely reordered, new ones may be imported into the matrix, and existing ones may be exported.</p>
+		<h4>Exporting</h4>
+		<p>Exporting a block saves the block's configuration to a file, and additionally creates a bundle of HTML, CSS, and JS files to go along with the block. When exporting a block that already has been exported, the configuration is backed up (as a separate <code>json.bak</code> file), and then the configuration is overwritten. Additional bundle files are not regenerated if they do not exist.</p>
+		<h4>Importing</h4>
+		<p>Importing a block creates a new block on the matrix being edited, using the fields and their respective settings from the configuration file. If being imported over an existing block, Blockonomicon will use each fields' handle to create new fields, update settings for fields that have changed, and delete any fields that no longer exist.</p>
+		<h4>Editing</h4>
 		<p>From the <em>block overview</em>, clicking a block's <span data-icon="edit" title="Edit block"></a> icon will bring you to the <em>block editor</em>. Here a block's name, handle, and description can be modified. Fields attached to the block are also shown here for quick reference.</p>
 		<h3>Bundles and Templating</h3>
 		<p>By default, blocks are saved to Craft's own <code>storage</code> folder, though this setting can be changed (see <em>Advanced Settings</em> below). These bundles provide not only the block's field configuration (in a <em>handle</em>.json file), but also a set of HTML, CSS, and JS that may be reused alongside each block. When a block is first exported, placeholder files for these resources are created.</p>

@@ -59,9 +59,9 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		var handle = $block.find('td:eq(1)').text();
 
 		var message = '';
-		if ($block.data('status') == 'not-loaded') { // First time export.
+		if ($block.data('status') == 'not-loaded') { // First time import.
 			message = 'Are you sure you want to import the {handle} block?';
-		} else if ($block.data('status') == 'saved') { // Export overwrite.
+		} else if ($block.data('status') == 'saved') { // Import overwrite.
 			message = 'Are you sure you want to re-import the {handle} block? You may lose data if fields have changed significantly.';
 		} else {
 			return;
@@ -103,7 +103,7 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		if ($block.data('status') == 'not-saved') { // First time export.
 			message = 'Are you sure you want to save {handle} as a new block?';
 		} else if ($block.data('status') == 'saved') { // Export overwrite.
-			message = 'Are you sure you want to overwrite the {handle} block definition with this new one?';
+			message = 'Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.';
 		} else {
 			return;
 		}
