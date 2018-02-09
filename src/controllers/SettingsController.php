@@ -113,10 +113,11 @@ class SettingsController extends Controller
 
 			if (isset($allblocks[$block->handle])) { // Block has an associated exported counterpart, check for consistency.
 				$blockdata = Blockonomicon::getInstance()->blocks->getBlockData($block);
-				if ($this->assocArrayEqual($blockdata['fields'], $allblocks[$block->handle]['fields'])) {
-					$newblock['status'] = 'saved';
-				} else {
+				if ($blockdata['name'] != $allblocks[$block->handle]['name']
+					|| !$this->assocArrayEqual($blockdata['fields'], $allblocks[$block->handle]['fields'])) {
 					$newblock['status'] = 'desync';
+				} else {
+					$newblock['status'] = 'saved';
 				}
 			} else { // No exported counterpart.
 				$newblock['status'] = 'not-saved';
@@ -366,7 +367,8 @@ class SettingsController extends Controller
 	/**
 	 * Determines if the two arrays are equal in keys and values.
 	 */
-	private function assocArrayEqual($a, $b) {
+	private function assocArrayEqual($a, $b)
+	{
 		if (count($a) != count($b)) { // Different keys, can't be the same.
 			return false;
 		}
