@@ -30,7 +30,9 @@
 				<tr data-status="{{ block.status }}" data-id="{{ block.id }}" data-handle="{{ block.handle }}">
 					<td>
 						<a class="move icon" title="Reorder" role="button"></a>
-						{% if block.status == 'saved' %}
+						{% if block.status == 'desync' %}
+							<a class="status red" title="Out of Sync"></a>
+						{% elseif block.status == 'saved' %}
 							<a class="status green" title="Attached and Saved"></a>
 						{% elseif block.status == 'not-saved' %}
 							<a class="status yellow" title="Not Saved"></a>
@@ -49,7 +51,7 @@
 					<td>{{ block.fields }}</td>
 					<td>
 						<span class="buttons">
-							{% if block.status == 'saved' %}
+							{% if block.status == 'saved' or block.status == 'desync' %}
 								<a class="btn import" role="button">Import</a>
 								<a class="btn export" role="button">Export</a>
 								<a class="btn delete submit" role="button">Delete</a>

@@ -104,14 +104,25 @@ class SettingsController extends Controller
 		$tmp = [];
 		foreach ($matrixblocks as $block) {
 			$tmp[$block->handle] = $block;
-			$blocks[] = [
-				'status' => isset($allblocks[$block->handle]) ? 'saved' : 'not-saved',
-				'name' => $block->name,
-				'handle' => $block->handle,
-				'id' => $block->id,
-				'description' => !empty($allblocks[$block->handle]['description']) ? $allblocks[$block->handle]['description'] : '',
-				'fields' => count($block->getFieldLayout()->getFieldIds()),
-			];
+			$newblock = [];
+			$newblock['name'] = $block->name;
+			$newblock['handle'] = $block->handle;
+			$newblock['id'] = $block->id;
+			$newblock['description'] = !empty($allblocks[$block->handle]['description']) ? $allblocks[$block->handle]['description'] : '';
+			$newblock['fields'] = count($block->getFieldLayout()->getFieldIds());
+
+			if (isset($allblocks[$block->handle])) { // Block has an associated exported counterpart, check for consistency.
+				$blockdata = Blockonomicon::getInstance()->blocks->getBlockData($block);
+				if ($this->assocArrayEqual($blockdata['fields'], $allblocks[$block->handle]['fields'])) {
+					$newblock['status'] = 'saved';
+				} else {
+					$newblock['status'] = 'desync';
+				}
+			} else { // No exported counterpart.
+				$newblock['status'] = 'not-saved';
+			}
+
+			$blocks[] = $newblock;
 		}
 		$matrixblocks = $tmp;
 
@@ -350,5 +361,31 @@ class SettingsController extends Controller
 		Blockonomicon::getInstance()->blocks->condenseFiles(true);
 
 		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Minified files rebuilt.')]);
+	}
+
+	/**
+	 * Determines if the two arrays are equal in keys and values.
+	 */
+	private function assocArrayEqual($a, $b) {
+		if (count($a) != count($b)) { // Different keys, can't be the same.
+			return false;
+		}
+
+		foreach ($a as $key => $value) {
+			if (!array_key_exists($key, $b)) { // Do not share a key, can't be the same.
+				return false;
+			}
+			if (is_array($a[$key]) && is_array($b[$key])) {
+				if (!$this->assocArrayEqual($a[$key], $b[$key])) {
+					return false;
+				}
+			} else {
+				if ($a[$key] !== $b[$key]) { // Different values, can't be the same.
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 }

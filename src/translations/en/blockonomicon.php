@@ -10,6 +10,8 @@ return [
 	'Are you sure you want to save {handle} as a new block?' => 'Are you sure you want to save {handle} as a new block?',
 	'Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.' => 'Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.',
 	'Are you sure you want to delete the {handle} block? This cannot be reversed.' => 'Are you sure you want to delete the {handle} block? This cannot be reversed.',
+	'The current block settings and the definition file do not match! Are you sure you want to import the {handle} block?' => 'The current block settings and the definition file do not match! Are you sure you want to import the {handle} block?',
+	'The current block settings and the definition file do not match! Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.' => 'The current block settings and the definition file do not match! Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.',
 	'Block {id} does not exist.' => 'Block {id} does not exist.',
 	'Matrix {id} does not exist.' => 'Matrix {id} does not exist.',
 	'`order` must be a number.' => '`order` must be a number.',

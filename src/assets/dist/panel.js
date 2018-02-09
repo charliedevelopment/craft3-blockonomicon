@@ -59,7 +59,9 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		var handle = $block.find('td:eq(1)').text();
 
 		var message = '';
-		if ($block.data('status') == 'not-loaded') { // First time import.
+		if ($block.data('status') == 'desync') { // Out of sync import.
+			message = 'The current block settings and the definition file do not match! Are you sure you want to import the {handle} block?';
+		} else if ($block.data('status') == 'not-loaded') { // First time import.
 			message = 'Are you sure you want to import the {handle} block?';
 		} else if ($block.data('status') == 'saved') { // Import overwrite.
 			message = 'Are you sure you want to re-import the {handle} block? You may lose data if fields have changed significantly.';
@@ -100,7 +102,9 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		var handle = $block.find('td:eq(1)').text();
 
 		var message = '';
-		if ($block.data('status') == 'not-saved') { // First time export.
+		if ($block.data('status') == 'desync') { // Out of sync export.
+			message = 'The current block settings and the definition file do not match! Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.';
+		} else if ($block.data('status') == 'not-saved') { // First time export.
 			message = 'Are you sure you want to save {handle} as a new block?';
 		} else if ($block.data('status') == 'saved') { // Export overwrite.
 			message = 'Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.';
@@ -134,7 +138,7 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		var $block = $(event.target).closest('tr');
 		var handle = $block.find('td:eq(1)').text();
 
-		if ($block.data('status') == 'saved' || $block.data('status') == 'not-saved') {
+		if ($block.data('status') == 'saved' || $block.data('status') == 'not-saved' || $block.data('status') == 'desync') {
 			if (confirm(Craft.t('blockonomicon', 'Are you sure you want to delete the {handle} block? This cannot be reversed.', {handle: handle}))) {
 				var data = {
 					block: $block.data('id'),
