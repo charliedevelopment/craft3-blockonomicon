@@ -17,7 +17,7 @@ return [
 	'Attached and Saved' => 'Attached and Saved',
 	'Not Saved' => 'Not Saved',
 	'Not Attached' => 'Not Attached',
-	'Block definition does not match current settings.' => 'Block definition does not match current settings.',
+	'Block definition does not match exported settings.' => 'Block definition does not match exported settings.',
 	'Block {id} does not exist.' => 'Block {id} does not exist.',
 	'Matrix {id} does not exist.' => 'Matrix {id} does not exist.',
 	'`order` must be a number.' => '`order` must be a number.',
