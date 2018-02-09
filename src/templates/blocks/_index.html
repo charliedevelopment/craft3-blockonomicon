@@ -30,7 +30,7 @@
 			<th scope="col">{{ 'Handle' | t('app') }}</th>
 			<th scope="col">{{ 'Description' | t('app') }}</th>
 			<th scope="col">{{ 'Fields' | t('app') }}</th>
-			<th scope="col"><span data-icon="edit" title="Edit"></span></th>
+			<th scope="col"><span data-icon="edit" title="{{ 'Edit block' | t('app') }}"></span></th>
 		</thead>
 		<tbody>
 			{% for handle, block in blocks %}
@@ -46,7 +46,7 @@
 							{% endif %}
 						</td>
 						<td>{{ block.fields | length }}</td>
-						<td><a href="{{ url('blockonomicon/blocks/' ~ handle) }}" data-icon="edit" title="Edit block"></a></td>
+						<td><a href="{{ url('blockonomicon/blocks/' ~ handle) }}" data-icon="edit" title="{{ 'Edit block' | t('blockonomicon') }}"></a></td>
 					{% else %}
 						<td class="error {{ block.state }}"><span data-icon="alert"></span></td>
 						<td><code>{{ handle }}</code></td>

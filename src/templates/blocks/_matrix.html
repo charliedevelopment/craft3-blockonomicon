@@ -29,15 +29,15 @@
 			{% for block in blocks %}
 				<tr data-status="{{ block.status }}" data-id="{{ block.id }}" data-handle="{{ block.handle }}">
 					<td>
-						<a class="move icon" title="Reorder" role="button"></a>
+						<a class="move icon" title="{{ 'Reorder' | t('app') }}" role="button"></a>
 						{% if block.status == 'desync' %}
-							<a class="status red" title="Out of Sync"></a>
+							<span class="status red" title="{{ 'Out of Sync' | t('blockonomicon') }}"></span>
 						{% elseif block.status == 'saved' %}
-							<a class="status green" title="Attached and Saved"></a>
+							<span class="status green" title="{{ 'Attached and Saved' | t('blockonomicon') }}"></span>
 						{% elseif block.status == 'not-saved' %}
-							<a class="status yellow" title="Not Saved"></a>
+							<span class="status yellow" title="{{ 'Not Saved' | t('blockonomicon') }}"></span>
 						{% else %}
-							<a class="status none" title="Not Attached"></a>
+							<span class="status none" title="{{ 'Not Attached' | t('blockonomicon') }}"></span>
 						{% endif %}
 						{{ block.name }}</td>
 					<td><code>{{ block.handle }}</code></td>
