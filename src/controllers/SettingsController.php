@@ -267,7 +267,15 @@ class SettingsController extends Controller
 			return $this->asErrorJson(Craft::t('blockonomicon', 'Block {id} does not exist.', ['id' => $blockid]));
 		}
 
+		// Retrieve ready to save block data.
 		$blockdata = Blockonomicon::getInstance()->blocks->getBlockData($block);
+
+		// Copy over the old description, if one exists.
+		$oldblocks = Blockonomicon::getInstance()->blocks->getBlocks();
+		if (isset($oldblocks[$blockdata['handle']])
+			&& isset($oldblocks[$blockdata['handle']]['description'])) {
+			$blockdata['description'] = $oldblocks[$blockdata['handle']]['description'];
+		}
 
 		$result = Blockonomicon::getInstance()->blocks->saveBlockData($blockdata);
 		if ($result !== true) {
