@@ -48,7 +48,12 @@
 							-
 						{% endif %}
 					</td>
-					<td>{{ block.fields }}</td>
+					<td>
+						{{ block.fields }}
+						{% if block.status == 'desync' %}
+							<span class="error" data-icon="alert" title="{{ 'Block definition does not match current settings.' | t('blockonomicon') }}"></span>
+						{% endif %}
+					</td>
 					<td>
 						<span class="buttons">
 							{% if block.status == 'saved' or block.status == 'desync' %}
