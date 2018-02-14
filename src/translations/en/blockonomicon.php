@@ -29,4 +29,7 @@ return [
 	'Block exported.' => 'Block exported.',
 	'Block imported.' => 'Block imported.',
 	'Minified files rebuilt.' => 'Minified files rebuilt.',
+	'Export' => 'Export',
+	'Import' => 'Import',
+	'Delete' => 'Delete',
 ];
