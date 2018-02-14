@@ -56,18 +56,22 @@
 					</td>
 					<td>
 						<span class="buttons">
+							{% set importButton %}<span class="icon icon-mask"><span data-icon="circleuarr"></span></span> Import{% endset %}
+							{% set exportButton %}<span class="icon icon-mask"><span data-icon="circledarr"></span></span> Export{% endset %}
+							{% set deleteButton %}<span class="icon icon-mask"><span data-icon="trash"></span></span> Delete{% endset %}
+
 							{% if block.status == 'saved' or block.status == 'desync' %}
-								<a class="btn import" role="button">Import</a>
-								<a class="btn export" role="button">Export</a>
-								<a class="btn delete submit" role="button">Delete</a>
+								<a class="btn import" role="button">{{ importButton }}</a>
+								<a class="btn export" role="button">{{ exportButton }}</a>
+								<a class="btn delete submit" role="button">{{ deleteButton }}</a>
 							{% elseif block.status == 'not-saved' %}
-								<a class="btn import disabled" role="button" title="{{ 'Cannot import, no matching block files exist.' | t('blockonomicon') }}">Import</a>
-								<a class="btn export" role="button">Export</a>
-								<a class="btn delete submit" role="button">Delete</a>
+								<a class="btn import disabled" role="button" title="{{ 'Cannot import, no matching block files exist.' | t('blockonomicon') }}">{{ importButton }}</a>
+								<a class="btn export" role="button">{{ exportButton }}</a>
+								<a class="btn delete submit" role="button">{{ deleteButton }}</a>
 							{% else %}
-								<a class="btn import" role="button">Import</a>
-								<a class="btn export disabled" role="button" title="{{ 'Cannot export, block is not attached.' | t('blockonomicon') }}">Export</a>
-								<a class="btn delete submit disabled" role="button" title="{{ 'Cannot delete, block is not attached.' | t('blockonomicon') }}">Delete</a>
+								<a class="btn import" role="button">{{ importButton }}</a>
+								<a class="btn export disabled" role="button" title="{{ 'Cannot export, block is not attached.' | t('blockonomicon') }}">{{ exportButton }}</a>
+								<a class="btn delete submit disabled" role="button" title="{{ 'Cannot delete, block is not attached.' | t('blockonomicon') }}">{{ deleteButton }}</a>
 							{% endif %}
 						</span>
 					</td>
@@ -75,9 +79,9 @@
 			{% endfor %}
 		</tbody>
 	</table>
-	<buttons>
-		<a class="btn quicksort submit">Sort Alphabetically</a>
-	</buttons>
+	<div class="buttons">
+		<a class="btn quicksort"><span class="icon icon-mask"><span data-icon="asc"></span></span> Alphabetize</a>
+	</div>
 {% endblock %}
 
 {% js on ready %}
