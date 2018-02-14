@@ -56,9 +56,9 @@
 					</td>
 					<td>
 						<span class="buttons">
-							{% set importButton %}<span class="icon icon-mask"><span data-icon="circleuarr"></span></span> Import{% endset %}
-							{% set exportButton %}<span class="icon icon-mask"><span data-icon="circledarr"></span></span> Export{% endset %}
-							{% set deleteButton %}<span class="icon icon-mask"><span data-icon="trash"></span></span> Delete{% endset %}
+							{% set importButton %}<span class="icon icon-mask"><span data-icon="circleuarr"></span></span> {{ 'Import' | t('blockonomicon') }}{% endset %}
+							{% set exportButton %}<span class="icon icon-mask"><span data-icon="circledarr"></span></span> {{ 'Export' | t('blockonomicon') }}{% endset %}
+							{% set deleteButton %}<span class="icon icon-mask"><span data-icon="trash"></span></span> {{ 'Delete' | t('blockonomicon') }}{% endset %}
 
 							{% if block.status == 'saved' or block.status == 'desync' %}
 								<a class="btn import" role="button">{{ importButton }}</a>
