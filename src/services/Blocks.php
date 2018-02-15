@@ -362,7 +362,7 @@ class Blocks extends Component
 	{
 		$cached = Craft::$app->getCache()->get('blockonomicon_condensed_files'); // Get our caching token.
 
-		if ($force || $cached) { // Cache token still good, rebuild the cached file.
+		if (!$force && $cached) { // Exit early if an update isn't being forced and the cache already exists.
 			return;
 		}
 
