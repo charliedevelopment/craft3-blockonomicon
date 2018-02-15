@@ -390,7 +390,7 @@ class SettingsController extends Controller
 					return false;
 				}
 			} else {
-				if ($a[$key] !== $b[$key]) { // Different values, can't be the same.
+				if ($a[$key] != $b[$key]) { // Different values, can't be the same.
 					return false;
 				}
 			}
