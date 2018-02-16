@@ -53,6 +53,7 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 	/**
 	 * Run when a block is selected for import.
 	 * On confirmation, imports the given block into the current matrix at the given location.
+	 * Note: If blocks are imported too quickly, they may wind up in a different order on the server side than they are on the client side.
 	 */
 	importBlock: function(event) {
 		var $block = $(event.target).closest('tr');
@@ -153,6 +154,7 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 	deleteBlock: function(event) {
 		var $block = $(event.target).closest('tr');
 		var handle = $block.find('td:eq(1)').text();
+		var _self = this;
 
 		if ($block.data('status') == 'saved' || $block.data('status') == 'not-saved' || $block.data('status') == 'desync') {
 			if (confirm(Craft.t('blockonomicon', 'Are you sure you want to delete the {handle} block? This cannot be reversed.', {handle: handle}))) {
@@ -181,6 +183,7 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 									.addClass('disabled')
 									.attr('title', Craft.t('blockonomicon', 'Cannot delete, block is not attached.'));
 							}
+							_self.updateBlockList();
 						} else {
 							Craft.cp.displayError(response.error);
 						}
