@@ -134,6 +134,7 @@ class Blocks extends Component
 		$blockdata = [
 			'name' => $block->name,
 			'handle' => $block->handle,
+			'version' => 1,
 			'fields' => [],
 		];
 
