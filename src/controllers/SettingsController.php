@@ -153,6 +153,8 @@ class SettingsController extends Controller
 			'Are you sure you want to save {handle} as a new block?',
 			'Are you sure you want to overwrite the {handle} block definition with this new one?',
 			'Are you sure you want to delete the {handle} block? This cannot be reversed.',
+			'Not Attached',
+			'Attached and Saved',
 		]);
 
 		return $this->renderTemplate('blockonomicon/blocks/_matrix', [

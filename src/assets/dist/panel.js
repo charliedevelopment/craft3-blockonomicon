@@ -83,9 +83,18 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 						$block.attr('data-id', response.id);
 						$block.data('status', 'saved');
 						$block.attr('data-status', 'saved');
-						$block.find('td:eq(0) .status').removeClass('none').addClass('green');
-						$block.find('td:eq(4) .buttons .btn.export').removeClass('disabled').attr('title', '');
-						$block.find('td:eq(4) .buttons .btn.delete').removeClass('disabled').attr('title', '');
+						$block.find('td:eq(0) .status')
+							.removeClass('none')
+							.removeClass('red')
+							.addClass('green')
+							.attr('title', Craft.t('blockonomicon', 'Attached and Saved'));
+						$block.find('td:eq(3) .error').remove();
+						$block.find('td:eq(4) .buttons .btn.export')
+							.removeClass('disabled')
+							.attr('title', '');
+						$block.find('td:eq(4) .buttons .btn.delete')
+							.removeClass('disabled')
+							.attr('title', '');
 					} else {
 						Craft.cp.displayError(response.error);
 					}
@@ -121,8 +130,15 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 						Craft.cp.displayNotice(response.message);
 						$block.data('status', 'saved');
 						$block.attr('data-status', 'saved');
-						$block.find('td:eq(0) .status').removeClass('yellow').addClass('green');
-						$block.find('td:eq(4) .buttons .btn.import').removeClass('disabled').attr('title', '');
+						$block.find('td:eq(0) .status')
+							.removeClass('yellow')
+							.removeClass('red')
+							.addClass('green')
+							.attr('title', Craft.t('blockonomicon', 'Attached and Saved'));
+						$block.find('td:eq(3) .error').remove();
+						$block.find('td:eq(4) .buttons .btn.import')
+							.removeClass('disabled')
+							.attr('title', '');
 					} else {
 						Craft.cp.displayError(response.error);
 					}
@@ -152,9 +168,18 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 							} else {
 								$block.data('status', 'not-loaded');
 								$block.attr('data-status', 'not-loaded');
-								$block.find('td:eq(0) .status').removeClass('green').addClass('none');
-								$block.find('td:eq(4) .buttons .btn.export').addClass('disabled').attr('title', Craft.t('blockonomicon', 'Cannot export, block is not attached.'));
-								$block.find('td:eq(4) .buttons .btn.delete').addClass('disabled').attr('title', Craft.t('blockonomicon', 'Cannot delete, block is not attached.'));
+								$block.find('td:eq(0) .status')
+									.removeClass('green')
+									.removeClass('red')
+									.addClass('none')
+									.attr('title', Craft.t('blockonomicon', 'Not Attached'));
+								$block.find('td:eq(3) .error').remove();
+								$block.find('td:eq(4) .buttons .btn.export')
+									.addClass('disabled')
+									.attr('title', Craft.t('blockonomicon', 'Cannot export, block is not attached.'));
+								$block.find('td:eq(4) .buttons .btn.delete')
+									.addClass('disabled')
+									.attr('title', Craft.t('blockonomicon', 'Cannot delete, block is not attached.'));
 							}
 						} else {
 							Craft.cp.displayError(response.error);
