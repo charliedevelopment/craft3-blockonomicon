@@ -148,13 +148,21 @@ class SettingsController extends Controller
 		}
 
 		$this->getView()->registerTranslations('blockonomicon', [
+			'The current block settings and the definition file do not match! Are you sure you want to import the {handle} block?',
 			'Are you sure you want to import the {handle} block?',
 			'Are you sure you want to re-import the {handle} block? You may lose data if fields have changed significantly.',
+
+			'The current block settings and the definition file do not match! Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.',
 			'Are you sure you want to save {handle} as a new block?',
-			'Are you sure you want to overwrite the {handle} block definition with this new one?',
+			'Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.',
+
 			'Are you sure you want to delete the {handle} block? This cannot be reversed.',
+
 			'Not Attached',
 			'Attached and Saved',
+
+			'Cannot export, block is not attached.',
+			'Cannot delete, block is not attached.',
 		]);
 
 		return $this->renderTemplate('blockonomicon/blocks/_matrix', [
