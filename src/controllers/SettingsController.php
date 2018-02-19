@@ -236,7 +236,7 @@ class SettingsController extends Controller
 			return $this->asErrorJson(Craft::t('blockonomicon', 'Matrix {id} does not exist.', ['id' => $matrixid]));
 		}
 
-		// Retrieve the handle of the block to import..
+		// Retrieve the handle of the block to import.
 		$blockhandle = Craft::$app->getRequest()->getRequiredBodyParam('handle');
 
 		// Retrieve the block definition.
@@ -296,7 +296,7 @@ class SettingsController extends Controller
 	}
 
 	/**
-	 * Deletes a block.
+	 * Deletes a block definition, removing it from its matrix.
 	 */
 	public function actionDeleteBlock(): Response
 	{
@@ -371,7 +371,7 @@ class SettingsController extends Controller
 	}
 
 	/**
-	 * Forces
+	 * Forces minified/concatenated block styles and scripts to be recreated.
 	 */
 	public function actionRebuildFiles()
 	{
