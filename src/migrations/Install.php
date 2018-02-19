@@ -28,7 +28,7 @@ class Install extends Migration
 		// Copy the default blockonomicon configuration over to the config directory, if it doesn't exist.
 		if (!file_exists(Craft::$app->getConfig()->configDir . '/blockonomicon.php')) {
 			@copy(
-				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/resources/config-example.php',
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/config-example.php',
 				Craft::$app->getConfig()->configDir . '/blockonomicon.php'
 			);
 		}
@@ -36,20 +36,20 @@ class Install extends Migration
 		// Copy the base resource templates for block exporting, if they don't already exist.
 		if (!file_exists(Blockonomicon::getInstance()->blocks->getStoragePath() . '/base.html')) {
 			@copy(
-				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/resources/base.html',
-				Blockonomicon::getInstance()->blocks->getBlockPath() . '/base.html'
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/base.html',
+				Blockonomicon::getInstance()->blocks->getStoragePath() . '/base.html'
 			);
 		}
 		if (!file_exists(Blockonomicon::getInstance()->blocks->getStoragePath() . '/base.css')) {
 			@copy(
-				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/resources/base.css',
-				Blockonomicon::getInstance()->blocks->getBlockPath() . '/base.css'
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/base.css',
+				Blockonomicon::getInstance()->blocks->getStoragePath() . '/base.css'
 			);
 		}
 		if (!file_exists(Blockonomicon::getInstance()->blocks->getStoragePath() . '/base.js')) {
 			@copy(
-				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/resources/base.js',
-				Blockonomicon::getInstance()->blocks->getBlockPath() . '/base.js'
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/base.js',
+				Blockonomicon::getInstance()->blocks->getStoragePath() . '/base.js'
 			);
 		}
 	}
