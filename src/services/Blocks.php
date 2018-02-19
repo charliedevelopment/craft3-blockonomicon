@@ -196,7 +196,7 @@ class Blocks extends Component
 		// Get the existing block types, extract the existing block from the array, if one exists.
 		$blocktypes = $matrix->getBlockTypes();
 		$block = null;
-		$blocktypes = array_reduce($blocktypes, function ($in, $val) use ($blockhandle) {
+		$blocktypes = array_reduce($blocktypes, function ($in, $val) use ($blockhandle, &$block) {
 			if ($val->handle == $blockhandle) {
 				$block = $val;
 			} else {
@@ -210,7 +210,7 @@ class Blocks extends Component
 			return '`order` out of range.';
 		}
 
-		if ($block) { // Block already exists, update fields.
+		if ($block != null) { // Block already exists, update fields.
 			// Store a list of the block fields, keyed by handle.
 			$blockfields = $block->getFields();
 			$blockfields = array_reduce($blockfields, function ($in, $val) {
@@ -224,23 +224,19 @@ class Blocks extends Component
 				if (isset($blockfields[$field['handle']])) { // Existing field, key by field id, but otherwise update in-place.
 					$currentfield = $blockfields[$field['handle']];
 
-					// Allow additional transformations to be made to settings for existing fields.
-					$event = new RegisterFieldSettingLoadHandlersEvent();
-					Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_LOAD_HANDLERS, $event); // Gather handlers.
-
-					// Find a handler for this field, if one exists, and run it.
-					$fieldclass = get_class($currentfield);
-					if (isset($event->handlers[$fieldclass])) {
-						$event->handlers[$fieldclass]($currentfield, $field);
-					}
-
 					$fields[$currentfield->id] = $field;
 				} else { // New field.
 					$fields['new' . count($fields)] = $field; // Add field with new ID index.
 				}
 			}
 
-			$blocktypes = $fields; // Swap out existing block type list with new.
+			// Swap out existing field data with updated field set.
+			$blockdata['fields'] = $fields;
+
+			// Swap out the existing block with the new definition.
+			$blocktypes = array_slice($blocktypes, 0, $order, true)
+				+ array($block->id => $blockdata)
+				+ array_slice($blocktypes, $order, null, true);
 		} else { // New block, create fields, create block, and attach to matrix.
 			// Make sure fields are keyed with 'new' IDs.
 			$blockdata['fields'] = array_reduce($blockdata['fields'], function ($in, $val) {
