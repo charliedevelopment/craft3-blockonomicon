@@ -35,6 +35,13 @@ class Blockonomicon extends Plugin
 	public const EVENT_SAVE_FIELD = 'saveField';
 
 	/**
+	 * @event RenderImportControlsEvent Display additional controls to the user for
+	 * blocks that can be imported.
+	 * @see [[charliedev\blockonomicon\events\RenderImportControlsEvent]]
+	 */
+	public const EVENT_RENDER_IMPORT_CONTROLS = 'renderImportControls';
+
+	/**
 	 * @event LoadFieldEvent Update and combine field settings before being imported.
 	 * @see [[charliedev\blockonomicon\events\LoadFieldEvent]]
 	 */

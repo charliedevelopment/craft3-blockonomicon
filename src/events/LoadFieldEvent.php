@@ -15,7 +15,7 @@ use yii\base\Event;
 class LoadFieldEvent extends Event
 {
 	/**
-	 * @var \craft\base\Field The exiting field, if one exists
+	 * @var \craft\base\Field The exiting field, if one exists.
 	 */
 	public $field;
 

@@ -82,6 +82,11 @@
 	<div class="buttons">
 		<a class="btn quicksort"><span class="icon icon-mask"><span data-icon="asc"></span></span> Alphabetize</a>
 	</div>
+	{% for control in importControls %}
+		<div class="import-control hidden" data-handle="{{ control.block }}">
+			{{ control.controls | raw }}
+		</div>
+	{% endfor %}
 {% endblock %}
 
 {% js on ready %}

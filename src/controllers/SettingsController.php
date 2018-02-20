@@ -7,6 +7,7 @@
 namespace charliedev\blockonomicon\controllers;
 
 use charliedev\blockonomicon\Blockonomicon;
+use charliedev\blockonomicon\events\RenderImportControlsEvent;
 use charliedev\blockonomicon\models\StoredBlock;
 
 use Craft;
@@ -147,6 +148,42 @@ class SettingsController extends Controller
 			];
 		}
 
+		// Render import controls for each block, based on any existing fields.
+		$controls = [];
+		foreach ($allblocks as $block) {
+			// Ignore any blocks that have a bad configuration.
+			if ($block['state'] != 'good') {
+				continue;
+			}
+
+			// Key block fields by handle, if a block exists, otherwise keep as an empty array.
+			$blockfields = [];
+			if (isset($matrixblocks[$block['handle']])) {
+				$blockfields = $matrixblocks[$block['handle']]->getFields();
+				$blockfields = array_reduce($blockfields, function ($in, $val) {
+					$in[$val->handle] = $val;
+					return $in;
+				}, []);
+			}
+
+			// Render all of the controsl for each field individually.
+			$blockcontrols = [];
+			foreach ($block['fields'] as $field) {
+				$event = new RenderImportControlsEvent();
+				$event->handle = $block['handle'];
+				$event->field = $blockfields[$field['handle']] ?? null; // Supply field from block if one exists.
+				$event->settings = $field;
+				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS, $event);
+				$blockcontrols[] = $event->controls;
+			}
+			if (count($blockcontrols) > 0) {
+				$controls[] = [
+					'block' => $block['handle'],
+					'controls' => implode('', $blockcontrols),
+				];
+			}
+		}
+
 		$this->getView()->registerTranslations('blockonomicon', [
 			'The current block settings and the definition file do not match! Are you sure you want to import the {handle} block?',
 			'Are you sure you want to import the {handle} block?',
@@ -170,6 +207,7 @@ class SettingsController extends Controller
 			'fields' => $matrices,
 			'matrix' => $matrix,
 			'blocks' => $blocks,
+			'importControls' => $controls,
 		]);
 	}
 
