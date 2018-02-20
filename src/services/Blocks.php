@@ -7,8 +7,8 @@
 namespace charliedev\blockonomicon\services;
 
 use charliedev\blockonomicon\Blockonomicon;
-use charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent;
-use charliedev\blockonomicon\events\RegisterFieldSettingLoadHandlersEvent;
+use charliedev\blockonomicon\events\SaveFieldEvent;
+use charliedev\blockonomicon\events\LoadFieldEvent;
 
 use Craft;
 use craft\events\RegisterTemplateRootsEvent;
@@ -156,7 +156,10 @@ class Blocks extends Component
 	 */
 	public function getFieldData(\Craft\base\Field $field): array
 	{
-		$settings = [
+		// Allow additional transformations to be made to settings for fields before returning.
+		$event = new SaveFieldEvent();
+		$event->field = $field;
+		$event->settings = [
 			'type' => get_class($field),
 			'name' => $field->name,
 			'handle' => $field->handle,
@@ -166,18 +169,9 @@ class Blocks extends Component
 			'translationKeyFormat' => $field->translationKeyFormat,
 			'typesettings' => $field->getSettings(),
 		];
+		Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_SAVE_FIELD, $event); // Gather handlers.
 
-		// Allow additional transformations to be made to settings for fields before returning.
-		$event = new RegisterFieldSettingSaveHandlersEvent();
-		Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_REGISTER_FIELD_SETTING_SAVE_HANDLERS, $event); // Gather handlers.
-
-		// Find a handler for this field, if one exists, and run it.
-		$fieldclass = get_class($field);
-		if (isset($event->handlers[$fieldclass])) {
-			$event->handlers[$fieldclass]($field, $settings);
-		}
-
-		return $settings;
+		return $event->settings;
 	}
 
 	/**

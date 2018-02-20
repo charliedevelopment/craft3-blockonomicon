@@ -29,16 +29,16 @@ use yii\base\Event;
 class Blockonomicon extends Plugin
 {
 	/**
-	 * @event RegisterFieldSettingSaveHandlersEvent Register save handlers on this event.
-	 * @see [[charliedev\blockonomicon\events\RegisterFieldSettingSaveHandlersEvent]]
+	 * @event SaveFieldEvent Update field settings before being exported.
+	 * @see [[charliedev\blockonomicon\events\SaveFieldEvent]]
 	 */
-	public const EVENT_REGISTER_FIELD_SETTING_SAVE_HANDLERS = 'registerFieldSettingSaveHandlers';
+	public const EVENT_SAVE_FIELD = 'saveField';
 
 	/**
-	 * @event RegisterFieldSettingLoadHandlersEvent Register load handlers on this event.
-	 * @see [[charliedev\blockonomicon\events\RegisterFieldSettingLoadHandlersEvent]]
+	 * @event LoadFieldEvent Update and combine field settings before being imported.
+	 * @see [[charliedev\blockonomicon\events\LoadFieldEvent]]
 	 */
-	public const EVENT_REGISTER_FIELD_SETTING_LOAD_HANDLERS = 'registerFieldSettingLoadHandlers';
+	public const EVENT_LOAD_FIELD = 'loadField';
 
 	private $_config;
 
