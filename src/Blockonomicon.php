@@ -98,23 +98,8 @@ class Blockonomicon extends Plugin
 			}
 		);
 
-		/*
-		// Example of special per-field functionality for saving.
-		Event::on(
-			Blockonomicon::class,
-			Blockonomicon::EVENT_REGISTER_FIELD_SETTING_SAVE_HANDLERS,
-			function(RegisterFieldSettingSaveHandlersEvent $event) {
-				$event->handlers[\craft\fields\PlainText::class] = [
-					'saveCustomSettings' => function($field, &$settings) {
-						$settings['custom'] = '!!' . $field->name . '!!';
-					},
-					'loadCustomSettings' => function($field, $settings) {
-						Blockonomicon::log(print_r($settings, true));
-					},
-				];
-			}
-		);
-		*/
+		// Add additional event handlers for built-in field adapters.
+		\charliedev\blockonomicon\adapters\AssetField::setup();
 
 		parent::init();
 	}

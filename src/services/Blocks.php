@@ -169,7 +169,7 @@ class Blocks extends Component
 			'translationKeyFormat' => $field->translationKeyFormat,
 			'typesettings' => $field->getSettings(),
 		];
-		Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_SAVE_FIELD, $event); // Gather handlers.
+		Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_SAVE_FIELD, $event);
 
 		return $event->settings;
 	}
