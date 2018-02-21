@@ -179,8 +179,9 @@ class Blocks extends Component
 	 * @param \craft\fields\Matrix $matrix The matrix to attach the block to.
 	 * @param array $blockdata An array containing exported block data.
 	 * @param int $order The 0-indexed integer position where the block should be created within the matrix.
+	 * @param array $options Any additional options to be applied to the imported field settings.
 	 */
-	public function rebuildBlock(\craft\fields\Matrix $matrix, array $blockdata, int $order)
+	public function rebuildBlock(\craft\fields\Matrix $matrix, array $blockdata, int $order, array $options)
 	{
 		$transaction = Craft::$app->getDb()->beginTransaction();
 

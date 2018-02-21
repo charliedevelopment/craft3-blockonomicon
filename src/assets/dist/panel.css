@@ -23,8 +23,28 @@ body.rtl .matrixblocksorthelper .status {
 	margin-left: 4px;
 }
 
-.bncn-import-modal {
+.bncn-matrix-modal {
 	max-width: 800px;
+}
+
+.bncn-matrix-modal .import-control {
+	position: relative;
+	width: 100%;
+	height: calc(100% - 58px);
+	padding-bottom: 58px;
+}
+
+.bncn-matrix-modal .body {
+	position: relative;
+	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+.bncn-matrix-modal .footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	margin: 0;
 }

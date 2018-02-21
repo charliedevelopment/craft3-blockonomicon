@@ -175,13 +175,17 @@ class SettingsController extends Controller
 				$event->settings = $field;
 				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS, $event);
 				if (!empty($event->controls)) {
-					$blockcontrols[] = $event->controls;
+					$blockcontrols[] = [
+						'handle' => $field['handle'],
+						'name' => $field['name'],
+						'control' => $event->controls,
+					];
 				}
 			}
 			if (count($blockcontrols) > 0) {
 				$controls[] = [
 					'block' => $block['handle'],
-					'controls' => implode('', $blockcontrols),
+					'controls' => $blockcontrols,
 				];
 			}
 		}
@@ -293,7 +297,13 @@ class SettingsController extends Controller
 		}
 		$order = intval($order);
 
-		$result = Blockonomicon::getInstance()->blocks->rebuildBlock($matrix, $block, $order);
+		// Retrieve extra options for building the block.
+		$options = Craft::$app->getRequest()->getBodyParam('options');
+		if ($options == null) {
+			$options = [];
+		}
+
+		$result = Blockonomicon::getInstance()->blocks->rebuildBlock($matrix, $block, $order, $options);
 		if (!is_a($result, \craft\models\MatrixBlockType::class)) {
 			return $this->asErrorJson($result);
 		}

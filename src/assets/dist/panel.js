@@ -1,3 +1,5 @@
+(function() {
+
 window.BNCN = {};
 
 BNCN.OverviewEditor = Garnish.Base.extend({
@@ -57,11 +59,12 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 	 */
 	importBlock: function(event) {
 
-		function runImport() {
+		function runImport(importdata = {}) {
 			var data = {
 				matrix: $('#matrixblocks').data('id'),
 				handle: $block.data('handle'),
 				order: $block.prevAll('[data-status="saved"], [data-status="not-saved"]').length,
+				options: importdata,
 			};
 			Craft.postActionRequest('blockonomicon/settings/import-block', data, $.proxy(function(response, status) {
 				if (status === 'success') {
@@ -96,14 +99,27 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		// There is a special import control for this block, show it first.
 		var importcontrol = $('#import-controls .import-control[data-handle="' + handle + '"]');
 		if (importcontrol.length > 0) {
+			var modal;
 			var settings = {
 				autoShow: false,
 				onHide: function() {
 					$('#import-controls').append(importcontrol);
+					modal.destroy();
 				},
 			};
-			var modal = new Garnish.Modal('<div class="modal bncn-import-modal"><div class="body"></div></div>', settings);
-			modal.$container.find('.body').append(importcontrol);
+			modal = new Garnish.Modal('<div class="modal bncn-matrix-modal"></div>', settings);
+			importcontrol.find('.btn.cancel').on('click.import', function() {
+				modal.hide();
+			});
+			importcontrol.find('.btn.import').on('click.import', function() {
+				var data = {};
+				modal.$container.find('form').each(function() {
+					data[$(this).data('field')] = $(this).serializeArray();;
+				});
+				runImport(data);
+				modal.hide();
+			});
+			modal.$container.append(importcontrol);
 			modal.show();
 			return;
 		}
@@ -119,29 +135,19 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 			return;
 		}
 
-		if (confirm(Craft.t('blockonomicon', message, {handle: handle}))) {
-			runImport();
-		}
+		showBasicModal(
+			Craft.t('blockonomicon', message, {handle: handle}),
+			'Import',
+			runImport
+		);
 	},
 	/**
 	 * Run when a block is selected for export.
 	 * On confirmation, exports the given block to the block directory, potentially overwriting the existing block configuration.
 	 */
 	exportBlock: function(event) {
-		var $block = $(event.target).closest('tr');
-		var handle = $block.find('td:eq(1)').text();
 
-		var message = '';
-		if ($block.data('status') == 'desync') { // Out of sync export.
-			message = 'The current block settings and the definition file do not match! Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.';
-		} else if ($block.data('status') == 'not-saved') { // First time export.
-			message = 'Are you sure you want to save {handle} as a new block?';
-		} else if ($block.data('status') == 'saved') { // Export overwrite.
-			message = 'Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.';
-		} else {
-			return;
-		}
-		if (confirm(Craft.t('blockonomicon', message, {handle: handle}))) {
+		function runExport() {
 			var data = {
 				block: $block.data('id'),
 			};
@@ -166,6 +172,26 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 				}
 			}));
 		}
+
+		var $block = $(event.target).closest('tr');
+		var handle = $block.find('td:eq(1)').text();
+
+		var message = '';
+		if ($block.data('status') == 'desync') { // Out of sync export.
+			message = 'The current block settings and the definition file do not match! Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.';
+		} else if ($block.data('status') == 'not-saved') { // First time export.
+			message = 'Are you sure you want to save {handle} as a new block?';
+		} else if ($block.data('status') == 'saved') { // Export overwrite.
+			message = 'Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.';
+		} else {
+			return;
+		}
+
+		showBasicModal(
+			Craft.t('blockonomicon', message, {handle: handle}),
+			'Export',
+			runExport
+		);
 	},
 	/**
 	 * Run when a block is selected for deletion.
@@ -176,40 +202,49 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		var handle = $block.find('td:eq(1)').text();
 		var _self = this;
 
-		if ($block.data('status') == 'saved' || $block.data('status') == 'not-saved' || $block.data('status') == 'desync') {
-			if (confirm(Craft.t('blockonomicon', 'Are you sure you want to delete the {handle} block? This cannot be reversed.', {handle: handle}))) {
-				var data = {
-					block: $block.data('id'),
-				};
-				Craft.postActionRequest('blockonomicon/settings/delete-block', data, $.proxy(function(response, status) {
-					if (status === 'success') {
-						if (response.success) {
-							Craft.cp.displayNotice(response.message);
-							if ($block.data('status') == 'not-saved') {
-								$block.remove();
-							} else {
-								$block.data('status', 'not-loaded');
-								$block.attr('data-status', 'not-loaded');
-								$block.find('td:eq(0) .status')
-									.removeClass('green')
-									.removeClass('red')
-									.addClass('none')
-									.attr('title', Craft.t('blockonomicon', 'Not Attached'));
-								$block.find('td:eq(3) .error').remove();
-								$block.find('td:eq(4) .buttons .btn.export')
-									.addClass('disabled')
-									.attr('title', Craft.t('blockonomicon', 'Cannot export, block is not attached.'));
-								$block.find('td:eq(4) .buttons .btn.delete')
-									.addClass('disabled')
-									.attr('title', Craft.t('blockonomicon', 'Cannot delete, block is not attached.'));
-							}
-							_self.updateBlockList();
+		function runDelete() {
+			var data = {
+				block: $block.data('id'),
+			};
+			Craft.postActionRequest('blockonomicon/settings/delete-block', data, $.proxy(function(response, status) {
+				if (status === 'success') {
+					if (response.success) {
+						Craft.cp.displayNotice(response.message);
+						if ($block.data('status') == 'not-saved') {
+							$block.remove();
 						} else {
-							Craft.cp.displayError(response.error);
+							$block.data('status', 'not-loaded');
+							$block.attr('data-status', 'not-loaded');
+							$block.find('td:eq(0) .status')
+								.removeClass('green')
+								.removeClass('red')
+								.addClass('none')
+								.attr('title', Craft.t('blockonomicon', 'Not Attached'));
+							$block.find('td:eq(3) .error').remove();
+							$block.find('td:eq(4) .buttons .btn.export')
+								.addClass('disabled')
+								.attr('title', Craft.t('blockonomicon', 'Cannot export, block is not attached.'));
+							$block.find('td:eq(4) .buttons .btn.delete')
+								.addClass('disabled')
+								.attr('title', Craft.t('blockonomicon', 'Cannot delete, block is not attached.'));
 						}
+						_self.updateBlockList();
+					} else {
+						Craft.cp.displayError(response.error);
 					}
-				}));
-			}
+				}
+			}));
+		}
+
+		if ($block.data('status') == 'saved'
+			|| $block.data('status') == 'not-saved'
+			|| $block.data('status') == 'desync') {
+			
+			showBasicModal(
+				Craft.t('blockonomicon', 'Are you sure you want to delete the {handle} block? This cannot be reversed.', {handle: handle}),
+				'Delete',
+				runDelete
+			);
 		}
 	},
 	/**
@@ -261,3 +296,28 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		this.saveBlockOrder();
 	},
 });
+
+function showBasicModal(message, submittext, submitaction) {
+	var modal;
+	var settings = {
+		autoShow: false,
+		onHide: function() {
+			modal.destroy();
+		},
+	};
+	modal = new Garnish.Modal('<div class="modal fitted bncn-matrix-modal"><form class="body"><p></p><div class="actions buttons"></div></form></div>', settings);
+	modal.$container.find('.body p').text(message);
+	modal.$container.find('.body .buttons').append('<a class="btn cancel" role="button">Cancel</a>');
+	modal.$container.find('.body .cancel').on('click', function() {
+		modal.hide();
+	});
+	modal.$container.find('.body .buttons').append('<a class="btn submit" role="button"></a>');
+	modal.$container.find('.body .submit').text(submittext);
+	modal.$container.find('.body .submit').on('click', function() {
+		submitaction();
+		modal.hide();
+	});
+	modal.show();
+}
+
+})();

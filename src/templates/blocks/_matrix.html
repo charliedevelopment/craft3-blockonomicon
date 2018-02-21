@@ -84,12 +84,22 @@
 		<a class="btn quicksort"><span class="icon icon-mask"><span data-icon="asc"></span></span> Alphabetize</a>
 	</div>
 	<div id="import-controls" class="hidden">
-		{% for control in importControls %}
-			<div class="import-control" data-handle="{{ control.block }}">
-				{{ control.controls | raw }}
-				<div class="buttons actions">
-					<a class="btn cancel" role="button">{{ 'Cancel' | t('app') }}</a>
-					<a class="btn submit import" role="button">{{ 'Import' | t('app') }}</a>
+		{% for blockcontrols in importControls %}
+			<div class="import-control" data-handle="{{ blockcontrols.block }}">
+				<div class="body">
+					<p>Some additional configuration is required to import this block. Please review the settings below for the block fields being imported.</p>
+					{% for fieldcontrol in blockcontrols.controls %}
+						<h2>{{ fieldcontrol.name | t('site') }}</h2>
+						<form data-field="{{ fieldcontrol.handle }}">
+						{{ fieldcontrol.control | raw }}
+						</form>
+					{% endfor %}
+				</div>
+				<div class="footer">
+					<div class="buttons actions">
+						<a class="btn cancel" role="button">{{ 'Cancel' | t('app') }}</a>
+						<a class="btn submit import" role="button">{{ 'Import' | t('app') }}</a>
+					</div>
 				</div>
 			</div>
 		{% endfor %}
