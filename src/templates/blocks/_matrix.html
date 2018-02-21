@@ -17,6 +17,11 @@
 
 {% block content %}
 	{{ redirectInput('blockonomicon/blocks') }}
+
+	{% set importButton %}<span class="icon icon-mask"><span data-icon="circleuarr"></span></span> {{ 'Import' | t('blockonomicon') }}{% endset %}
+	{% set exportButton %}<span class="icon icon-mask"><span data-icon="circledarr"></span></span> {{ 'Export' | t('blockonomicon') }}{% endset %}
+	{% set deleteButton %}<span class="icon icon-mask"><span data-icon="trash"></span></span> {{ 'Delete' | t('blockonomicon') }}{% endset %}
+
 	<table id="matrixblocks" class="data fullwidth collapsible" data-id="{{ matrixid }}">
 		<thead>
 			<th>Name</th>
@@ -56,10 +61,6 @@
 					</td>
 					<td>
 						<span class="buttons">
-							{% set importButton %}<span class="icon icon-mask"><span data-icon="circleuarr"></span></span> {{ 'Import' | t('blockonomicon') }}{% endset %}
-							{% set exportButton %}<span class="icon icon-mask"><span data-icon="circledarr"></span></span> {{ 'Export' | t('blockonomicon') }}{% endset %}
-							{% set deleteButton %}<span class="icon icon-mask"><span data-icon="trash"></span></span> {{ 'Delete' | t('blockonomicon') }}{% endset %}
-
 							{% if block.status == 'saved' or block.status == 'desync' %}
 								<a class="btn import" role="button">{{ importButton }}</a>
 								<a class="btn export" role="button">{{ exportButton }}</a>
@@ -82,11 +83,17 @@
 	<div class="buttons">
 		<a class="btn quicksort"><span class="icon icon-mask"><span data-icon="asc"></span></span> Alphabetize</a>
 	</div>
-	{% for control in importControls %}
-		<div class="import-control hidden" data-handle="{{ control.block }}">
-			{{ control.controls | raw }}
-		</div>
-	{% endfor %}
+	<div id="import-controls" class="hidden">
+		{% for control in importControls %}
+			<div class="import-control" data-handle="{{ control.block }}">
+				{{ control.controls | raw }}
+				<div class="buttons actions">
+					<a class="btn cancel" role="button">{{ 'Cancel' | t('app') }}</a>
+					<a class="btn submit import" role="button">{{ 'Import' | t('app') }}</a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 {% endblock %}
 
 {% js on ready %}

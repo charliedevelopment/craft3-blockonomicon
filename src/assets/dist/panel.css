@@ -22,3 +22,9 @@ body.rtl #matrixblocks .status,
 body.rtl .matrixblocksorthelper .status {
 	margin-left: 4px;
 }
+
+.bncn-import-modal {
+	max-width: 800px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}

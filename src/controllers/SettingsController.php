@@ -174,7 +174,9 @@ class SettingsController extends Controller
 				$event->field = $blockfields[$field['handle']] ?? null; // Supply field from block if one exists.
 				$event->settings = $field;
 				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS, $event);
-				$blockcontrols[] = $event->controls;
+				if (!empty($event->controls)) {
+					$blockcontrols[] = $event->controls;
+				}
 			}
 			if (count($blockcontrols) > 0) {
 				$controls[] = [

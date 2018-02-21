@@ -56,21 +56,8 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 	 * Note: If blocks are imported too quickly, they may wind up in a different order on the server side than they are on the client side.
 	 */
 	importBlock: function(event) {
-		var $block = $(event.target).closest('tr');
-		var handle = $block.find('td:eq(1)').text();
 
-		var message = '';
-		if ($block.data('status') == 'desync') { // Out of sync import.
-			message = 'The current block settings and the definition file do not match! Are you sure you want to import the {handle} block?';
-		} else if ($block.data('status') == 'not-loaded') { // First time import.
-			message = 'Are you sure you want to import the {handle} block?';
-		} else if ($block.data('status') == 'saved') { // Import overwrite.
-			message = 'Are you sure you want to re-import the {handle} block? You may lose data if fields have changed significantly.';
-		} else {
-			return;
-		}
-
-		if (confirm(Craft.t('blockonomicon', message, {handle: handle}))) {
+		function runImport() {
 			var data = {
 				matrix: $('#matrixblocks').data('id'),
 				handle: $block.data('handle'),
@@ -101,6 +88,39 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 					}
 				}
 			}, this));
+		}
+
+		var $block = $(event.target).closest('tr');
+		var handle = $block.find('td:eq(1)').text();
+
+		// There is a special import control for this block, show it first.
+		var importcontrol = $('#import-controls .import-control[data-handle="' + handle + '"]');
+		if (importcontrol.length > 0) {
+			var settings = {
+				autoShow: false,
+				onHide: function() {
+					$('#import-controls').append(importcontrol);
+				},
+			};
+			var modal = new Garnish.Modal('<div class="modal bncn-import-modal"><div class="body"></div></div>', settings);
+			modal.$container.find('.body').append(importcontrol);
+			modal.show();
+			return;
+		}
+
+		var message = '';
+		if ($block.data('status') == 'desync') { // Out of sync import.
+			message = 'The current block settings and the definition file do not match! Are you sure you want to import the {handle} block?';
+		} else if ($block.data('status') == 'not-loaded') { // First time import.
+			message = 'Are you sure you want to import the {handle} block?';
+		} else if ($block.data('status') == 'saved') { // Import overwrite.
+			message = 'Are you sure you want to re-import the {handle} block? You may lose data if fields have changed significantly.';
+		} else {
+			return;
+		}
+
+		if (confirm(Craft.t('blockonomicon', message, {handle: handle}))) {
+			runImport();
 		}
 	},
 	/**

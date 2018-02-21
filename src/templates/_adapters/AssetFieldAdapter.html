@@ -46,7 +46,7 @@
 	{% if sourceOptions %}
 		{{ forms.checkboxSelectField({
 			label: 'Sources' | t('app'),
-			instructions: 'Which sources do you want to select {type} from?' | t('app', { type: 'asset' }),
+			instructions: 'Which sources do you want to select {type} from?' | t('app', { type: 'assets' }),
 			id: blockHandle ~ '_' ~ settings.handle ~ '_sources',
 			name: 'sources',
 			options: sourceOptions,
@@ -77,7 +77,7 @@
 	<a class="fieldtoggle" data-target="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
 	<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="hidden">
 		{{ forms.checkboxField({
-			label: 'Relate {type} from a specific site?' | t('app', {type: 'asset'}),
+			label: 'Relate {type} from a specific site?' | t('app', {type: 'assets'}),
 			name: 'useTargetSite',
 			checked: false,
 			toggle: 'target-site-container',
@@ -88,7 +88,7 @@
 				{% set siteOptions = siteOptions | merge({label: site.name | t('site'), value: site.id}) %}
 			{% endfor %}
 			{{ forms.selectField({
-				label: 'Which site should {type} be related from?' | t('app', {type: 'asset'}),
+				label: 'Which site should {type} be related from?' | t('app', {type: 'assets'}),
 				id: blockHandle ~ '_' ~ settings.handle ~ '_targetSiteId',
 				name: 'targetSiteId',
 				options: siteOptions,
