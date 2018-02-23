@@ -216,13 +216,25 @@ class Blocks extends Component
 			// Create an updated field set from the combined existing fields and the new settings.
 			$fields = []; // Storage for updated field set.
 			foreach ($blockdata['fields'] as $field) {
+				$currentfield = null;
+				$fieldid = null;
 				if (isset($blockfields[$field['handle']])) { // Existing field, key by field id, but otherwise update in-place.
 					$currentfield = $blockfields[$field['handle']];
 
-					$fields[$currentfield->id] = $field;
+					$fieldid = $currentfield->id; // Get existing field id.
 				} else { // New field.
-					$fields['new' . count($fields)] = $field; // Add field with new ID index.
+					$fieldid = 'new' . count($fields); // Generate new ID index.
 				}
+
+				// Allow additional modifications to settings before importing field.
+				$event = new LoadFieldEvent();
+				$event->field = $currentfield;
+				$event->settings = $field;
+				$event->importoptions = $options[$field['handle']] ?? null;
+				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_LOAD_FIELD, $event);
+
+				// Store updated settings array to be used as a field in the block.
+				$fields[$fieldid] = $event->settings;
 			}
 
 			// Swap out existing field data with updated field set.
@@ -233,11 +245,24 @@ class Blocks extends Component
 				+ array($block->id => $blockdata)
 				+ array_slice($blocktypes, $order, null, true);
 		} else { // New block, create fields, create block, and attach to matrix.
-			// Make sure fields are keyed with 'new' IDs.
-			$blockdata['fields'] = array_reduce($blockdata['fields'], function ($in, $val) {
-				$in['new' . (count($in) + 1)] = $val;
-				return $in;
-			}, []);
+			
+			// Process the imported fields.
+			$fields = [];
+			foreach ($blockdata['fields'] as $field) {
+
+				// Allow additional modifications to settings before importing field.
+				$event = new LoadFieldEvent();
+				$event->field = null;
+				$event->settings = $field;
+				$event->importoptions = $options[$field['handle']] ?? null;
+				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_LOAD_FIELD, $event);
+
+				// Make sure fields are keyed with 'new' IDs, set the settings from the updated array as a field in the block.
+				$fields['new' . count($fields)] = $event->settings;
+			}
+
+			// Swap out exported data with updated field data.
+			$blockdata['fields'] = $fields;
 
 			// Add the block to the existing block list.
 			$blocktypes = array_slice($blocktypes, 0, $order, true)

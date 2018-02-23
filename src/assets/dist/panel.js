@@ -103,6 +103,7 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 			var settings = {
 				autoShow: false,
 				onHide: function() {
+					importcontrol.find('.btn').off('.import');
 					$('#import-controls').append(importcontrol);
 					modal.destroy();
 				},
@@ -113,8 +114,41 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 			});
 			importcontrol.find('.btn.import').on('click.import', function() {
 				var data = {};
-				modal.$container.find('form').each(function() {
-					data[$(this).data('field')] = $(this).serializeArray();;
+				modal.$container.find('form').each(function() { // Serialize each form's data and store it in the data container.
+					data[$(this).data('field')] = $(this).serializeArray().reduce(function(arr, val) { // Gather each input element's properties up.
+						var names = val.name.split(/\]\[\]?|\[|\]/); // Split array-based input names.
+						if (names.length > 1) { // Must be an array, strip off the extra item from the split.
+							names = names.slice(0, -1);
+						}
+						var ref = arr; // Reference the base array first.
+						var i;
+						for (i = 0; i < names.length - 1; i += 1) { // Every key but the last in any array-based names creates an inner array.
+							if (names[i] == '') { // Indexed array, push next value.
+								if (names[i + 1] == '') { // Next value is also indexed.
+									ref.push([]);
+								} else { // Next value is keyed.
+									ref.push({});
+								}
+								ref = ref[ref.length - 1]; // Set reference to newly added array.
+							} else { // String name, add to referenced array and then set reference to (new) array.
+								if (!ref[names[i]]) { // Create next value if it doesn't exist.
+									if (names[i + 1] == '') { // Next value is indexed.
+										ref[names[i]] = [];
+									} else { // Next value is keyed.
+										ref[names[i]] = {};
+									}
+								}
+								ref = ref[names[i]]; // Set reference to newly added array.
+							}
+						};
+						if (names[names.length - 1] == '') { // Last value is indexed.
+							ref.push(val.value);
+						} else { // Last value is keyed.
+							ref[names[names.length - 1]] = val.value;
+						}
+						
+						return arr;
+					}, {});
 				});
 				runImport(data);
 				modal.hide();

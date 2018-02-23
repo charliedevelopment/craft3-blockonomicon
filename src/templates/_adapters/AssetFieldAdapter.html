@@ -73,19 +73,18 @@
 </div>
 
 {% if craft.app.getIsMultiSite() %}
-	<hr>
 	<a class="fieldtoggle" data-target="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
 	<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="hidden">
 		{{ forms.checkboxField({
 			label: 'Relate {type} from a specific site?' | t('app', {type: 'assets'}),
 			name: 'useTargetSite',
 			checked: false,
-			toggle: 'target-site-container',
+			toggle: blockHandle ~ '_' ~ settings.handle ~ '_target-site-container',
 		}) }}
 		<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}target-site-container" class="hidden">
-			{% set siteOptions = {} %}
+			{% set siteOptions = [] %}
 			{% for site in craft.app.getSites.getAllSites() %}
-				{% set siteOptions = siteOptions | merge({label: site.name | t('site'), value: site.id}) %}
+				{% set siteOptions = siteOptions | merge([{label: site.name | t('site'), value: site.id}]) %}
 			{% endfor %}
 			{{ forms.selectField({
 				label: 'Which site should {type} be related from?' | t('app', {type: 'assets'}),
@@ -104,3 +103,5 @@
 		}) }}
 	</div>
 {% endif %}
+
+<hr>
