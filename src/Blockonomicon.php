@@ -106,7 +106,7 @@ class Blockonomicon extends Plugin
 		);
 
 		// Add additional event handlers for built-in field adapters.
-		\charliedev\blockonomicon\adapters\AssetField::setup();
+		\charliedev\blockonomicon\adapters\AssetsField::setup();
 
 		parent::init();
 	}

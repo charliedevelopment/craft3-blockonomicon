@@ -12,16 +12,15 @@ use charliedev\blockonomicon\events\SaveFieldEvent;
 use charliedev\blockonomicon\events\LoadFieldEvent;
 
 use Craft;
-use craft\elements\Asset;
 
 use yii\base\Event;
 
 /**
- * Blockonomicon adapter for built-in Craft Asset fields.
+ * Blockonomicon adapter for built-in Craft Assets fields.
  * Prevents site and source-specific properties from being included in the exported
  * data, and provides properties that can be set on import to replace them.
  */
-class AssetField
+class AssetsField
 {
 	/**
 	 * Binds to necessary event handlers.
@@ -34,7 +33,7 @@ class AssetField
 			Blockonomicon::EVENT_SAVE_FIELD,
 			function(SaveFieldEvent $event) {
 				
-				// Ignore any fields that are not Asset fields.
+				// Ignore any fields that are not Assets fields.
 				if (get_class($event->field) != \craft\fields\Assets::class) {
 					return;
 				}
@@ -56,7 +55,7 @@ class AssetField
 			Blockonomicon::EVENT_LOAD_FIELD,
 			function(LoadFieldEvent $event) {
 				
-				// Ignore any fields that are not Asset fields.
+				// Ignore any fields that are not Assets fields.
 				if ($event->settings['type'] != \craft\fields\Assets::class) {
 					return;
 				}
@@ -77,13 +76,13 @@ class AssetField
 			Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS,
 			function(RenderImportControlsEvent $event) {
 				
-				// Ignore any fields that are not Asset fields.
+				// Ignore any fields that are not Assets fields.
 				if ($event->settings['type'] != \craft\fields\Assets::class) {
 					return;
 				}
 
 				$sourceoptions = [];
-				foreach (Asset::sources('settings') as $key => $volume) {
+				foreach (\craft\elements\Asset::sources('settings') as $key => $volume) {
 					if (!isset($volume['heading'])) {
 						$sourceoptions[] = [
 							'label' => $volume['label'],
@@ -92,7 +91,7 @@ class AssetField
 					}
 				}
 
-				$event->controls = Craft::$app->getView()->renderTemplate('blockonomicon/_adapters/AssetFieldAdapter.html', [
+				$event->controls = Craft::$app->getView()->renderTemplate('blockonomicon/_adapters/AssetsFieldAdapter.html', [
 					'blockHandle' => $event->handle,
 					'field' => $event->field,
 					'settings' => $event->settings,
