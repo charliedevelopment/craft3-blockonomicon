@@ -65,7 +65,9 @@ class AssetsField
 				$event->settings['typesettings']['singleUploadLocationSource'] = $event->importoptions['singleUploadLocationSource'] ?? '';
 				$event->settings['typesettings']['singleUploadLocationSubpath'] = $event->importoptions['singleUploadLocationSubpath'] ?? '';
 				$event->settings['typesettings']['sources'] = $event->importoptions['sources'] ?? [];
-				$event->settings['typesettings']['targetSiteId'] = $event->importoptions['targetSiteId'] ?? '';
+				if ($event->importoptions['useTargetSite'] ?? false) {
+					$event->settings['typesettings']['targetSiteId'] = $event->importoptions['targetSiteId'] ?? '';
+				}
 				$event->settings['typesettings']['localizeRelations'] = $event->importoptions['localizeRelations'] ?? '';
 			}
 		);

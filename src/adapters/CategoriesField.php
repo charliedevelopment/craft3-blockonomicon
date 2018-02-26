@@ -58,7 +58,9 @@ class CategoriesField
 
 				$event->settings['typesettings']['sources'] = '*';
 				$event->settings['typesettings']['source'] = $event->importoptions['source'] ?? [];
-				$event->settings['typesettings']['targetSiteId'] = $event->importoptions['targetSiteId'] ?? '';
+				if ($event->importoptions['useTargetSite'] ?? false) {
+					$event->settings['typesettings']['targetSiteId'] = $event->importoptions['targetSiteId'] ?? '';
+				}
 				$event->settings['typesettings']['localizeRelations'] = $event->importoptions['localizeRelations'] ?? '';
 			}
 		);
