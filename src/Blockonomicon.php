@@ -108,6 +108,7 @@ class Blockonomicon extends Plugin
 		// Add additional event handlers for built-in field adapters.
 		\charliedev\blockonomicon\adapters\AssetsField::setup();
 		\charliedev\blockonomicon\adapters\CategoriesField::setup();
+		\charliedev\blockonomicon\adapters\EntriesField::setup();
 
 		parent::init();
 	}
