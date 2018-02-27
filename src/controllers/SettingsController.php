@@ -201,12 +201,6 @@ class SettingsController extends Controller
 			'Are you sure you want to overwrite the {handle} block definition with this new one? This will backup the existing definition, and does not overwrite any of the other bundled files.',
 
 			'Are you sure you want to delete the {handle} block? This cannot be reversed.',
-
-			'Not Attached',
-			'Attached and Saved',
-
-			'Cannot export, block is not attached.',
-			'Cannot delete, block is not attached.',
 		]);
 
 		return $this->renderTemplate('blockonomicon/blocks/_matrix', [
@@ -316,7 +310,8 @@ class SettingsController extends Controller
 		// Store import options for later use.
 		Blockonomicon::getInstance()->blocks->storeImportOptions($options, $blockhandle);
 		
-		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block imported.'), 'id' => $result->id]);
+		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Block imported.'));
+		return $this->asJson(['success' => true]);
 	}
 
 	/**
@@ -350,7 +345,8 @@ class SettingsController extends Controller
 			return $this->asErrorJson($result);
 		}
 		
-		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block exported.')]);
+		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Block exported.'));
+		return $this->asJson(['success' => true]);
 	}
 
 	/**
@@ -371,7 +367,8 @@ class SettingsController extends Controller
 
 		Craft::$app->getMatrix()->deleteBlockType($block);
 
-		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block deleted.')]);
+		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Block deleted.'));
+		return $this->asJson(['success' => true]);
 	}
 
 	/**
@@ -424,7 +421,6 @@ class SettingsController extends Controller
 		Blockonomicon::getInstance()->blocks->saveBlockData($block);
 
 		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Block saved.'));
-
 		return $this->redirectToPostedUrl();
 	}
 

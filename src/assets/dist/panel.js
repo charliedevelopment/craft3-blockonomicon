@@ -58,8 +58,14 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 	 * Note: If blocks are imported too quickly, they may wind up in a different order on the server side than they are on the client side.
 	 */
 	importBlock: function(event) {
+		if ($(event.target).hasClass('disabled')) { // Do not handle any disabled element interactions.
+			return;
+		}
+
+		var _self = this;
 
 		function runImport(importdata = {}) {
+			_self.startTemporaryDisable();
 			var data = {
 				matrix: $('#matrixblocks').data('id'),
 				handle: $block.data('handle'),
@@ -69,24 +75,9 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 			Craft.postActionRequest('blockonomicon/settings/import-block', data, $.proxy(function(response, status) {
 				if (status === 'success') {
 					if (response.success) {
-						Craft.cp.displayNotice(response.message);
-						$block.data('id', response.id);
-						$block.attr('data-id', response.id);
-						$block.data('status', 'saved');
-						$block.attr('data-status', 'saved');
-						$block.find('td:eq(0) .status')
-							.removeClass('none')
-							.removeClass('red')
-							.addClass('green')
-							.attr('title', Craft.t('blockonomicon', 'Attached and Saved'));
-						$block.find('td:eq(3) .error').remove();
-						$block.find('td:eq(4) .buttons .btn.export')
-							.removeClass('disabled')
-							.attr('title', '');
-						$block.find('td:eq(4) .buttons .btn.delete')
-							.removeClass('disabled')
-							.attr('title', '');
+						window.location.reload();
 					} else {
+						_self.stopTemporaryDisable();
 						Craft.cp.displayError(response.error);
 					}
 				}
@@ -180,27 +171,23 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 	 * On confirmation, exports the given block to the block directory, potentially overwriting the existing block configuration.
 	 */
 	exportBlock: function(event) {
+		if ($(event.target).hasClass('disabled')) { // Do not handle any disabled element interactions.
+			return;
+		}
+
+		var _self = this;
 
 		function runExport() {
+			_self.startTemporaryDisable();
 			var data = {
 				block: $block.data('id'),
 			};
 			Craft.postActionRequest('blockonomicon/settings/export-block', data, $.proxy(function(response, status) {
 				if (status === 'success') {
 					if (response.success) {
-						Craft.cp.displayNotice(response.message);
-						$block.data('status', 'saved');
-						$block.attr('data-status', 'saved');
-						$block.find('td:eq(0) .status')
-							.removeClass('yellow')
-							.removeClass('red')
-							.addClass('green')
-							.attr('title', Craft.t('blockonomicon', 'Attached and Saved'));
-						$block.find('td:eq(3) .error').remove();
-						$block.find('td:eq(4) .buttons .btn.import')
-							.removeClass('disabled')
-							.attr('title', '');
+						window.location.reload();
 					} else {
+						_self.stopTemporaryDisable();
 						Craft.cp.displayError(response.error);
 					}
 				}
@@ -232,38 +219,25 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 	 * On confirmation, deletes the given block from the matrix, including all of its associated data.
 	 */
 	deleteBlock: function(event) {
+		if ($(event.target).hasClass('disabled')) { // Do not handle any disabled element interactions.
+			return;
+		}
+		
 		var $block = $(event.target).closest('tr');
 		var handle = $block.find('td:eq(1)').text();
 		var _self = this;
 
 		function runDelete() {
+			_self.startTemporaryDisable();
 			var data = {
 				block: $block.data('id'),
 			};
 			Craft.postActionRequest('blockonomicon/settings/delete-block', data, $.proxy(function(response, status) {
 				if (status === 'success') {
 					if (response.success) {
-						Craft.cp.displayNotice(response.message);
-						if ($block.data('status') == 'not-saved') {
-							$block.remove();
-						} else {
-							$block.data('status', 'not-loaded');
-							$block.attr('data-status', 'not-loaded');
-							$block.find('td:eq(0) .status')
-								.removeClass('green')
-								.removeClass('red')
-								.addClass('none')
-								.attr('title', Craft.t('blockonomicon', 'Not Attached'));
-							$block.find('td:eq(3) .error').remove();
-							$block.find('td:eq(4) .buttons .btn.export')
-								.addClass('disabled')
-								.attr('title', Craft.t('blockonomicon', 'Cannot export, block is not attached.'));
-							$block.find('td:eq(4) .buttons .btn.delete')
-								.addClass('disabled')
-								.attr('title', Craft.t('blockonomicon', 'Cannot delete, block is not attached.'));
-						}
-						_self.updateBlockList();
+						window.location.reload();
 					} else {
+						_self.stopTemporaryDisable();
 						Craft.cp.displayError(response.error);
 					}
 				}
@@ -328,6 +302,18 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 			table.append(block);
 		});
 		this.saveBlockOrder();
+	},
+	/**
+	 * Disables all buttons.
+	 */
+	startTemporaryDisable: function() {
+		$('#matrixblocks .buttons .btn:not(.disabled)').addClass('temporary').addClass('disabled');
+	},
+	/**
+	 * Re-enables buttons that were temporarily disabled.
+	 */
+	stopTemporaryDisable: function() {
+		$('#matrixblocks .buttons .btn.temporary').removeClass('disabled');
 	},
 });
 
