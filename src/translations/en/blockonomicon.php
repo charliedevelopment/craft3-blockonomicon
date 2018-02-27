@@ -33,4 +33,6 @@ return [
 	'Export' => 'Export',
 	'Import' => 'Import',
 	'Delete' => 'Delete',
+	'Example content successfully installed.' => 'Example content successfully installed.',
+	'Example content removed.' => 'Example content removed.',
 ];

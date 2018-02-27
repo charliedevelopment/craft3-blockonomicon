@@ -66,7 +66,7 @@ The *settings panel* can be used to confirm a few additional settings that can b
 
 ![Blockonomicon documentation panel](./resources/x)
 
-The plugin's section within the Craft control panel also comes with its own documentation page with a quick reference and breakdown of Blockonomicon's features.
+The plugin's section within the Craft control panel also comes with its own detailed documentation page. It includes a guide on templating features of Blockonomicon as well as a breakdown of features, management, and advanced settings. A set of example data to help in getting started with Blockonomicon can be installed through this page.
 
 ---
 

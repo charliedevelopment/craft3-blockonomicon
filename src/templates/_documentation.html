@@ -17,6 +17,29 @@
 			<li>The ability to sort blocks alphabetically with a single click.</li>
 			<li>Data is still stored in a Craft Matrix field. You can choose to uninstall Blockonomicon at any time without losing access to your data.</li>
 		</ul>
+		<h2>Hands-on Examples</h2>
+		<p>To experiment with Blockonomicon, some example fields and templates can be installed for reference. You can then view the example content by visiting <a href="/blockonomicon-example">/blockonomicon-example</a>. To uninstall this example content, you can find an uninstall button below, if the example content is detected.</p>
+		{% if craft.app.getSections().getSectionByHandle('blockonomicon-example') == null %}
+			<a class="fieldtoggle" data-target="quick-start-details">What will this do?</a>
+			<div id="quick-start-details" class="hidden">
+				<ul>
+					<li>Creates three blocks in Blockonomicon's block folder: <code>banner</code>, <code>tagged-content</code>, and <code>expander</code>. By default this folder is <code>craft/storage/bloconomicon/blocks</code>.</li>
+					<li>Creates a template in Craft's template folder called <code>_blockonomicon.html</code>.</li>
+					<li>Creates a tag group called "Blockonomicon Example Tag Group".</li>
+					<li>Creates an asset volume called "Blockonomicon Example Asset Volume", using a local store within a <code>blockonomicon-assets</code> folder in the web root.</li>
+					<li>Creates a matrix with the name "Blockonomicon Matrix".</li>
+					<li>Attaches the example blocks to the example matrix, using the example tag group and asset volume for applicable fields.</li>
+					<li>Creates a single section named "Blockonomicon Example", with the route <code>/blockonomicon-example</code>, using the example template.</li>
+					<li>Attaches the example matrix to the example section.</li>
+					<li>Adds a few example tags and small placeholder assets.</li>
+					<li>Fills out the single with some test data to be rendered.</li>
+				</ul>
+			</div>
+			<br>
+			<a class="btn submit quick-start">Install Example Content</a>
+		{% else %}
+			<a class="btn submit quick-stop">Uninstall Example Content</a>
+		{% endif %}
 		<h2>What are Blocks?</h2>
 		<p>If you are familiar with Craft, you have no doubt seen the Matrix field in action. Each of its repeatable sets of fields is called a block. You can think of Blockonomicon's blocks as one and the same, with one main extension:</p>
 		<p>In Blockonomicon, a matrix block may be exported from a matrix field. These exported blocks, while they may be bundled with other configuration and templating files, are no different from their matrix counterparts.</p>
@@ -49,3 +72,7 @@
 		<p>Blockonomicon has special configuration settings available by editing the <code>blockonomicon.php</code> file under Craft's <code>config</code> folder. These options are visible within the <em>Settings</em> subsection of the Bloconomicon control panel.</p>
 	</div>
 {% endblock %}
+
+{% js on ready %}
+	new BNCN.DocumentationController();
+{% endjs %}

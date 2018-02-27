@@ -437,6 +437,24 @@ class SettingsController extends Controller
 	}
 
 	/**
+	 * Installs example content.
+	 */
+	public function actionQuickStart()
+	{
+		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Example content successfully installed.'));
+		return $this->asJson(['success' => true]);
+	}
+
+	/**
+	 * Uninstalls example content.
+	 */
+	public function actionQuickStop()
+	{
+		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Example content removed.'));
+		return $this->asJson(['success' => true]);
+	}
+
+	/**
 	 * Determines if the two arrays are equal in keys and values.
 	 */
 	private function assocArrayEqual($a, $b)

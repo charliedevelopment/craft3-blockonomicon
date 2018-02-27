@@ -2,6 +2,49 @@
 
 window.BNCN = {};
 
+/**
+ * Controller that runs functionality on the Blockonomicon documentation page.
+ */
+BNCN.DocumentationController = Garnish.Base.extend({
+	init: function() {
+		this.addListener($('.btn.submit.quick-start'), 'click', this.quickStart);
+		this.addListener($('.btn.submit.quick-stop'), 'click', this.quickStop);
+	},
+	/**
+	 * Runs the example content installer.
+	 */
+	quickStart: function(event) {
+		$(event.target).addClass('icon').addClass('add').addClass('loading');
+		Craft.postActionRequest('blockonomicon/settings/quick-start', {}, $.proxy(function(response, status) {
+			if (status === 'success') {
+				if (response.success) {
+					window.location.reload();
+				} else {
+					$(event.target).removeClass('icon').removeClass('add').removeClass('loading');
+					Craft.cp.displayError(response.error);
+				}
+			}
+		}, this));
+	},
+	/**
+	 * Runs the example content uninstaller.
+	 */
+	quickStop: function() {
+		Craft.postActionRequest('blockonomicon/settings/quick-stop', {}, $.proxy(function(response, status) {
+			if (status === 'success') {
+				if (response.success) {
+					window.location.reload();
+				} else {
+					Craft.cp.displayError(response.error);
+				}
+			}
+		}, this));
+	},
+});
+
+/**
+ * Controller that runs on the Blockonomicon block overview page.
+ */
 BNCN.OverviewEditor = Garnish.Base.extend({
 	init: function() {
 		this.addListener($('#bncnrebuildfilesbtn'), 'click', this.rebuildFiles);
@@ -19,9 +62,12 @@ BNCN.OverviewEditor = Garnish.Base.extend({
 				}
 			}
 		}, this));
-	}
+	},
 });
 
+/**
+ * Controlelr that runs on the Blockonomicon matrix editor page.
+ */
 BNCN.MatrixEditor = Garnish.Base.extend({
 	$blocks: null,
 	init: function() {
