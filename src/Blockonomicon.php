@@ -110,6 +110,7 @@ class Blockonomicon extends Plugin
 		\charliedev\blockonomicon\adapters\CategoriesField::setup();
 		\charliedev\blockonomicon\adapters\EntriesField::setup();
 		\charliedev\blockonomicon\adapters\TagsField::setup();
+		\charliedev\blockonomicon\adapters\UsersField::setup();
 
 		parent::init();
 	}

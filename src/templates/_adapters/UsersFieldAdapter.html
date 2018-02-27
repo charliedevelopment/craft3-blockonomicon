@@ -1,0 +1,31 @@
+{% import '_includes/forms' as forms %}
+
+{% if sourceOptions %}
+	{{ forms.checkboxSelectField({
+		label: 'Sources' | t('app'),
+		instructions: 'Which source do you want to select {type} from?' | t('app', { type: 'users' }),
+		id: blockHandle ~ '_' ~ settings.handle ~ '_sources',
+		name: 'sources',
+		options: sourceOptions,
+		values: '*',
+		showAllOption: true,
+	}) }}
+{% else %}
+	{{ forms.field({
+		label: 'Sources' | t('app')
+	}, '<p class="error">' ~ 'No sources exist yet.' | t('app') ~ '</p>') }}
+{% endif %}
+
+{% if craft.app.getIsMultiSite() %}
+	<a class="fieldtoggle" data-target="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
+	<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="hidden">
+		{{ forms.checkboxField({
+			label: 'Manage relations on a per-site basis' | t('app'),
+			id: blockHandle ~ '_' ~ settings.handle ~ '_localize-relations',
+			name: 'localizeRelations',
+			checked: false,
+		}) }}
+	</div>
+{% endif %}
+
+<hr>
