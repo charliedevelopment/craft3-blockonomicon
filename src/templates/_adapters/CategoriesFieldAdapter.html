@@ -7,21 +7,21 @@
 		id: blockHandle ~ '_' ~ settings.handle ~ '_sources',
 		name: 'source',
 		options: sourceOptions,
-		value: '',
+		value: cachedOptions.source | default(''),
 	}) }}
 {% else %}
 	{{ forms.field({
-		label: 'Sources' | t('app')
+		label: 'Source' | t('app')
 	}, '<p class="error">' ~ 'No sources exist yet.' | t('app') ~ '</p>') }}
 {% endif %}
 
 {% if craft.app.getIsMultiSite() %}
-	<a class="fieldtoggle" data-target="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
+	<a class="fieldtoggle expanded" data-target="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
 	<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="hidden">
 		{{ forms.checkboxField({
 			label: 'Relate {type} from a specific site?' | t('app', {type: 'categories'}),
 			name: 'useTargetSite',
-			checked: false,
+			checked: cachedOptions.useTargetSite | default(false),
 			toggle: blockHandle ~ '_' ~ settings.handle ~ '_target-site-container',
 		}) }}
 		<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}target-site-container" class="hidden">
@@ -34,7 +34,7 @@
 				id: blockHandle ~ '_' ~ settings.handle ~ '_targetSiteId',
 				name: 'targetSiteId',
 				options: siteOptions,
-				value: null,
+				value: cachedOptions.targetSiteId | default(null),
 			}) }}
 		</div>
 
@@ -42,7 +42,7 @@
 			label: 'Manage relations on a per-site basis' | t('app'),
 			id: blockHandle ~ '_' ~ settings.handle ~ '_localize-relations',
 			name: 'localizeRelations',
-			checked: false,
+			checked: cachedOptions.localizeRelations | default(false),
 		}) }}
 	</div>
 {% endif %}
