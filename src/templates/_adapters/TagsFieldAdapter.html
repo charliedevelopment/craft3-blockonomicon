@@ -17,7 +17,7 @@
 
 {% if craft.app.getIsMultiSite() %}
 	<a class="fieldtoggle expanded" data-target="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
-	<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="hidden">
+	<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="">
 		{{ forms.checkboxField({
 			label: 'Relate {type} from a specific site?' | t('app', {type: 'tags'}),
 			name: 'useTargetSite',
