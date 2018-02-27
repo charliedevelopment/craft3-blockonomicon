@@ -88,8 +88,8 @@ class CategoriesField
 
 				$event->controls = Craft::$app->getView()->renderTemplate('blockonomicon/_adapters/CategoriesFieldAdapter.html', [
 					'blockHandle' => $event->handle,
-					'field' => $event->field,
 					'settings' => $event->settings,
+					'cachedOptions' => $event->cachedoptions,
 					'sourceOptions' => $sourceoptions,
 				]);
 			}

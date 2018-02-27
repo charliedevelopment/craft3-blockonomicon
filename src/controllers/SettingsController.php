@@ -149,6 +149,7 @@ class SettingsController extends Controller
 		}
 
 		// Render import controls for each block, based on any existing fields.
+		$options = Blockonomicon::getInstance()->blocks->loadImportOptions();
 		$controls = [];
 		foreach ($allblocks as $block) {
 			// Ignore any blocks that have a bad configuration.
@@ -166,12 +167,12 @@ class SettingsController extends Controller
 				}, []);
 			}
 
-			// Render all of the controsl for each field individually.
+			// Render all of the controls for each field individually.
 			$blockcontrols = [];
 			foreach ($block['fields'] as $field) {
 				$event = new RenderImportControlsEvent();
 				$event->handle = $block['handle'];
-				$event->field = $blockfields[$field['handle']] ?? null; // Supply field from block if one exists.
+				$event->cachedoptions = $options[$field['handle']] ?? null; // Retrieve any previously cached import options, if available.
 				$event->settings = $field;
 				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS, $event);
 				if (!empty($event->controls)) {
@@ -299,14 +300,21 @@ class SettingsController extends Controller
 
 		// Retrieve extra options for building the block.
 		$options = Craft::$app->getRequest()->getBodyParam('options');
-		if ($options == null) {
+		if ($options === null) {
 			$options = [];
 		}
+		if (!is_array($options)) {
+			return $this->asErrorJson(Craft::t('blockonomicon', '`options` must be an array.'));
+		}
 
+		// Create the block from the provided request.
 		$result = Blockonomicon::getInstance()->blocks->rebuildBlock($matrix, $block, $order, $options);
 		if (!is_a($result, \craft\models\MatrixBlockType::class)) {
 			return $this->asErrorJson($result);
 		}
+
+		// Store import options for later use.
+		Blockonomicon::getInstance()->blocks->storeImportOptions($options, $blockhandle);
 		
 		return $this->asJson(['success' => true, 'message' => Craft::t('blockonomicon', 'Block imported.'), 'id' => $result->id]);
 	}

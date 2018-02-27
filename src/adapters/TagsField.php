@@ -88,8 +88,8 @@ class TagsField
 
 				$event->controls = Craft::$app->getView()->renderTemplate('blockonomicon/_adapters/TagsFieldAdapter.html', [
 					'blockHandle' => $event->handle,
-					'field' => $event->field,
 					'settings' => $event->settings,
+					'cachedOptions' => $event->cachedoptions,
 					'sourceOptions' => $sourceoptions,
 				]);
 			}

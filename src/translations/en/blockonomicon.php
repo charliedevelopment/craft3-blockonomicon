@@ -21,6 +21,7 @@ return [
 	'Block {id} does not exist.' => 'Block {id} does not exist.',
 	'Matrix {id} does not exist.' => 'Matrix {id} does not exist.',
 	'`order` must be a number.' => '`order` must be a number.',
+	'`options` must be an array.' => '`order` must be an array.',
 	'`blocks` must be an array.' => '`blocks` must be an array.',
 	'`blocks` must only contain numbers.' => '`blocks` must only contain numbers.',
 	'Block order updated.' => 'Block order updated.',

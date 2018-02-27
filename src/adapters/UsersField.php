@@ -84,8 +84,8 @@ class UsersField
 
 				$event->controls = Craft::$app->getView()->renderTemplate('blockonomicon/_adapters/UsersFieldAdapter.html', [
 					'blockHandle' => $event->handle,
-					'field' => $event->field,
 					'settings' => $event->settings,
+					'cachedOptions' => $event->cachedoptions,
 					'sourceOptions' => $sourceoptions,
 				]);
 			}

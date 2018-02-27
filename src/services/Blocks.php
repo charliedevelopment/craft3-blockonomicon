@@ -384,7 +384,7 @@ class Blocks extends Component
 		}
 
 		// Retrieve all cached blocks.
-		$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
+		$blocks = $this->getBlocks();
 
 		$cssfile = fopen($this->getBlockPath() . '/blocks.css', 'w');
 		$jsfile = fopen($this->getBlockPath() . '/blocks.js', 'w');
@@ -413,5 +413,34 @@ class Blocks extends Component
 	public function render($template, $data): string
 	{
 		return Craft::$app->getView()->renderTemplate('blockonomicon/' . $template . '/_' . $template . '.html', ['block' => $data]);
+	}
+
+	/**
+	 * Retrieves last used import settings for each block.
+	 */
+	public function loadImportOptions(): array
+	{
+		$settings = @file_get_contents($this->getStoragePath() . '/importoptions.json');
+		if ($settings === false) {
+			return [];
+		}
+		
+		$settings = json_decode($settings, true);
+		if ($settings == null) {
+			return [];
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Stores a set of import settings for a given handle.
+	 * @param array $options The import options to store for the handle, as provided by the user.
+	 * @param string $handle The handle of the block the settings should be stored for.
+	 */
+	public function storeImportOptions($options, $handle) {
+		$settings = $this->loadImportOptions();
+		$settings[$handle] = $options;
+		@file_put_contents($this->getStoragePath() . '/importoptions.json', json_encode($settings));
 	}
 }

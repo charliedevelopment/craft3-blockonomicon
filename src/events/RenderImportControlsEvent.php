@@ -24,14 +24,14 @@ class RenderImportControlsEvent extends Event
 	public $handle;
 
 	/**
-	 * @var \craft\base\Field The exiting field, if one exists.
-	 */
-	public $field;
-
-	/**
 	 * @var array The currently exported settings for the field.
 	 */
 	public $settings;
+
+	/**
+	 * @var array A set of prior options used on import, if any.
+	 */
+	public $cachedoptions;
 
 	/**
 	 * @var string The HTML controls to display within the modal dialog, if any.
