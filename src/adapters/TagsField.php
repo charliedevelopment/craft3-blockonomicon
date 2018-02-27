@@ -31,7 +31,7 @@ class TagsField
 		Event::on(
 			Blockonomicon::class,
 			Blockonomicon::EVENT_SAVE_FIELD,
-			function(SaveFieldEvent $event) {
+			function (SaveFieldEvent $event) {
 				
 				// Ignore any fields that are not Tags fields.
 				if (get_class($event->field) != \craft\fields\Tags::class) {
@@ -49,7 +49,7 @@ class TagsField
 		Event::on(
 			Blockonomicon::class,
 			Blockonomicon::EVENT_LOAD_FIELD,
-			function(LoadFieldEvent $event) {
+			function (LoadFieldEvent $event) {
 				
 				// Ignore any fields that are not Tags fields.
 				if ($event->settings['type'] != \craft\fields\Tags::class) {
@@ -69,7 +69,7 @@ class TagsField
 		Event::on(
 			Blockonomicon::class,
 			Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS,
-			function(RenderImportControlsEvent $event) {
+			function (RenderImportControlsEvent $event) {
 				
 				// Ignore any fields that are not Tags fields.
 				if ($event->settings['type'] != \craft\fields\Tags::class) {

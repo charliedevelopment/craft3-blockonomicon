@@ -245,11 +245,9 @@ class Blocks extends Component
 				+ array($block->id => $blockdata)
 				+ array_slice($blocktypes, $order, null, true);
 		} else { // New block, create fields, create block, and attach to matrix.
-			
 			// Process the imported fields.
 			$fields = [];
 			foreach ($blockdata['fields'] as $field) {
-
 				// Allow additional modifications to settings before importing field.
 				$event = new LoadFieldEvent();
 				$event->field = null;
@@ -438,7 +436,8 @@ class Blocks extends Component
 	 * @param array $options The import options to store for the handle, as provided by the user.
 	 * @param string $handle The handle of the block the settings should be stored for.
 	 */
-	public function storeImportOptions($options, $handle) {
+	public function storeImportOptions($options, $handle)
+	{
 		$settings = $this->loadImportOptions();
 		$settings[$handle] = $options;
 		@file_put_contents($this->getStoragePath() . '/importoptions.json', json_encode($settings));

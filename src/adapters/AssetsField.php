@@ -31,7 +31,7 @@ class AssetsField
 		Event::on(
 			Blockonomicon::class,
 			Blockonomicon::EVENT_SAVE_FIELD,
-			function(SaveFieldEvent $event) {
+			function (SaveFieldEvent $event) {
 				
 				// Ignore any fields that are not Assets fields.
 				if (get_class($event->field) != \craft\fields\Assets::class) {
@@ -53,7 +53,7 @@ class AssetsField
 		Event::on(
 			Blockonomicon::class,
 			Blockonomicon::EVENT_LOAD_FIELD,
-			function(LoadFieldEvent $event) {
+			function (LoadFieldEvent $event) {
 				
 				// Ignore any fields that are not Assets fields.
 				if ($event->settings['type'] != \craft\fields\Assets::class) {
@@ -76,7 +76,7 @@ class AssetsField
 		Event::on(
 			Blockonomicon::class,
 			Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS,
-			function(RenderImportControlsEvent $event) {
+			function (RenderImportControlsEvent $event) {
 				
 				// Ignore any fields that are not Assets fields.
 				if ($event->settings['type'] != \craft\fields\Assets::class) {
