@@ -577,11 +577,10 @@ class SettingsController extends Controller
 		$matrix->required = false;
 		$matrix->sortOrder = 1;
 		$tab->setFields([$matrix]);
-		$fieldlayout = new FieldLayout();
+		$fieldlayout = $entrytype->getFieldLayout();
 		$fieldlayout->setTabs([$tab]);
 		$fieldlayout->setFields([$matrix]);
 		$fieldlayout->type = Entry::class;
-		$entrytype->setFieldLayout($fieldlayout);
 		Craft::$app->getSections()->saveEntryType($entrytype);
 
 		// Add placeholder assets.
