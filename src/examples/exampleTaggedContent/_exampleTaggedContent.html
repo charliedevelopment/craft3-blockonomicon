@@ -1,7 +1,7 @@
 <div class="block block--example-tagged-content">
 	{% if block.tags %}
 		<div class="tags">
-			{% for tag in block.tags %}
+			{% for tag in block.tags.all() %}
 				<div class="tag">{{ tag.title }}</div>
 			{% endfor %}
 		</div>
