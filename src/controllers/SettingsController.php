@@ -11,8 +11,19 @@ use charliedev\blockonomicon\events\RenderImportControlsEvent;
 use charliedev\blockonomicon\models\StoredBlock;
 
 use Craft;
+use craft\base\Field;
+use craft\elements\Asset;
+use craft\elements\Tag;
+use craft\elements\Entry;
 use craft\helpers\Json;
+use craft\models\FieldGroup;
+use craft\models\FieldLayout;
+use craft\models\FieldLayoutTab;
+use craft\models\Section;
+use craft\models\Section_SiteSettings;
+use craft\models\TagGroup;
 use craft\web\Controller;
+use craft\helpers\FileHelper;
 
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -441,6 +452,279 @@ class SettingsController extends Controller
 	 */
 	public function actionQuickStart()
 	{
+		// Copy blocks to the block storage folder.
+		FileHelper::copyDirectory(
+			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/exampleBanner',
+			Blockonomicon::getInstance()->blocks->getBlockPath() . '/exampleBanner'
+		);
+		FileHelper::copyDirectory(
+			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/exampleExpander',
+			Blockonomicon::getInstance()->blocks->getBlockPath() . '/exampleExpander'
+		);
+		FileHelper::copyDirectory(
+			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/exampleTaggedContent',
+			Blockonomicon::getInstance()->blocks->getBlockPath() . '/exampleTaggedContent'
+		);
+
+		// Copy template to the templates folder.
+		@copy(
+			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/_blockonomicon.html',
+			Craft::$app->getPath()->getSiteTemplatesPath() . '/_blockonomicon.html'
+		);
+
+		// Create tag group.
+		$taggroup = new TagGroup();
+		$taggroup->name = 'Blockonomicon Example Tag Group';
+		$taggroup->handle = 'blockonomiconExampleTagGroup';
+		$fieldlayout = Craft::$app->getFields()->assembleLayout([]);
+		$fieldlayout->type = Tag::class;
+		$taggroup->setFieldLayout($fieldlayout);
+		if (!Craft::$app->getTags()->saveTagGroup($taggroup)) {
+			return $this->asJson(['error' => Craft::t('app', 'Couldn’t save the tag group.')]);
+		}
+
+		// Create asset volume folder.
+		if (!FileHelper::createDirectory(Craft::getAlias('@webroot/blockonomicon-assets'))) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t create the asset folder.')]);
+		}
+
+		// Create asset volume.
+		$volume = Craft::$app->getVolumes()->createVolume([
+			'type' => \craft\volumes\Local::class,
+			'name' => 'Blockonomicon Example Asset Volume',
+			'handle' => 'blockonomiconExampleAssetVolume',
+			'hasUrls' => true,
+			'url' => '@web/blockonomicon-assets',
+			'settings' => [
+				'path' => '@webroot/blockonomicon-assets'
+			]
+		]);
+		$fieldlayout = Craft::$app->getFields()->assembleLayout([]);
+		$fieldlayout->type = Asset::class;
+		$volume->setFieldLayout($fieldlayout);
+		if (!Craft::$app->getVolumes()->saveVolume($volume)) {
+			return $this->asJson(['error' => Craft::t('app', 'Couldn’t save volume.')]);
+		}
+
+		// Create field group.
+		$fieldgroup = new FieldGroup();
+		$fieldgroup->name = 'Blockonomicon Group';
+		if (!Craft::$app->getFields()->saveGroup($fieldgroup)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save field group.')]);
+		}
+
+		// Create matrix.
+		$matrix = Craft::$app->getFields()->createField([
+			'type' => \craft\fields\Matrix::class,
+			'groupId' => $fieldgroup->id,
+			'name' => 'Blockonomicon Matrix',
+			'handle' => 'blockonomiconMatrix',
+			'instructions' => 'This is an example matrix created by Blockonomicon.',
+			'translationMethod' => Field::TRANSLATION_METHOD_NONE,
+			'translationKeyFormat' => null,
+			'settings' => [
+				'blockTypes' => [],
+				'localizeBlocks' => false,
+				'minBlocks' => null,
+				'maxBlocks' => null,
+			]
+		]);
+		if (!Craft::$app->getFields()->saveField($matrix)) {
+			return $this->asJson(['error' => Craft::t('app', 'Couldn’t save field.')]);
+		}
+
+		// Attach blocks to matrix.
+		$allblocks = Blockonomicon::getInstance()->blocks->getBlocks(true); // All installed blocks.
+		$blockoptions = [
+			'backgroundImage' => [
+				'singleUploadLocationSource' => 'folder:' . Craft::$app->getVolumes()->ensureTopFolder($volume)
+			]
+		];
+		Blockonomicon::getInstance()->blocks->rebuildBlock($matrix, $allblocks['exampleBanner'], 0, $blockoptions);
+		$blockoptions = [];
+		Blockonomicon::getInstance()->blocks->rebuildBlock($matrix, $allblocks['exampleExpander'], 1, $blockoptions);
+		$blockoptions = [
+			'tags' => [
+				'source' => 'taggroup:' . $taggroup->id
+			]
+		];
+		Blockonomicon::getInstance()->blocks->rebuildBlock($matrix, $allblocks['exampleTaggedContent'], 2, $blockoptions);
+
+		// Create single section.
+		$section = new Section();
+		$section->name = 'Blockonomicon Example';
+		$section->handle = 'blockonomiconExample';
+		$section->type = 'single';
+		$section->enableVersioning = false;
+		$section->propagateEntries = true;
+		$sitesettings = new Section_SiteSettings();
+		$sitesettings->siteId = Craft::$app->getSites()->getPrimarySite()->id;
+		$sitesettings->hasUrls = true;
+		$sitesettings->uriFormat = 'blockonomicon-example';
+		$sitesettings->template = '_blockonomicon';
+		$section->setSiteSettings([
+			$sitesettings->siteId => $sitesettings
+		]);
+		if (!Craft::$app->getSections()->saveSection($section)) {
+			return $this->asJson(['error' => Craft::t('app', 'Couldn’t save section.')]);
+		}
+		
+		// Attach matrix to entry type via a field layout.
+		$entrytype = Craft::$app->getSections()->getEntryTypesBySectionId($section->id)[0]; // It's a single, it only has one entry type automatically created for it.
+		$tab = new FieldLayoutTab();
+		$tab->name = 'Blockonomicon';
+		$tab->sortOrder = 1;
+		$matrix->required = false;
+		$matrix->sortOrder = 1;
+		$tab->setFields([$matrix]);
+		$fieldlayout = new FieldLayout();
+		$fieldlayout->setTabs([$tab]);
+		$fieldlayout->setFields([$matrix]);
+		$fieldlayout->type = Entry::class;
+		$entrytype->setFieldLayout($fieldlayout);
+		Craft::$app->getSections()->saveEntryType($entrytype);
+
+		// Add placeholder assets.
+		$filename = uniqid('placeholder1.jpg');
+		@copy(
+			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/placeholder1.jpg',
+			Craft::$app->getPath()->getTempPath() . '/' . $filename
+		);
+		$asset1 = new Asset();
+		$asset1->tempFilePath = Craft::$app->getPath()->getTempPath() . '/' . $filename;
+		$asset1->filename = 'placeholder1.jpg';
+		$asset1->newFolderId = Craft::$app->getVolumes()->ensureTopFolder($volume);
+		$asset1->volumeId = $volume->id;
+		$asset1->avoidFilenameConflicts = true;
+		$asset1->setScenario(Asset::SCENARIO_CREATE);
+		$result = Craft::$app->getElements()->saveElement($asset1);
+		
+		$filename = uniqid('placeholder2.jpg');
+		@copy(
+			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/placeholder2.jpg',
+			Craft::$app->getPath()->getTempPath() . '/' . $filename
+		);
+		$asset2 = new Asset();
+		$asset2->tempFilePath = Craft::$app->getPath()->getTempPath() . '/' . $filename;
+		$asset2->filename = 'placeholder2.jpg';
+		$asset2->newFolderId = Craft::$app->getVolumes()->ensureTopFolder($volume);
+		$asset2->volumeId = $volume->id;
+		$asset2->avoidFilenameConflicts = true;
+		$asset2->setScenario(Asset::SCENARIO_CREATE);
+		$result = Craft::$app->getElements()->saveElement($asset2);
+
+		// Add placeholder tags.
+		$tag1 = new Tag();
+		$tag1->groupId = $taggroup->id;
+		$tag1->title = 'Craft CMS';
+		Craft::$app->getElements()->saveElement($tag1);
+
+		$tag2 = new Tag();
+		$tag2->groupId = $taggroup->id;
+		$tag2->title = 'Matrix';
+		Craft::$app->getElements()->saveElement($tag2);
+
+		$tag3 = new Tag();
+		$tag3->groupId = $taggroup->id;
+		$tag3->title = 'Blocks';
+		Craft::$app->getElements()->saveElement($tag3);
+
+		$tag4 = new Tag();
+		$tag4->groupId = $taggroup->id;
+		$tag4->title = 'Blockonomicon';
+		Craft::$app->getElements()->saveElement($tag4);
+
+		$tag5 = new Tag();
+		$tag5->groupId = $taggroup->id;
+		$tag5->title = 'Lorem';
+		Craft::$app->getElements()->saveElement($tag5);
+
+		$tag6 = new Tag();
+		$tag6->groupId = $taggroup->id;
+		$tag6->title = 'Ipsum';
+		Craft::$app->getElements()->saveElement($tag6);
+
+		// Fill out entry data on the single.
+		$entry = Entry::find()->sectionId($section->id)->first();
+		$entry->setFieldValue('blockonomiconMatrix', [
+			'new1' => [
+				'type' => 'exampleBanner',
+				'enabled' => '1',
+				'fields' => [
+					'backgroundImage' => [
+						$asset1->id,
+					],
+					'header' => 'Blockonomicon Example Page',
+					'headerPosition' => 'top',
+				],
+			],
+			'new2' => [
+				'type' => 'exampleTaggedContent',
+				'enabled' => '1',
+				'fields' => [
+					'tags' => [
+						$tag1->id,
+						$tag2->id,
+						$tag3->id,
+						$tag4->id,
+					],
+					'header' => '',
+					'copy' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a vulputate dictum, massa quam dapibus leo, eget vulputate orci purus ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie, varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum interdum. Pellentesque lorem. Curabitur sit amet erat quis risus feugiat viverra. Pellentesque augue justo, sagittis et, lacinia at, venenatis non, arcu. Nunc nec libero. In cursus dictum risus. Etiam tristique nisl a nulla. Ut a orci. Curabitur dolor nunc, egestas at, accumsan at, malesuada nec, magna.',
+				],
+			],
+			'new3' => [
+				'type' => 'exampleBanner',
+				'enabled' => '1',
+				'fields' => [
+					'backgroundImage' => [
+						$asset2->id,
+					],
+					'header' => 'More Example Content',
+					'headerPosition' => 'bottom',
+				],
+			],
+			'new4' => [
+				'type' => 'exampleExpander',
+				'enabled' => '1',
+				'fields' => [
+					'header' => 'Suspendisse Potenti',
+					'copy' => 'Duis urna erat, ornare et, imperdiet eu, suscipit sit amet, massa. Nulla nulla nisi, pellentesque at, egestas quis, fringilla eu, diam.',
+					'startExpanded' => 1,
+				],
+			],
+			'new5' => [
+				'type' => 'exampleExpander',
+				'enabled' => '1',
+				'fields' => [
+					'header' => 'Donec Semper',
+					'copy' => 'Sem nec tristique tempus, justo neque commodo nisl, ut gravida sem tellus suscipit nunc. Aliquam erat volutpat. Ut tincidunt pretium elit.',
+					'startExpanded' => 0,
+				],
+			],
+			'new6' => [
+				'type' => 'exampleExpander',
+				'enabled' => '1',
+				'fields' => [
+					'header' => 'Aliquam Pulvinar',
+					'copy' => 'Suspendisse potenti. Etiam condimentum hendrerit felis. Duis iaculis aliquam enim. Donec dignissim augue vitae orci.',
+					'startExpanded' => 0,
+				],
+			],
+			'new7' => [
+				'type' => 'exampleTaggedContent',
+				'enabled' => '1',
+				'fields' => [
+					'tags' => [
+						$tag5->id,
+						$tag6->id,
+					],
+					'header' => 'Nulla Cursus',
+					'copy' => 'Curabitur luctus felis a metus. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In varius neque at enim. Suspendisse massa nulla, viverra in, bibendum vitae, tempor quis, lorem.  Donec dapibus orci sit amet elit. Maecenas rutrum ultrices lectus. Aliquam suscipit, lacus a iaculis adipiscing, eros orci pellentesque nisl, non pharetra dolor urna nec dolor. Integer cursus dolor vel magna. Integer ultrices feugiat sem. Proin nec nibh. Duis eu dui quis nunc sagittis lobortis.',
+				],
+			],
+		]);
+		Craft::$app->getElements()->saveElement($entry);
+
 		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Example content successfully installed.'));
 		return $this->asJson(['success' => true]);
 	}
@@ -450,6 +734,49 @@ class SettingsController extends Controller
 	 */
 	public function actionQuickStop()
 	{
+		// Delete section.
+		$section = Craft::$app->getSections()->getSectionByHandle('blockonomiconExample');
+		if ($section != null) {
+			Craft::$app->getSections()->deleteSectionById($section->id);
+		}
+
+		// Delete matrix.
+		$matrix = Craft::$app->getFields()->getFieldByHandle('blockonomiconMatrix');
+		if ($matrix != null) {
+			Craft::$app->getFields()->deleteFieldById($matrix->id);
+		}
+
+		// Delete field group.
+		$fieldgroups = Craft::$app->getFields()->getAllGroups();
+		foreach ($fieldgroups as $fieldgroup) {
+			if ($fieldgroup->name == 'Blockonomicon Group') {
+				Craft::$app->getFields()->deleteGroupById($fieldgroup->id);
+			}
+		}
+
+		// Delete asset volume.
+		$volume = Craft::$app->getVolumes()->getVolumeByHandle('blockonomiconExampleAssetVolume');
+		if ($volume != null) {
+			Craft::$app->getVolumes()->deleteVolumeById($volume->id);
+		}
+
+		// Delete underlying asset folder.
+		FileHelper::removeDirectory(Craft::getAlias('@webroot/blockonomicon-assets'));
+
+		// Delete tag group.
+		$taggroup = Craft::$app->getTags()->getTagGroupByHandle('blockonomiconExampleTagGroup');
+		if ($taggroup != null) {
+			Craft::$app->getTags()->deleteTagGroupById($taggroup->id);
+		}
+
+		// Delete template from the templates folder.
+		@unlink(Craft::$app->getPath()->getSiteTemplatesPath() . '/_blockonomicon.html');
+
+		// Delete blocks from the block storage folder.
+		FileHelper::removeDirectory(Blockonomicon::getInstance()->blocks->getBlockPath() . '/exampleBanner');
+		FileHelper::removeDirectory(Blockonomicon::getInstance()->blocks->getBlockPath() . '/exampleExpander');
+		FileHelper::removeDirectory(Blockonomicon::getInstance()->blocks->getBlockPath() . '/exampleTaggedContent');
+
 		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Example content removed.'));
 		return $this->asJson(['success' => true]);
 	}

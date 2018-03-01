@@ -1,0 +1,1 @@
+// example-banner block JS

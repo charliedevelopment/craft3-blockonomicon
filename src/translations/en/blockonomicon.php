@@ -35,4 +35,6 @@ return [
 	'Delete' => 'Delete',
 	'Example content successfully installed.' => 'Example content successfully installed.',
 	'Example content removed.' => 'Example content removed.',
+	'Couldn\'t create the asset folder.' => 'Couldn\'t create the asset folder.',
+	'Couldn\'t save field group.' => 'Couldn\'t save field group.',
 ];

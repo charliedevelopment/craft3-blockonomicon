@@ -1,0 +1,53 @@
+{
+    "name": "Example Tagged Content",
+    "handle": "exampleTaggedContent",
+    "version": 1,
+    "fields": {
+        "tags": {
+            "type": "craft\\fields\\Tags",
+            "name": "Tags",
+            "handle": "tags",
+            "instructions": "Tags to display for this content.",
+            "required": "0",
+            "translationMethod": "site",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "viewMode": null,
+                "limit": null,
+                "selectionLabel": ""
+            }
+        },
+        "header": {
+            "type": "craft\\fields\\PlainText",
+            "name": "Header",
+            "handle": "header",
+            "instructions": "The optional header to display above the content.",
+            "required": "0",
+            "translationMethod": "none",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "placeholder": "",
+                "multiline": "",
+                "initialRows": "4",
+                "charLimit": "",
+                "columnType": "text"
+            }
+        },
+        "copy": {
+            "type": "craft\\fields\\PlainText",
+            "name": "Copy",
+            "handle": "copy",
+            "instructions": "Text to display for this block.",
+            "required": "0",
+            "translationMethod": "none",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "placeholder": "",
+                "multiline": "",
+                "initialRows": "4",
+                "charLimit": "",
+                "columnType": "text"
+            }
+        }
+    }
+}

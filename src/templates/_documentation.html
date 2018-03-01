@@ -19,11 +19,11 @@
 		</ul>
 		<h2>Hands-on Examples</h2>
 		<p>To experiment with Blockonomicon, some example fields and templates can be installed for reference. You can then view the example content by visiting <a href="/blockonomicon-example">/blockonomicon-example</a>. To uninstall this example content, you can find an uninstall button below, if the example content is detected.</p>
-		{% if craft.app.getSections().getSectionByHandle('blockonomicon-example') == null %}
+		{% if craft.app.getSections().getSectionByHandle('blockonomiconExample') == null %}
 			<a class="fieldtoggle" data-target="quick-start-details">What will this do?</a>
 			<div id="quick-start-details" class="hidden">
 				<ul>
-					<li>Creates three blocks in Blockonomicon's block folder: <code>banner</code>, <code>tagged-content</code>, and <code>expander</code>. By default this folder is <code>craft/storage/bloconomicon/blocks</code>.</li>
+					<li>Creates three blocks in Blockonomicon's block folder: <code>exampleBanner</code>, <code>exampleTaggedContent</code>, and <code>exampleExpander</code>. By default this folder is <code>craft/storage/bloconomicon/blocks</code>.</li>
 					<li>Creates a template in Craft's template folder called <code>_blockonomicon.html</code>.</li>
 					<li>Creates a tag group called "Blockonomicon Example Tag Group".</li>
 					<li>Creates an asset volume called "Blockonomicon Example Asset Volume", using a local store within a <code>blockonomicon-assets</code> folder in the web root.</li>

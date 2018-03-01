@@ -1,0 +1,51 @@
+{
+    "name": "Example Expander",
+    "handle": "exampleExpander",
+    "version": 1,
+    "fields": {
+        "header": {
+            "type": "craft\\fields\\PlainText",
+            "name": "Header",
+            "handle": "header",
+            "instructions": "The title to display for this expander section.",
+            "required": "0",
+            "translationMethod": "none",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "placeholder": "",
+                "multiline": "",
+                "initialRows": "4",
+                "charLimit": "",
+                "columnType": "text"
+            }
+        },
+        "copy": {
+            "type": "craft\\fields\\PlainText",
+            "name": "Copy",
+            "handle": "copy",
+            "instructions": "Text to display for this expander.",
+            "required": "0",
+            "translationMethod": "none",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "placeholder": "",
+                "multiline": "",
+                "initialRows": "4",
+                "charLimit": "",
+                "columnType": "text"
+            }
+        },
+        "startExpanded": {
+            "type": "craft\\fields\\Lightswitch",
+            "name": "Start Expanded",
+            "handle": "startExpanded",
+            "instructions": "Toggle this to have this expander start in its expanded state.",
+            "required": "0",
+            "translationMethod": "none",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "default": ""
+            }
+        }
+    }
+}

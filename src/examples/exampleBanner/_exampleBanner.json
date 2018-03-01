@@ -1,0 +1,70 @@
+{
+    "name": "Example Banner",
+    "handle": "exampleBanner",
+    "version": 1,
+    "fields": {
+        "backgroundImage": {
+            "type": "craft\\fields\\Assets",
+            "name": "Background Image",
+            "handle": "backgroundImage",
+            "instructions": "Cover image for the banner.",
+            "required": "0",
+            "translationMethod": "site",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "useSingleFolder": "1",
+                "restrictFiles": "1",
+                "allowedKinds": [
+                    "image"
+                ],
+                "viewMode": "list",
+                "limit": "1",
+                "selectionLabel": "Choose a Background Image"
+            }
+        },
+        "header": {
+            "type": "craft\\fields\\PlainText",
+            "name": "Header",
+            "handle": "header",
+            "instructions": "Main title displayed within the banner.",
+            "required": "0",
+            "translationMethod": "none",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "placeholder": "",
+                "multiline": "",
+                "initialRows": "4",
+                "charLimit": "",
+                "columnType": "text"
+            }
+        },
+        "headerPosition": {
+            "type": "craft\\fields\\RadioButtons",
+            "name": "Header Position",
+            "handle": "headerPosition",
+            "instructions": "Where the header should be displayed within the banner.",
+            "required": "0",
+            "translationMethod": "none",
+            "translationKeyFormat": null,
+            "typesettings": {
+                "options": [
+                    {
+                        "label": "Top",
+                        "value": "top",
+                        "default": ""
+                    },
+                    {
+                        "label": "Middle",
+                        "value": "middle",
+                        "default": ""
+                    },
+                    {
+                        "label": "Bottom",
+                        "value": "bottom",
+                        "default": "1"
+                    }
+                ]
+            }
+        }
+    }
+}
