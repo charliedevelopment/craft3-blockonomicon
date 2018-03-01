@@ -60,7 +60,7 @@ class BlockonomiconVariable extends Component
 				if ($block['state'] != 'good') {
 					continue;
 				}
-				$out[] = '<link type="text/css" rel="stylesheet" href="' . Blockonomicon::getInstance()->blocks->getBlockPath() . '/' . $handle . '/' . $handle . '.css">';
+				$out[] = '<link type="text/css" rel="stylesheet" href="blockonomicon/' . $handle . '/' . $handle . '.css">';
 			}
 			$out = implode('', $out);
 		}
@@ -86,7 +86,7 @@ class BlockonomiconVariable extends Component
 				if ($block['state'] != 'good') {
 					continue;
 				}
-				$out[] = '<link type="application/javascript" src="' . Blockonomicon::getInstance()->blocks->getBlockPath() . '/' . $handle . '/' . $handle . '.js">';
+				$out[] = '<script type="application/javascript" src="blockonomicon/' . $handle . '/' . $handle . '.js"></script>';
 			}
 			$out = implode('', $out);
 		}
