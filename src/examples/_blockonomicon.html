@@ -22,7 +22,15 @@
 			width: 100%;
 			min-height: 100vh;
 			background-color: #ffffff;
-			overflow: hidden;
+		}
+
+		.container::after {
+			content: '';
+			display: block;
+			margin-top: -1px;
+			height: 1px;
+			width: 100%;
+			position: relative;
 		}
 
 		main {
