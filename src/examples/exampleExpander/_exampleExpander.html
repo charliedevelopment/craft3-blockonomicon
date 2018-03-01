@@ -1,5 +1,8 @@
 <div class="block block--example-expander">
-
+	<div class="title-bar{% if not block.startExpanded %} collapsed{% endif %}">
+		<div class="header">{{ block.header }}</div>
+	</div>
+	<div class="content{% if not block.startExpanded %} collapsed{% endif %}">{{ block.copy }}</div>
 </div>
 {# Available Fields #}
 {# {{ block.header }} - craft\fields\PlainText #}

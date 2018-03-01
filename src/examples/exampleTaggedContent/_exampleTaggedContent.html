@@ -1,5 +1,15 @@
 <div class="block block--example-tagged-content">
-
+	{% if block.tags %}
+		<div class="tags">
+			{% for tag in block.tags %}
+				<div class="tag">{{ tag.title }}</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+	{% if block.header %}
+		<div class="header">{{ block.header }}</div>
+	{% endif %}
+	<div class="content">{{ block.copy }}</div>
 </div>
 {# Available Fields #}
 {# {{ block.tags }} - craft\fields\Tags #}

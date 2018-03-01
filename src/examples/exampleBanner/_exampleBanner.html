@@ -1,5 +1,10 @@
 <div class="block block--example-banner">
-
+	{% if block.backgroundImage %}
+		<div class="background" style="background-image: url('{{ block.backgroundImage.one().url }}');"></div>
+	{% endif %}
+	<div class="header-container {{ block.headerPosition }}">
+		<div class="header">{{ block.header }}</div>
+	</div>
 </div>
 {# Available Fields #}
 {# {{ block.backgroundImage }} - craft\fields\Assets #}

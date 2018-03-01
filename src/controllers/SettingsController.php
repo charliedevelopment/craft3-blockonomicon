@@ -654,7 +654,7 @@ class SettingsController extends Controller
 						$asset1->id,
 					],
 					'header' => 'Blockonomicon Example Page',
-					'headerPosition' => 'top',
+					'headerPosition' => 'bottom',
 				],
 			],
 			'new2' => [
@@ -672,32 +672,32 @@ class SettingsController extends Controller
 				],
 			],
 			'new3' => [
-				'type' => 'exampleBanner',
-				'enabled' => '1',
-				'fields' => [
-					'backgroundImage' => [
-						$asset2->id,
-					],
-					'header' => 'More Example Content',
-					'headerPosition' => 'bottom',
-				],
-			],
-			'new4' => [
-				'type' => 'exampleExpander',
-				'enabled' => '1',
-				'fields' => [
-					'header' => 'Suspendisse Potenti',
-					'copy' => 'Duis urna erat, ornare et, imperdiet eu, suscipit sit amet, massa. Nulla nulla nisi, pellentesque at, egestas quis, fringilla eu, diam.',
-					'startExpanded' => 1,
-				],
-			],
-			'new5' => [
 				'type' => 'exampleExpander',
 				'enabled' => '1',
 				'fields' => [
 					'header' => 'Donec Semper',
 					'copy' => 'Sem nec tristique tempus, justo neque commodo nisl, ut gravida sem tellus suscipit nunc. Aliquam erat volutpat. Ut tincidunt pretium elit.',
 					'startExpanded' => 0,
+				],
+			],
+			'new4' => [
+				'type' => 'exampleBanner',
+				'enabled' => '1',
+				'fields' => [
+					'backgroundImage' => [
+						$asset2->id,
+					],
+					'header' => 'See More Example Content Below',
+					'headerPosition' => 'top',
+				],
+			],
+			'new5' => [
+				'type' => 'exampleExpander',
+				'enabled' => '1',
+				'fields' => [
+					'header' => 'Suspendisse Potenti',
+					'copy' => 'Duis urna erat, ornare et, imperdiet eu, suscipit sit amet, massa. Nulla nulla nisi, pellentesque at, egestas quis, fringilla eu, diam.',
+					'startExpanded' => 1,
 				],
 			],
 			'new6' => [

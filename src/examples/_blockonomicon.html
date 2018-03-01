@@ -1,0 +1,49 @@
+<html>
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> 
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+		
+		html, body {
+			font-size: 0;
+			line-height: 0;
+			font-family: 'Open Sans', sans-serif;
+		}
+
+		body {
+			background-color: #f6f4f8;
+		}
+
+		.container {
+			width: 100%;
+			min-height: 100vh;
+			background-color: #ffffff;
+			overflow: hidden;
+		}
+
+		main {
+			max-width: 1280px;
+			margin: auto;
+			padding: 0 32px;
+		}
+
+		.module {
+			width: 100%;
+			padding: 32px;
+		}
+	</style>
+	{{ craft.blockonomicon.renderCSS() }}
+</head>
+<body>
+	<main>
+		<div class="container">
+			{{ craft.blockonomicon.renderMatrix(entry.blockonomiconMatrix) }}
+		</div>
+	</main>
+	{{ craft.blockonomicon.renderJs() }}
+</body>
+</html>
