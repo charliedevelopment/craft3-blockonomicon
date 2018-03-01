@@ -584,28 +584,28 @@ class SettingsController extends Controller
 		Craft::$app->getSections()->saveEntryType($entrytype);
 
 		// Add placeholder assets.
-		$filename = uniqid('placeholder1.jpg');
+		$filename = uniqid('edan-cohen-2508-unsplash.jpg');
 		@copy(
-			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/placeholder1.jpg',
+			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/edan-cohen-2508-unsplash.jpg',
 			Craft::$app->getPath()->getTempPath() . '/' . $filename
 		);
 		$asset1 = new Asset();
 		$asset1->tempFilePath = Craft::$app->getPath()->getTempPath() . '/' . $filename;
-		$asset1->filename = 'placeholder1.jpg';
+		$asset1->filename = 'edan-cohen-2508-unsplash.jpg';
 		$asset1->newFolderId = Craft::$app->getVolumes()->ensureTopFolder($volume);
 		$asset1->volumeId = $volume->id;
 		$asset1->avoidFilenameConflicts = true;
 		$asset1->setScenario(Asset::SCENARIO_CREATE);
 		$result = Craft::$app->getElements()->saveElement($asset1);
 		
-		$filename = uniqid('placeholder2.jpg');
+		$filename = uniqid('demi-deherrera-84871-unsplash.jpg');
 		@copy(
-			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/placeholder2.jpg',
+			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/demi-deherrera-84871-unsplash.jpg',
 			Craft::$app->getPath()->getTempPath() . '/' . $filename
 		);
 		$asset2 = new Asset();
 		$asset2->tempFilePath = Craft::$app->getPath()->getTempPath() . '/' . $filename;
-		$asset2->filename = 'placeholder2.jpg';
+		$asset2->filename = 'demi-deherrera-84871-unsplash.jpg';
 		$asset2->newFolderId = Craft::$app->getVolumes()->ensureTopFolder($volume);
 		$asset2->volumeId = $volume->id;
 		$asset2->avoidFilenameConflicts = true;
