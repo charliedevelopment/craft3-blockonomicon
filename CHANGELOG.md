@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## 1.0.0 2018-03-02
+
 The initial release of the Blockonomicon plugin.
 
 ### Added
