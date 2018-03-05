@@ -22,17 +22,17 @@ class Install extends Migration
 	 */
 	public function safeUp()
 	{
-		// Set up storage directories.
-		Blockonomicon::getInstance()->blocks->setupStorageFolder();
-		Blockonomicon::getInstance()->blocks->setupBlockFolder();
-
-		// Copy the default blockonomicon configuration over to the config directory, if it doesn't exist.
+		// Copy the default blockonomicon configuration over to the config folder, if it doesn't exist.
 		if (!file_exists(Craft::$app->getConfig()->configDir . '/blockonomicon.php')) {
 			@copy(
 				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/config-example.php',
 				Craft::$app->getConfig()->configDir . '/blockonomicon.php'
 			);
 		}
+
+		// Set up storage folders.
+		Blockonomicon::getInstance()->blocks->setupStorageFolder();
+		Blockonomicon::getInstance()->blocks->setupBlockFolder();
 	}
 
 	/**
