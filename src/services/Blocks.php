@@ -120,7 +120,7 @@ class Blocks extends Component
 		if ($force === true || $blocks === false) {
 			$blocks = []; // Storage for all block handles.
 			$path = $this->getBlockPath(); // Get block path.
-			$dirs = glob($path . '/*', GLOB_ONLYDIR); // Retrieve all blocks in block directory.
+			$dirs = glob($path . '/*', GLOB_ONLYDIR); // Retrieve all blocks in block folder.
 
 			foreach ($dirs as $dir) {
 				$blockname = basename($dir);
@@ -312,13 +312,13 @@ class Blocks extends Component
 		// Store the base block path.
 		$blockpath = $this->getBlockPath() . '/' . $blockhandle;
 
-		// Ensure the directory to save the definition to already exists, determine if the directory exists.
+		// Determine if this is a new block by checking if a folder already exists with the same handle.
 		$newblock = !is_dir($blockpath);
 
-		if ($newblock) { // This is a new block, create a directory and the rest of the supporting files.
+		if ($newblock) { // This is a new block, create a folder and the rest of the supporting files.
 			$created = FileHelper::createDirectory($blockpath);
 			if (!$created) {
-				return Craft::t('blockonomicon', 'Could not create directory for block.');
+				return Craft::t('blockonomicon', 'Could not create folder for block.');
 			}
 
 			// Render base CSS file for the block.
