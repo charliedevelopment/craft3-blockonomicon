@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 ### Fixed
+- Bad block configuration with the same handle of an existing block causing matrix editor templating errors.
 - Missing `storage/blockonomicon` folder causing strange behavior.
 - Deprecation error in SettingsController.
 

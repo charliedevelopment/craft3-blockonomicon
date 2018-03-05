@@ -125,8 +125,9 @@ class SettingsController extends Controller
 
 			if (isset($allblocks[$block->handle])) { // Block has an associated exported counterpart, check for consistency.
 				$blockdata = Blockonomicon::getInstance()->blocks->getBlockData($block);
-				if ($blockdata['name'] != $allblocks[$block->handle]['name']
-					|| !$this->assocArrayEqual($blockdata['fields'], $allblocks[$block->handle]['fields'])) {
+				if ($allblocks[$block->handle]['state'] != 'good' // Bad configuration.
+					|| $blockdata['name'] != $allblocks[$block->handle]['name'] // Different name.
+					|| !$this->assocArrayEqual($blockdata['fields'], $allblocks[$block->handle]['fields'])) { // Different fields.
 					$newblock['status'] = 'desync';
 				} else {
 					$newblock['status'] = 'saved';
