@@ -24,6 +24,18 @@ use yii\base\Event;
  */
 class Blocks extends Component
 {
+	/**
+	 * @var string Cached storage path location.
+	 * @see Blocks::getStoragePath()
+	 */
+	private $_storagepath = null;
+
+	/**
+	 * @var string Cached block path location.
+	 * @see Blocks::getBlockPath()
+	 */
+	private $_blockpath = null;
+
 	public function init()
 	{
 		// Route template requests for frontend Blockonomicon resoruces.
@@ -61,26 +73,39 @@ class Blocks extends Component
 	}
 
 	/**
-	 * Retrieves the path used for block storage.
+	 * Retrieves the path used for Blockonomicon's templates, import configurations, and other resources.
+	 * Will set the folder up and generate an internal warning if the folder is missing.
 	 * @return string The full path to the Blockonomicon storage folder.
 	 */
 	public function getStoragePath(): string
 	{
-		return Craft::$app->getPath()->getStoragePath() . '/blockonomicon';
+		if ($this->_storagepath == null) {
+			$this->_storagepath = $this->_getStoragePath();
+
+			if (!is_dir($this->_storagepath)) { // Folder does not exist, create it and store a warning.
+				$this->setupStorageFolder();
+			}
+		}
+
+		return $this->_storagepath;
 	}
 
 	/**
-	 * Retrieves the path used for block storage.
-	 * @return string The full path to the Blockonomicon storage folder.
+	 * Retrieves the path used for individual block resource storage.
+	 * * Will set the folder up and generate an internal warning if the folder is missing.
+	 * @return string The full path to the Blockonomicon blocks folder.
 	 */
 	public function getBlockPath(): string
 	{
-		$path = Blockonomicon::getInstance()->getConfig('blockStorage');
-		if ($path != null) {
-			return $path;
-		} else {
-			return $this->getStoragePath() . '/blocks';
+		if ($this->_blockpath == null) {
+			$this->_blockpath = $this->_getBlockPath();
+
+			if (!is_dir($this->_blockpath)) { // Folder does not exist, create it and store a warning.
+				$this->setupBlockFolder();
+			}
 		}
+
+		return $this->_blockpath;
 	}
 
 	/**
@@ -441,5 +466,63 @@ class Blocks extends Component
 		$settings = $this->loadImportOptions();
 		$settings[$handle] = $options;
 		@file_put_contents($this->getStoragePath() . '/importoptions.json', json_encode($settings));
+	}
+
+	/**
+	 * Creates the storage folder and copies relevant resource templates to it for user modification.
+	 */
+	public function setupStorageFolder() {
+
+		$path = $this->_getStoragePath();
+
+		FileHelper::createDirectory($path);
+
+		// Copy the base resource templates for block exporting, if they don't already exist.
+		if (!file_exists($path . '/base.html')) {
+			@copy(
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/base.html',
+				$path . '/base.html'
+			);
+		}
+		if (!file_exists($path . '/base.css')) {
+			@copy(
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/base.css',
+				$path . '/base.css'
+			);
+		}
+		if (!file_exists($path . '/base.js')) {
+			@copy(
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/base.js',
+				$path . '/base.js'
+			);
+		}
+	}
+
+	/**
+	 * Creates the block folder.
+	 */
+	public function setupBlockFolder() {
+		
+		$path = $this->_getBlockPath();
+
+		FileHelper::createDirectory($path);
+	}
+
+	/**
+	 * Determines the storage path.
+	 */
+	private function _getStoragePath() {
+		return Craft::$app->getPath()->getStoragePath() . '/blockonomicon';
+	}
+
+	/**
+	 * Determines the block path.
+	 */
+	private function _getBlockPath() {
+		$path = Blockonomicon::getInstance()->getConfig('blockStorage'); // Direct setting overrides default location.
+		if ($path != null) {
+			return $path;
+		}
+		return $this->getStoragePath() . '/blocks';
 	}
 }

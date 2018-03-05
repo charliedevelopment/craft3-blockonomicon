@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 ### Fixed
+- Missing `storage/blockonomicon` folder causing strange behavior.
 - Deprecation error in SettingsController.
 
 ## 1.0.0 2018-03-02
