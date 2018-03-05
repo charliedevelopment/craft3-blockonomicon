@@ -644,7 +644,7 @@ class SettingsController extends Controller
 		Craft::$app->getElements()->saveElement($tag6);
 
 		// Fill out entry data on the single.
-		$entry = Entry::find()->sectionId($section->id)->first();
+		$entry = Entry::find()->sectionId($section->id)->one();
 		$entry->setFieldValue('blockonomiconMatrix', [
 			'new1' => [
 				'type' => 'exampleBanner',
