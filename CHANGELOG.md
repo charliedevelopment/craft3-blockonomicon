@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## 1.0.1 2018-03-05
+
 ### Fixed
 - Bad block configuration with the same handle of an existing block causing matrix editor templating errors.
 - Missing `storage/blockonomicon` folder causing strange behavior.
