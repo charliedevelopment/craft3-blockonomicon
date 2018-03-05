@@ -47,6 +47,9 @@ class Blockonomicon extends Plugin
 	 */
 	public const EVENT_LOAD_FIELD = 'loadField';
 
+	/**
+	 * @var array Cached plugin configuration.
+	 */
 	private $_config;
 
 	/**
@@ -59,23 +62,6 @@ class Blockonomicon extends Plugin
 		$this->setComponents([
 			'blocks' => Blocks::class,
 		]);
-
-		/*
-		// In the case of multi-user installs, register a custom user permission to allow fine-grained management of blocks in Blockonomicon.
-		if (Craft::$app->getEdition() >= Craft::Client) {
-			Event::on(
-				UserPermissions::class,
-				UserPermissions::EVENT_REGISTER_PERMISSIONS,
-				function (RegisterUserPermissionsEvent $event) {
-					$event->permissions['Blockonomicon'] = [
-						'manageBlocks' => [
-							'label' => Craft::t('blockonomicon', 'Manage Blocks'),
-						],
-					];
-				}
-			);
-		}
-		*/
 
 		// Add routes for the plugin control panels.
 		Event::on(
