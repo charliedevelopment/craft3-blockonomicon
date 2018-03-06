@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Added
+
+- Minor documentation notes about third-party field support.
+
 ## 1.0.1 2018-03-05
 
 ### Fixed

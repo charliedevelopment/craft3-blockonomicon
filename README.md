@@ -54,7 +54,7 @@ The *matrix editor* allows the blocks on a matrix field to be freely imported, e
 
 ![Blockonomicon block editor panel](./resources/block-editor.png)
 
-The *block editor* provides a simple reference to the fields that are associated with the block, as well as a means of editing a block's name, handle, and description. To fully edit a block's individual field configurations, it is best to use the built-in matrix editor of craft, and then re-export the (new) block. If you're feeling exceptionally adventurous, the JSON block configuration files can be manually edited.
+The *block editor* provides a simple reference to the fields that are associated with the block, as well as a means of editing a block's name, handle, and description. To fully edit a block's individual field configurations, it is best to use the built-in matrix editor of Craft, and then re-export the (new) block. If you're feeling exceptionally adventurous, the JSON block configuration files can be manually edited.
 
 ### Settings Panel
 
@@ -67,6 +67,10 @@ The *settings panel* can be used to confirm a few additional settings that can b
 ![Blockonomicon documentation panel](./resources/additional-documentation.png)
 
 The plugin's section within the Craft control panel also comes with its own detailed documentation page. It includes a guide on templating features of Blockonomicon as well as a breakdown of features, management, and advanced settings. A set of example data to help in getting started with Blockonomicon can be installed through this page.
+
+## Field Support
+
+Blockonomicon supports all native Craft fields. Many third party fields may also be supported out of the box. An unsupported field does not prevent a block from being exported or imported. Instead if all settings cannot be saved, it may not match the exported configuration entirely when imported. Instead, for more complex fields, Blockonomicon provides an extension system that allows adapters to support these more complex fields. This extension system is used internally for Craft's element fields (Asset, Category, Entry, Tag, User).
 
 ---
 
