@@ -68,7 +68,59 @@ class MatrixField
 					return;
 				}
 
-				// TODO
+				// Create a list of existing blocks, keyed by handle, if possible.
+				$currentblocks = [];
+				if ($event->field) {
+					$currentblocks = array_reduce($event->field->getBlockTypes(), function($value, $item) {
+						$value[$item->handle] = $item;
+						return $value;
+					}, []);
+				}
+
+				// Iterate over every block setting, reusing ids when possible.
+				$blocks = [];
+				foreach ($event->settings['typesettings']['blocktypes'] as $block) {
+					$currentblock = $currentblocks[$block['handle']] ?? null;
+
+					// Create a list of existing fields, keyed by handle, if possible.
+					$currentfields = [];
+					if ($currentblock) {
+						$currentfields = array_reduce($currentblock->getFields(), function($value, $item) {
+							$value[$item->handle] = $item;
+							return $value;
+						}, []);
+					}
+
+					// Match block fields to fields in the settings, reusing ids when possible.
+					$fields = [];
+					foreach ($block['fields'] as $field) {
+						$currentfield = $currentfields[$field['handle']] ?? null;
+
+						// Send off event to update inner field settings.
+						$secondaryevent = new LoadFieldEvent();
+						$secondaryevent->field = $currentfield;
+						$secondaryevent->importoptions = $event->importoptions[$block['handle']][$field['handle']] ?? null; // Get available import options for the subfield, if possible.
+						$secondaryevent->settings = $field;
+						Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_LOAD_FIELD, $secondaryevent);
+						if ($currentfield) {
+							$fields[$currentfield->id] = $secondaryevent->settings;
+						} else {
+							$fields['new' . (count($fields) + 1)] = $secondaryevent->settings;
+						}
+					}
+					$newblock = [
+						'handle' => $block['handle'],
+						'name' => $block['name'],
+						'fields' => $fields,
+					];
+					if ($currentblock) {
+						$blocks[$currentblock->id] = $newblock;
+					} else {
+						$blocks['new' . (count($blocks) + 1)] = $newblock;
+					}
+				}
+
+				$event->settings['typesettings']['blocktypes'] = $blocks;
 			}
 		);
 
@@ -84,6 +136,7 @@ class MatrixField
 				}
 
 				// Gather possible controls for each inner field.
+				$blocks = [];
 				foreach ($event->settings['typesettings']['blocktypes'] as $block) {
 					$blockcontrols = [];
 					foreach ($block['fields'] as $field) {
@@ -100,6 +153,11 @@ class MatrixField
 							];
 						}
 					}
+					$blocks[] = [
+						'controls' => $blockcontrols,
+						'name' => $block['name'],
+						'matrix' => $event->settings['name'],
+					];
 				}
 
 				// No controls, don't add them to the event.
@@ -112,7 +170,7 @@ class MatrixField
 					'blockHandle' => $event->handle,
 					'settings' => $event->settings,
 					'cachedOptions' => $event->cachedoptions,
-					'blockControls' => $blockcontrols,
+					'blocks' => $blocks,
 				]);
 			}
 		);

@@ -1,6 +1,11 @@
 <div class="indent">
-		{% for fieldcontrol in blockControls %}
-			<h3>{{ fieldcontrol.name | t('site') }}<span class="light"> (within Matrix)</span></h3>
-			{{ fieldcontrol.control | raw }}
-		{% endfor %}
-	</div>
+	{% for block in blocks %}
+		<h3>{{ block.name | t('site') }}<span class="light"> (block within {{ block.matrix | t('site') }})</span></h3>
+		<div class="indent">
+			{% for fieldcontrol in block.controls %}
+				<h3>{{ fieldcontrol.name | t('site') }}<span class="light"> (field within {{ block.name | t('site') }})</span></h3>
+				{{ fieldcontrol.control | raw }}
+			{% endfor %}
+		</div>
+	{% endfor %}
+</div>

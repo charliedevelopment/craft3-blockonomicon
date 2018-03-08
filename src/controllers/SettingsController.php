@@ -183,7 +183,7 @@ class SettingsController extends Controller
 			$blockcontrols = [];
 			foreach ($block['fields'] as $field) {
 				$event = new RenderImportControlsEvent();
-				$event->handle = $block['handle'];
+				$event->handle = $field['handle'];
 				$event->cachedoptions = $options[$field['handle']] ?? null; // Retrieve any previously cached import options, if available.
 				$event->settings = $field;
 				Blockonomicon::getInstance()->trigger(Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS, $event);

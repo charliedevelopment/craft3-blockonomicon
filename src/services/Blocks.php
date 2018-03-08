@@ -116,7 +116,7 @@ class Blocks extends Component
 	public function getBlocks(bool $force = false): array
 	{
 		$blocks = Craft::$app->getCache()->get('blockonomicon_blocks'); // Retrieve our block set cache.
-		
+
 		if ($force === true || $blocks === false) {
 			$blocks = []; // Storage for all block handles.
 			$path = $this->getBlockPath(); // Get block path.
@@ -173,7 +173,7 @@ class Blocks extends Component
 
 		return $blockdata;
 	}
-	
+
 	/**
 	 * Creates an array representing a field and all of its associated settings.
 	 * @param \craft\base\Field $field The field to create a representation of.
@@ -447,7 +447,7 @@ class Blocks extends Component
 		if ($settings === false) {
 			return [];
 		}
-		
+
 		$settings = json_decode($settings, true);
 		if ($settings == null) {
 			return [];
@@ -502,7 +502,7 @@ class Blocks extends Component
 	 * Creates the block folder.
 	 */
 	public function setupBlockFolder() {
-		
+
 		$path = $this->_getBlockPath();
 
 		FileHelper::createDirectory($path);
