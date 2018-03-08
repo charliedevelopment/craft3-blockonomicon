@@ -4,8 +4,8 @@
 	{{ forms.checkboxSelectField({
 		label: 'Sources' | t('app'),
 		instructions: 'Which source do you want to select {type} from?' | t('app', { type: 'users' }),
-		id: blockHandle ~ '_' ~ settings.handle ~ '_sources',
-		name: 'sources',
+		id: safeHandle ~ '_' ~ settings.handle ~ '_sources',
+		name: blockHandle ~ '[sources]',
 		options: sourceOptions,
 		values: cachedOptions.sources | default('*'),
 		showAllOption: true,
@@ -17,12 +17,12 @@
 {% endif %}
 
 {% if craft.app.getIsMultiSite() %}
-	<a class="fieldtoggle expanded" data-target="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
-	<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="">
+	<a class="fieldtoggle expanded" data-target="{{ safeHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
+	<div id="{{ safeHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="">
 		{{ forms.checkboxField({
 			label: 'Manage relations on a per-site basis' | t('app'),
-			id: blockHandle ~ '_' ~ settings.handle ~ '_localize-relations',
-			name: 'localizeRelations',
+			id: safeHandle ~ '_' ~ settings.handle ~ '_localize-relations',
+			name: blockHandle ~ '[localizeRelations]',
 			checked: cachedOptions.localizeRelations | default(false),
 		}) }}
 	</div>

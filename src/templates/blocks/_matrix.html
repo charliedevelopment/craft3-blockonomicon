@@ -88,12 +88,12 @@
 			<div class="import-control" data-handle="{{ blockcontrols.block }}">
 				<div class="body">
 					<p>Some additional configuration is required to import this block. Please review the settings below for the block fields being imported.</p>
-					{% for fieldcontrol in blockcontrols.controls %}
-						<h2>{{ fieldcontrol.name | t('site') }}</h2>
-						<form data-field="{{ fieldcontrol.handle }}">
-						{{ fieldcontrol.control | raw }}
-						</form>
-					{% endfor %}
+					<form>
+						{% for fieldcontrol in blockcontrols.controls %}
+							<h2>{{ fieldcontrol.name | t('site') }}</h2>
+							{{ fieldcontrol.control | raw }}
+						{% endfor %}
+					</form>
 				</div>
 				<div class="footer">
 					<div class="buttons actions">

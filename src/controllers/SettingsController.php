@@ -261,7 +261,7 @@ class SettingsController extends Controller
 			}
 			$blocks[$key] = intval($val);
 		}
-		
+
 		// Manually update the table, instead of going through craft's own update methods.
 		// This way things like SuperTable don't lose their data.
 		$order = 1;
@@ -321,7 +321,7 @@ class SettingsController extends Controller
 
 		// Store import options for later use.
 		Blockonomicon::getInstance()->blocks->storeImportOptions($options, $blockhandle);
-		
+
 		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Block imported.'));
 		return $this->asJson(['success' => true]);
 	}
@@ -356,7 +356,7 @@ class SettingsController extends Controller
 		if ($result !== true) {
 			return $this->asErrorJson($result);
 		}
-		
+
 		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Block exported.'));
 		return $this->asJson(['success' => true]);
 	}
@@ -421,12 +421,12 @@ class SettingsController extends Controller
 			]);
 			return null;
 		}
-		
+
 		// Update block properties.
 		$block['name'] = $name;
 		$block['handle'] = $handle;
 		$block['description'] = $description;
-		
+
 		if ($oldhandle != $handle) {
 			Blockonomicon::getInstance()->blocks->changeBlockHandle($oldhandle, $handle);
 		}
@@ -569,7 +569,7 @@ class SettingsController extends Controller
 		if (!Craft::$app->getSections()->saveSection($section)) {
 			return $this->asJson(['error' => Craft::t('app', 'Couldn’t save section.')]);
 		}
-		
+
 		// Attach matrix to entry type via a field layout.
 		$entrytype = Craft::$app->getSections()->getEntryTypesBySectionId($section->id)[0]; // It's a single, it only has one entry type automatically created for it.
 		$tab = new FieldLayoutTab();
@@ -598,7 +598,7 @@ class SettingsController extends Controller
 		$asset1->avoidFilenameConflicts = true;
 		$asset1->setScenario(Asset::SCENARIO_CREATE);
 		$result = Craft::$app->getElements()->saveElement($asset1);
-		
+
 		$filename = uniqid('demi-deherrera-84871-unsplash.jpg');
 		@copy(
 			Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/examples/demi-deherrera-84871-unsplash.jpg',

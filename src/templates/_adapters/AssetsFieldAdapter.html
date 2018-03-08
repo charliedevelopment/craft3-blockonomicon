@@ -1,21 +1,21 @@
 {% import '_includes/forms' as forms %}
 
-{% macro uploadLocationInput(name, blockHandle, settings, inputSourceOptions) %}
+{% macro uploadLocationInput(name, safeHandle, blockHandle, settings, inputSourceOptions) %}
     {% from '_includes/forms' import select, text %}
     <div class="flex">
         <div>
             {{ select({
-                id: blockHandle ~ '_' ~ settings.handle ~ '_' ~ name ~ 'Source',
-                name: name ~ 'Source',
+                id: safeHandle ~ '_' ~ settings.handle ~ '_' ~ name ~ 'Source',
+                name: blockHandle ~ '[' ~ name ~ 'Source]',
                 options: inputSourceOptions,
                 value: cachedOptions[name ~ 'Source'] | default(null),
             }) }}
         </div>
         <div class="flex-grow">
             {{ text({
-                id: blockHandle ~ '_' ~ settings.handle ~ '_' ~ name ~ 'Subpath',
+                id: safeHandle ~ '_' ~ settings.handle ~ '_' ~ name ~ 'Subpath',
                 class: 'ltr',
-                name: name ~ 'Subpath',
+                name: blockHandle ~ '[' ~ name ~ 'Subpath]',
                 value: cachedOptions[name ~ 'Subpath'] | default(''),
                 placeholder: 'path/to/subfolder' | t('app')
             }) }}
@@ -33,22 +33,22 @@
 
 {{ forms.checkboxField({
 	label: 'Restrict uploads to a single folder?' | t('app'),
-	id: blockHandle ~ '_' ~ settings.handle ~ '_useSingleFolder-toggle',
-	name: 'useSingleFolder',
+	id: safeHandle ~ '_' ~ settings.handle ~ '_useSingleFolder-toggle',
+	name: blockHandle ~ '[useSingleFolder]',
 	class: 'use-single-folder-cb',
 	value: cachedOptions.useSingleFolder | default(1),
 	checked: false,
-	toggle: blockHandle ~ '_' ~ settings.handle ~ '_single-folder-settings',
-	reverseToggle: blockHandle ~ '_' ~ settings.handle ~ '_multi-folder-settings'
+	toggle: safeHandle ~ '_' ~ settings.handle ~ '_single-folder-settings',
+	reverseToggle: safeHandle ~ '_' ~ settings.handle ~ '_multi-folder-settings'
 }) }}
 
-<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}multi-folder-settings">
+<div id="{{ safeHandle ~ '_' ~ settings.handle ~ '_' }}multi-folder-settings">
 	{% if sourceOptions %}
 		{{ forms.checkboxSelectField({
 			label: 'Sources' | t('app'),
 			instructions: 'Which sources do you want to select {type} from?' | t('app', { type: 'assets' }),
-			id: blockHandle ~ '_' ~ settings.handle ~ '_sources',
-			name: 'sources',
+			id: safeHandle ~ '_' ~ settings.handle ~ '_sources',
+			name: blockHandle ~ '[sources]',
 			options: sourceOptions,
 			values: cachedOptions.sources | default('*'),
 			showAllOption: true,
@@ -62,34 +62,34 @@
 	{{ forms.field({
 		label: 'Default Upload Location' | t('app'),
 		instructions: 'Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end?' | t('app') ~ ' ' ~ uploadLocationNote,
-	}, uploadLocationInput('defaultUploadLocation', blockHandle, settings, sourceOptions)) }}
+	}, uploadLocationInput('defaultUploadLocation', safeHandle, blockHandle, settings, sourceOptions)) }}
 </div>
 
-<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}single-folder-settings" class="hidden">
+<div id="{{ safeHandle ~ '_' ~ settings.handle ~ '_' }}single-folder-settings" class="hidden">
 	{{ forms.field({
 		label: 'Upload Location' | t('app'),
 		instructions: uploadLocationNote,
-	}, uploadLocationInput('singleUploadLocation', blockHandle, settings, sourceOptions)) }}
+	}, uploadLocationInput('singleUploadLocation', safeHandle, blockHandle, settings, sourceOptions)) }}
 </div>
 
 {% if craft.app.getIsMultiSite() %}
-	<a class="fieldtoggle expanded" data-target="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
-	<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="">
+	<a class="fieldtoggle expanded" data-target="{{ safeHandle ~ '_' ~ settings.handle ~ '_' }}advanced">{{ 'Advanced' | t('app') }}</a>
+	<div id="{{ safeHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="">
 		{{ forms.checkboxField({
 			label: 'Relate {type} from a specific site?' | t('app', {type: 'assets'}),
-			name: 'useTargetSite',
+			name: blockHandle ~ '[useTargetSite]',
 			checked: cachedOptions.useTargetSite | default(false),
-			toggle: blockHandle ~ '_' ~ settings.handle ~ '_target-site-container',
+			toggle: safeHandle ~ '_' ~ settings.handle ~ '_target-site-container',
 		}) }}
-		<div id="{{ blockHandle ~ '_' ~ settings.handle ~ '_' }}target-site-container" class="hidden">
+		<div id="{{ safeHandle ~ '_' ~ settings.handle ~ '_' }}target-site-container" class="hidden">
 			{% set siteOptions = [] %}
 			{% for site in craft.app.getSites.getAllSites() %}
 				{% set siteOptions = siteOptions | merge([{label: site.name | t('site'), value: site.id}]) %}
 			{% endfor %}
 			{{ forms.selectField({
 				label: 'Which site should {type} be related from?' | t('app', {type: 'assets'}),
-				id: blockHandle ~ '_' ~ settings.handle ~ '_targetSiteId',
-				name: 'targetSiteId',
+				id: safeHandle ~ '_' ~ settings.handle ~ '_targetSiteId',
+				name: blockHandle ~ '[targetSiteId]',
 				options: siteOptions,
 				value: cachedOptions.targetSiteId | default(null),
 			}) }}
@@ -97,8 +97,8 @@
 
 		{{ forms.checkboxField({
 			label: 'Manage relations on a per-site basis' | t('app'),
-			id: blockHandle ~ '_' ~ settings.handle ~ '_localize-relations',
-			name: 'localizeRelations',
+			id: safeHandle ~ '_' ~ settings.handle ~ '_localize-relations',
+			name: blockHandle ~ '[localizeRelations]',
 			checked: cachedOptions.localizeRelations | default(false),
 		}) }}
 	</div>

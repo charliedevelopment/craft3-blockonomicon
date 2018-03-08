@@ -32,7 +32,7 @@ class CategoriesField
 			Blockonomicon::class,
 			Blockonomicon::EVENT_SAVE_FIELD,
 			function (SaveFieldEvent $event) {
-				
+
 				// Ignore any fields that are not Categories fields.
 				if (get_class($event->field) != \craft\fields\Categories::class) {
 					return;
@@ -50,7 +50,7 @@ class CategoriesField
 			Blockonomicon::class,
 			Blockonomicon::EVENT_LOAD_FIELD,
 			function (LoadFieldEvent $event) {
-				
+
 				// Ignore any fields that are not Categories fields.
 				if ($event->settings['type'] != \craft\fields\Categories::class) {
 					return;
@@ -70,7 +70,7 @@ class CategoriesField
 			Blockonomicon::class,
 			Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS,
 			function (RenderImportControlsEvent $event) {
-				
+
 				// Ignore any fields that are not Categories fields.
 				if ($event->settings['type'] != \craft\fields\Categories::class) {
 					return;
@@ -87,6 +87,7 @@ class CategoriesField
 				}
 
 				$event->controls = Craft::$app->getView()->renderTemplate('blockonomicon/_adapters/CategoriesFieldAdapter.html', [
+					'safeHandle' => implode('_', preg_split('/[\[\]]+/', $event->handle, -1, PREG_SPLIT_NO_EMPTY)),
 					'blockHandle' => $event->handle,
 					'settings' => $event->settings,
 					'cachedOptions' => $event->cachedoptions,

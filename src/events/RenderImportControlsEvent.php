@@ -19,7 +19,8 @@ use yii\base\Event;
 class RenderImportControlsEvent extends Event
 {
 	/**
-	 * The unique block handle, especially useful for ensuring unique input ids.
+	 * @var string The unique block handle/namespace, in bracket notation.
+	 * Especially useful for ensuring unique input ids and handling nested fields.
 	 */
 	public $handle;
 
@@ -31,7 +32,7 @@ class RenderImportControlsEvent extends Event
 	/**
 	 * @var array A set of prior options used on import, if any.
 	 */
-	public $cachedoptions;
+	public $cachedoptions = null;
 
 	/**
 	 * @var string The HTML controls to display within the modal dialog, if any.
