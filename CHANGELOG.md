@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Added
+
+- Support for Matrix fields (accessible through the use of adapters).
+
 ## 1.0.2 2018-03-06
 
 ### Added
