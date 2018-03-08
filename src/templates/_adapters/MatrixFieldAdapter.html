@@ -1,0 +1,6 @@
+<div class="indent">
+		{% for fieldcontrol in blockControls %}
+			<h3>{{ fieldcontrol.name | t('site') }}<span class="light"> (within Matrix)</span></h3>
+			{{ fieldcontrol.control | raw }}
+		{% endfor %}
+	</div>

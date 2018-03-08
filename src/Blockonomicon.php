@@ -95,6 +95,7 @@ class Blockonomicon extends Plugin
 		\charliedev\blockonomicon\adapters\AssetsField::setup();
 		\charliedev\blockonomicon\adapters\CategoriesField::setup();
 		\charliedev\blockonomicon\adapters\EntriesField::setup();
+		\charliedev\blockonomicon\adapters\MatrixField::setup();
 		\charliedev\blockonomicon\adapters\TagsField::setup();
 		\charliedev\blockonomicon\adapters\UsersField::setup();
 
@@ -109,7 +110,7 @@ class Blockonomicon extends Plugin
 	{
 		return new \charliedev\blockonomicon\models\Settings();
 	}
-	
+
 	/**
 	 * @inheritdoc
 	 * @see craft\base\Plugin
