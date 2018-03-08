@@ -1,13 +1,14 @@
 ## [Unreleased]
 
 ### Added
-
 - Support for Matrix fields (accessible through the use of adapters).
+
+### Fixed
+- Re-importing the first block in a matrix could drop a block's definition in specific ordering cases.
 
 ## 1.0.2 2018-03-06
 
 ### Added
-
 - Minor documentation notes about third-party field support.
 
 ## 1.0.1 2018-03-05

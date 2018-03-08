@@ -220,7 +220,7 @@ class Blocks extends Component
 			if ($val->handle == $blockhandle) {
 				$block = $val;
 			} else {
-				$in[] = $val;
+				$in[$val->id] = $val;
 			}
 			return $in;
 		}, []);
