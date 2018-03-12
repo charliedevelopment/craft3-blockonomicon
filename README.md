@@ -1,6 +1,6 @@
-# Blockonomicon for Craft 3
-
 ![Blockonomicon](./resources/blockonomicon.png)
+
+# Blockonomicon for Craft 3
 
 This plugin enhances Craft's own matrix fields with a number of features:
 
