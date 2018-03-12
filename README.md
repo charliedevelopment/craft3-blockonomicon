@@ -1,5 +1,7 @@
 # Blockonomicon for Craft 3
 
+![Blockonomicon](./resources/blockonomicon.png)
+
 This plugin enhances Craft's own matrix fields with a number of features:
 
 - Individual matrix block configurations can be imported and exported, allowing for easy duplication without having to manually edit, even across entire Craft installations.
