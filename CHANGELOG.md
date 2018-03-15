@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed
+- Reworked some code that was relying on a php 7.1 feature, causing some compatibility issues.
+
 ## 1.1.0 2018-03-08
 
 ### Added
