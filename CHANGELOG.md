@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed
+- `.gitignore` file added to avoid committing cached/temporary files.
+
 ## 1.1.1 2018-03-15
 
 ### Fixed

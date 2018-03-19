@@ -477,6 +477,14 @@ class Blocks extends Component
 
 		FileHelper::createDirectory($path);
 
+		// Copy the gitignore file over, if it doesn't already exist.
+		if (!file_exists($path . '/.gitignore')) {
+			@copy(
+				Craft::$app->getPath()->getVendorPath() . '/charliedev/blockonomicon/src/resources/example.gitignore',
+				$path . '/.gitignore'
+			);
+		}
+
 		// Copy the base resource templates for block exporting, if they don't already exist.
 		if (!file_exists($path . '/base.html')) {
 			@copy(
