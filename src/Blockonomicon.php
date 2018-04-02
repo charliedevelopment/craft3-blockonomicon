@@ -141,9 +141,9 @@ class Blockonomicon extends Plugin
 				'label' => Craft::t('blockonomicon', 'Settings'),
 				'url' => 'blockonomicon/settings',
 			],
-			'documentation' => [
-				'label' => Craft::t('blockonomicon', 'Documentation'),
-				'url' => 'blockonomicon/documentation',
+			'examples' => [
+				'label' => Craft::t('blockonomicon', 'Examples'),
+				'url' => 'blockonomicon/examples',
 			],
 		];
 		return $item;
@@ -195,6 +195,6 @@ class Blockonomicon extends Plugin
 		$event->rules['blockonomicon/blocks/<blockhandle:{handle}>'] = 'blockonomicon/settings/edit-block';
 		$event->rules['blockonomicon/matrix/<matrixid:\d+>'] = 'blockonomicon/settings/edit-matrix';
 		$event->rules['blockonomicon/settings'] = 'blockonomicon/settings/global';
-		$event->rules['blockonomicon/documentation'] = 'blockonomicon/settings/documentation';
+		$event->rules['blockonomicon/examples'] = 'blockonomicon/settings/examples';
 	}
 }

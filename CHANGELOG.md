@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Changed
+- Documentation migrated from internal plugin page to GitHub readme.
+
 ### Fixed
 - `.gitignore` file added to avoid committing cached/temporary files.
 

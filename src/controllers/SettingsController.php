@@ -235,11 +235,11 @@ class SettingsController extends Controller
 	}
 
 	/**
-	 * Renders the Blockonomicon documentation panel.
+	 * Renders the Blockonomicon examples panel.
 	 */
-	public function actionDocumentation(): Response
+	public function actionExamples(): Response
 	{
-		return $this->renderTemplate('blockonomicon/_documentation');
+		return $this->renderTemplate('blockonomicon/_examples');
 	}
 
 	/**
