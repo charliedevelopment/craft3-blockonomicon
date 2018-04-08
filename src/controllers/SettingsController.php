@@ -582,7 +582,9 @@ class SettingsController extends Controller
 		$fieldlayout->setTabs([$tab]);
 		$fieldlayout->setFields([$matrix]);
 		$fieldlayout->type = Entry::class;
-		Craft::$app->getSections()->saveEntryType($entrytype);
+		if (!Craft::$app->getSections()->saveEntryType($entrytype)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save entry type.')]);
+		}
 
 		// Add placeholder assets.
 		$filename = uniqid('edan-cohen-2508-unsplash.jpg');
@@ -597,7 +599,9 @@ class SettingsController extends Controller
 		$asset1->volumeId = $volume->id;
 		$asset1->avoidFilenameConflicts = true;
 		$asset1->setScenario(Asset::SCENARIO_CREATE);
-		$result = Craft::$app->getElements()->saveElement($asset1);
+		if (!Craft::$app->getElements()->saveElement($asset1)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		$filename = uniqid('demi-deherrera-84871-unsplash.jpg');
 		@copy(
@@ -611,38 +615,52 @@ class SettingsController extends Controller
 		$asset2->volumeId = $volume->id;
 		$asset2->avoidFilenameConflicts = true;
 		$asset2->setScenario(Asset::SCENARIO_CREATE);
-		$result = Craft::$app->getElements()->saveElement($asset2);
+		if (!Craft::$app->getElements()->saveElement($asset2)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		// Add placeholder tags.
 		$tag1 = new Tag();
 		$tag1->groupId = $taggroup->id;
 		$tag1->title = 'Craft CMS';
-		Craft::$app->getElements()->saveElement($tag1);
+		if (!Craft::$app->getElements()->saveElement($tag1)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		$tag2 = new Tag();
 		$tag2->groupId = $taggroup->id;
 		$tag2->title = 'Matrix';
-		Craft::$app->getElements()->saveElement($tag2);
+		if (!Craft::$app->getElements()->saveElement($tag2)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		$tag3 = new Tag();
 		$tag3->groupId = $taggroup->id;
 		$tag3->title = 'Blocks';
-		Craft::$app->getElements()->saveElement($tag3);
+		if (!Craft::$app->getElements()->saveElement($tag3)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		$tag4 = new Tag();
 		$tag4->groupId = $taggroup->id;
 		$tag4->title = 'Blockonomicon';
-		Craft::$app->getElements()->saveElement($tag4);
+		if (!Craft::$app->getElements()->saveElement($tag4)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		$tag5 = new Tag();
 		$tag5->groupId = $taggroup->id;
 		$tag5->title = 'Lorem';
-		Craft::$app->getElements()->saveElement($tag5);
+		if (!Craft::$app->getElements()->saveElement($tag5)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		$tag6 = new Tag();
 		$tag6->groupId = $taggroup->id;
 		$tag6->title = 'Ipsum';
-		Craft::$app->getElements()->saveElement($tag6);
+		if (!Craft::$app->getElements()->saveElement($tag6)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		// Fill out entry data on the single.
 		$entry = Entry::find()->sectionId($section->id)->one();
@@ -723,7 +741,9 @@ class SettingsController extends Controller
 				],
 			],
 		]);
-		Craft::$app->getElements()->saveElement($entry);
+		if (!Craft::$app->getElements()->saveElement($entry)) {
+			return $this->asJson(['error' => Craft::t('blockonomicon', 'Couldn\'t save element.')]);
+		}
 
 		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Example content successfully installed.'));
 		return $this->asJson(['success' => true]);
