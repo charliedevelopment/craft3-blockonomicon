@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## 1.1.2 2018-06-06
+
 ### Added
 - Warnings that indicate when a storage/block folder have gone missing, as they are sometimes overlooked during migration.
 
