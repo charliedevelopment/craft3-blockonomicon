@@ -49,7 +49,7 @@ class BlockonomiconVariable extends Component
 	{
 		if (isset($options['condense']) && $options['condense'] === true) { // If the files should be condensed into one file.
 			Blockonomicon::getInstance()->blocks->condenseFiles();
-			
+
 			$out = '<link type="text/css" rel="stylesheet" href="blockonomicon/blocks.css">';
 		} else { // Output individual files.
 			// Retrieve all cached blocks.
@@ -64,7 +64,7 @@ class BlockonomiconVariable extends Component
 			}
 			$out = implode('', $out);
 		}
-		
+
 		return Template::raw($out);
 	}
 
@@ -75,7 +75,7 @@ class BlockonomiconVariable extends Component
 	{
 		if (isset($options['condense']) && $options['condense'] === true) { // If the files should be condensed into one file.
 			Blockonomicon::getInstance()->blocks->condenseFiles();
-			
+
 			$out = '<script type="application/javascript" src="blockonomicon/blocks.js"></script>';
 		} else { // Output individual files.
 			// Retrieve all cached blocks.
@@ -90,7 +90,7 @@ class BlockonomiconVariable extends Component
 			}
 			$out = implode('', $out);
 		}
-		
+
 		return Template::raw($out);
 	}
 
@@ -100,7 +100,7 @@ class BlockonomiconVariable extends Component
 		if (is_object($matrix) && get_class($matrix) == 'craft\elements\db\MatrixBlockQuery') {
 			$matrix = $matrix->all();
 		}
-		
+
 		// Or an array of matrix blocks.
 		if (!is_array($matrix)) {
 			return;

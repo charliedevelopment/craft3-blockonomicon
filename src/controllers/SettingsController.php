@@ -24,6 +24,7 @@ use craft\models\Section_SiteSettings;
 use craft\models\TagGroup;
 use craft\web\Controller;
 use craft\helpers\FileHelper;
+use craft\helpers\UrlHelper;
 
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -799,6 +800,19 @@ class SettingsController extends Controller
 
 		Craft::$app->getSession()->setNotice(Craft::t('blockonomicon', 'Example content removed.'));
 		return $this->asJson(['success' => true]);
+	}
+
+	/**
+	 * Removes any markers set for warning messages.
+	 */
+	public function actionClearSystemWarnings() {
+
+		// Clear markers.
+		@unlink(Blockonomicon::getInstance()->blocks->getStoragePath() . '/warning_marker');
+		@unlink(Blockonomicon::getInstance()->blocks->getBlockPath() . '/warning_marker');
+
+		// Redirect to main settings page.
+		return $this->redirect(UrlHelper::cpUrl('blockonomicon'));
 	}
 
 	/**

@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Added
+- Warnings that indicate when a storage/block folder have gone missing, as they are sometimes overlooked during migration.
+
 ### Changed
 - Documentation migrated from internal plugin page to GitHub readme.
 

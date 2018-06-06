@@ -196,5 +196,6 @@ class Blockonomicon extends Plugin
 		$event->rules['blockonomicon/matrix/<matrixid:\d+>'] = 'blockonomicon/settings/edit-matrix';
 		$event->rules['blockonomicon/settings'] = 'blockonomicon/settings/global';
 		$event->rules['blockonomicon/examples'] = 'blockonomicon/settings/examples';
+		$event->rules['blockonomicon/clearSystemWarnings'] = 'blockonomicon/settings/clear-system-warnings';
 	}
 }

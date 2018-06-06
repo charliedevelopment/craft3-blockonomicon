@@ -84,6 +84,7 @@ class Blocks extends Component
 
 			if (!is_dir($this->_storagepath)) { // Folder does not exist, create it and store a warning.
 				$this->setupStorageFolder();
+				@file_put_contents($this->_storagepath . '/warning_marker', 'Storage folder was missing, see documentation for details');
 			}
 		}
 
@@ -102,6 +103,7 @@ class Blocks extends Component
 
 			if (!is_dir($this->_blockpath)) { // Folder does not exist, create it and store a warning.
 				$this->setupBlockFolder();
+				@file_put_contents($this->_blockpath . '/warning_marker', 'Block folder was missing, see documentation for details');
 			}
 		}
 

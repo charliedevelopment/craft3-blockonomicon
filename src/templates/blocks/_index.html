@@ -14,6 +14,19 @@
 
 {% block content %}
 
+	{% set warnings = craft.blockonomicon.settings.getSystemWarnings() %}
+	{% if warnings %}
+		<div class="warning">
+		<h2>Warning</h2>
+
+		{% for warning in warnings %}
+			<p>{{ warning | raw }}</p>
+		{% endfor %}
+
+		<p><a href="{{ url('blockonomicon/clearSystemWarnings') }}">Clear Blockonomicon Warnings</a></p>
+		</div>
+	{% endif %}
+
 	<h2>Quick Controls</h2>
 
 	<div class="buttons">
