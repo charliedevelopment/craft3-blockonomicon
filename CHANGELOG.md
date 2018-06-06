@@ -5,6 +5,7 @@
 
 ### Fixed
 - `.gitignore` file added to avoid committing cached/temporary files.
+- Set correct `license` option in the `composer.json`.
 
 ## 1.1.1 2018-03-15
 
