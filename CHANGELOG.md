@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## 1.1.3 2018-06-19
+
 ### Fixed
 - Added leading slashes to css/js tag output so these route correctly on non-root pages.
 - Typo regarding configuration location in settings page.
