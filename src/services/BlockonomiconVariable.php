@@ -50,7 +50,7 @@ class BlockonomiconVariable extends Component
 		if (isset($options['condense']) && $options['condense'] === true) { // If the files should be condensed into one file.
 			Blockonomicon::getInstance()->blocks->condenseFiles();
 
-			$out = '<link type="text/css" rel="stylesheet" href="blockonomicon/blocks.css">';
+			$out = '<link type="text/css" rel="stylesheet" href="/blockonomicon/blocks.css">';
 		} else { // Output individual files.
 			// Retrieve all cached blocks.
 			$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
@@ -60,7 +60,7 @@ class BlockonomiconVariable extends Component
 				if ($block['state'] != 'good') {
 					continue;
 				}
-				$out[] = '<link type="text/css" rel="stylesheet" href="blockonomicon/' . $handle . '/' . $handle . '.css">';
+				$out[] = '<link type="text/css" rel="stylesheet" href="/blockonomicon/' . $handle . '/' . $handle . '.css">';
 			}
 			$out = implode('', $out);
 		}
@@ -76,7 +76,7 @@ class BlockonomiconVariable extends Component
 		if (isset($options['condense']) && $options['condense'] === true) { // If the files should be condensed into one file.
 			Blockonomicon::getInstance()->blocks->condenseFiles();
 
-			$out = '<script type="application/javascript" src="blockonomicon/blocks.js"></script>';
+			$out = '<script type="application/javascript" src="/blockonomicon/blocks.js"></script>';
 		} else { // Output individual files.
 			// Retrieve all cached blocks.
 			$blocks = Blockonomicon::getInstance()->blocks->getBlocks();
@@ -86,7 +86,7 @@ class BlockonomiconVariable extends Component
 				if ($block['state'] != 'good') {
 					continue;
 				}
-				$out[] = '<script type="application/javascript" src="blockonomicon/' . $handle . '/' . $handle . '.js"></script>';
+				$out[] = '<script type="application/javascript" src="/blockonomicon/' . $handle . '/' . $handle . '.js"></script>';
 			}
 			$out = implode('', $out);
 		}
