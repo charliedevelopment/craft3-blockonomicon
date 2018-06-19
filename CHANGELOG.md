@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed
+- Typo regarding configuration location in settings page.
+
 ## 1.1.2 2018-06-06
 
 ### Added
