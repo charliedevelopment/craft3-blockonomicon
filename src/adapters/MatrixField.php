@@ -141,6 +141,7 @@ class MatrixField
 					$blockcontrols = [];
 					foreach ($block['fields'] as $field) {
 						$secondaryevent = new RenderImportControlsEvent();
+						$secondaryevent->blockHandle = $event->blockHandle; // Keep the base imported block handle.
 						$secondaryevent->handle = $event->handle . '[' . $block['handle'] . '][' . $field['handle'] . ']'; // Nest the block's handle inside the current handle.
 						$secondaryevent->cachedoptions = $event->cachedoptions[$block['handle']][$field['handle']] ?? null; // Get cached options for the subfield, if possible.
 						$secondaryevent->settings = $field;
@@ -166,8 +167,8 @@ class MatrixField
 				}
 
 				$event->controls = Craft::$app->getView()->renderTemplate('blockonomicon/_adapters/MatrixFieldAdapter.html', [
-					'safeHandle' => implode('_', preg_split('/[\[\]]+/', $event->handle, -1, PREG_SPLIT_NO_EMPTY)),
-					'blockHandle' => $event->handle,
+					'safeHandle' => $event->blockHandle . '_' . implode('_', preg_split('/[\[\]]+/', $event->handle, -1, PREG_SPLIT_NO_EMPTY)),
+					'fieldHandle' => $event->handle,
 					'settings' => $event->settings,
 					'cachedOptions' => $event->cachedoptions,
 					'blocks' => $blocks,

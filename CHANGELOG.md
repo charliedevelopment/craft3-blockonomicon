@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Added
+- Import configuration mechanism has been extended to provide the handle of the block being imported, to help ensure proper unique IDs for import controls.
+
+### Changed
+- Internal adapters for native fields changed from using the `blockHandle` misnomer to a more apt `fieldHandle`.
+
 ## 1.1.3 2018-06-19
 
 ### Fixed

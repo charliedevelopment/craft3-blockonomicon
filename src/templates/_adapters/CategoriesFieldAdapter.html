@@ -5,7 +5,7 @@
 		label: 'Source' | t('app'),
 		instructions: 'Which source do you want to select {type} from?' | t('app', { type: 'categories' }),
 		id: safeHandle ~ '_' ~ settings.handle ~ '_sources',
-		name: blockHandle ~ '[source]',
+		name: fieldHandle ~ '[source]',
 		options: sourceOptions,
 		value: cachedOptions.source | default(''),
 	}) }}
@@ -20,7 +20,7 @@
 	<div id="{{ safeHandle ~ '_' ~ settings.handle ~ '_' }}advanced" class="">
 		{{ forms.checkboxField({
 			label: 'Relate {type} from a specific site?' | t('app', {type: 'categories'}),
-			name: blockHandle ~ '[useTargetSite]',
+			name: fieldHandle ~ '[useTargetSite]',
 			checked: cachedOptions.useTargetSite | default(false),
 			toggle: safeHandle ~ '_' ~ settings.handle ~ '_target-site-container',
 		}) }}
@@ -32,7 +32,7 @@
 			{{ forms.selectField({
 				label: 'Which site should {type} be related from?' | t('app', {type: 'categories'}),
 				id: safeHandle ~ '_' ~ settings.handle ~ '_targetSiteId',
-				name: blockHandle ~ '[targetSiteId]',
+				name: fieldHandle ~ '[targetSiteId]',
 				options: siteOptions,
 				value: cachedOptions.targetSiteId | default(null),
 			}) }}
@@ -41,7 +41,7 @@
 		{{ forms.checkboxField({
 			label: 'Manage relations on a per-site basis' | t('app'),
 			id: safeHandle ~ '_' ~ settings.handle ~ '_localize-relations',
-			name: blockHandle ~ '[localizeRelations]',
+			name: fieldHandle ~ '[localizeRelations]',
 			checked: cachedOptions.localizeRelations | default(false),
 		}) }}
 	</div>

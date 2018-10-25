@@ -86,8 +86,8 @@ class EntriesField
 				}
 
 				$event->controls = Craft::$app->getView()->renderTemplate('blockonomicon/_adapters/EntriesFieldAdapter.html', [
-					'safeHandle' => implode('_', preg_split('/[\[\]]+/', $event->handle, -1, PREG_SPLIT_NO_EMPTY)),
-					'blockHandle' => $event->handle,
+					'safeHandle' => $event->blockHandle . '_' . implode('_', preg_split('/[\[\]]+/', $event->handle, -1, PREG_SPLIT_NO_EMPTY)),
+					'fieldHandle' => $event->handle,
 					'settings' => $event->settings,
 					'cachedOptions' => $event->cachedoptions,
 					'sourceOptions' => $sourceoptions,

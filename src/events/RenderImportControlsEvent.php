@@ -19,10 +19,17 @@ use yii\base\Event;
 class RenderImportControlsEvent extends Event
 {
 	/**
-	 * @var string The unique block handle/namespace, in bracket notation.
-	 * Especially useful for ensuring unique input ids and handling nested fields.
+	 * @var string The handle of the field/subfield being imported, in bracket
+	 * notation. Combine this with the block handle for unique input ids of
+	 * nested fields.
 	 */
 	public $handle;
+
+	/**
+	 * @var string The handle of the block this field is being imported for.
+	 * Combine this with the field handle for unique input ids of nested fields.
+	 */
+	public $blockHandle;
 
 	/**
 	 * @var array The currently exported settings for the field.

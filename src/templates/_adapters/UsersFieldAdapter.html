@@ -5,7 +5,7 @@
 		label: 'Sources' | t('app'),
 		instructions: 'Which source do you want to select {type} from?' | t('app', { type: 'users' }),
 		id: safeHandle ~ '_' ~ settings.handle ~ '_sources',
-		name: blockHandle ~ '[sources]',
+		name: fieldHandle ~ '[sources]',
 		options: sourceOptions,
 		values: cachedOptions.sources | default('*'),
 		showAllOption: true,
@@ -22,7 +22,7 @@
 		{{ forms.checkboxField({
 			label: 'Manage relations on a per-site basis' | t('app'),
 			id: safeHandle ~ '_' ~ settings.handle ~ '_localize-relations',
-			name: blockHandle ~ '[localizeRelations]',
+			name: fieldHandle ~ '[localizeRelations]',
 			checked: cachedOptions.localizeRelations | default(false),
 		}) }}
 	</div>
