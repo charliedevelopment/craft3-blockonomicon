@@ -307,7 +307,7 @@ BNCN.MatrixEditor = Garnish.Base.extend({
 		var data = {
 			blocks: this.$blocks.toArray().reduce(function(arr, val) {
 				val = $(val);
-				if (val.data('status') == 'saved' || val.data('status') == 'not-saved') {
+				if (val.data('status') == 'saved' || val.data('status') == 'not-saved' || val.data('status') == 'desync') {
 					arr.push(val.data('id'));
 				}
 				return arr;
