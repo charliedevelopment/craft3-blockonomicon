@@ -1,6 +1,8 @@
-## [Unreleased]
+# Changelog
 
-## 1.1.4 2018-11-15
+## Unreleased
+
+## 1.1.4 - 2018-11-15
 
 ### Fixed
 - Blocks marked as out of sync will now be properly saved when sorting.
@@ -12,13 +14,13 @@
 ### Changed
 - Internal adapters for native fields changed from using the `blockHandle` misnomer to a more apt `fieldHandle`.
 
-## 1.1.3 2018-06-19
+## 1.1.3 - 2018-06-19
 
 ### Fixed
 - Added leading slashes to css/js tag output so these route correctly on non-root pages.
 - Typo regarding configuration location in settings page.
 
-## 1.1.2 2018-06-06
+## 1.1.2 - 2018-06-06
 
 ### Added
 - Warnings that indicate when a storage/block folder have gone missing, as they are sometimes overlooked during migration.
@@ -30,12 +32,12 @@
 - `.gitignore` file added to avoid committing cached/temporary files.
 - Set correct `license` option in the `composer.json`.
 
-## 1.1.1 2018-03-15
+## 1.1.1 - 2018-03-15
 
 ### Fixed
 - Reworked some code that was relying on a php 7.1 feature, causing some compatibility issues.
 
-## 1.1.0 2018-03-08
+## 1.1.0 - 2018-03-08
 
 ### Added
 - Support for Matrix fields (accessible through the use of adapters).
@@ -43,19 +45,19 @@
 ### Fixed
 - Re-importing the first block in a matrix could drop a block's definition in specific ordering cases.
 
-## 1.0.2 2018-03-06
+## 1.0.2 - 2018-03-06
 
 ### Added
 - Minor documentation notes about third-party field support.
 
-## 1.0.1 2018-03-05
+## 1.0.1 - 2018-03-05
 
 ### Fixed
 - Bad block configuration with the same handle of an existing block causing matrix editor templating errors.
 - Missing `storage/blockonomicon` folder causing strange behavior.
 - Deprecation error in SettingsController.
 
-## 1.0.0 2018-03-02
+## 1.0.0 - 2018-03-02
 
 The initial release of the Blockonomicon plugin.
 
