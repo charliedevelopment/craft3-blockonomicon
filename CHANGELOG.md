@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## 1.1.4 2018-11-15
+
 ### Fixed
 - Blocks marked as out of sync will now be properly saved when sorting.
 - Updated cached import option reference to use the correct block and field reference.
