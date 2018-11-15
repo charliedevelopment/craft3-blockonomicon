@@ -2,6 +2,7 @@
 
 ### Fixed
 - Blocks marked as out of sync will now be properly saved when sorting.
+- Updated cached import option reference to use the correct block and field reference.
 
 ### Added
 - Import configuration mechanism has been extended to provide the handle of the block being imported, to help ensure proper unique IDs for import controls.
