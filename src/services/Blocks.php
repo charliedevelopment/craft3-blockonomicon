@@ -296,6 +296,7 @@ class Blocks extends Component
 		}
 
 		$matrix->setBlockTypes($blocktypes);
+		$matrix->beforeSave(false);
 		Craft::$app->getMatrix()->saveSettings($matrix);
 
 		$transaction->commit();
