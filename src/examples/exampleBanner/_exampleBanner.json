@@ -32,6 +32,7 @@
             "translationKeyFormat": null,
             "typesettings": {
                 "placeholder": "",
+                "code": false,
                 "multiline": "",
                 "initialRows": "4",
                 "charLimit": "",
@@ -49,19 +50,19 @@
             "typesettings": {
                 "options": [
                     {
+                        "default": "",
                         "label": "Top",
-                        "value": "top",
-                        "default": ""
+                        "value": "top"
                     },
                     {
+                        "default": "",
                         "label": "Middle",
-                        "value": "middle",
-                        "default": ""
+                        "value": "middle"
                     },
                     {
+                        "default": "1",
                         "label": "Bottom",
-                        "value": "bottom",
-                        "default": "1"
+                        "value": "bottom"
                     }
                 ]
             }

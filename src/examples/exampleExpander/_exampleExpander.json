@@ -13,6 +13,7 @@
             "translationKeyFormat": null,
             "typesettings": {
                 "placeholder": "",
+                "code": false,
                 "multiline": "",
                 "initialRows": "4",
                 "charLimit": "",
@@ -29,6 +30,7 @@
             "translationKeyFormat": null,
             "typesettings": {
                 "placeholder": "",
+                "code": false,
                 "multiline": "",
                 "initialRows": "4",
                 "charLimit": "",
