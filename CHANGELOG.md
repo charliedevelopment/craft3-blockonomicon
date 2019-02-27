@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.1.5 - 2019-02-26
+
 ### Fixed
 - When updating a matrix, it is properly prepared for saving. As of Craft 3.1 this performs necessary setup for the project.yaml system.
 
