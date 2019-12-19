@@ -35,10 +35,13 @@ class MatrixField
 			Blockonomicon::EVENT_SAVE_FIELD,
 			function (SaveFieldEvent $event) {
 
-				// Ignore any fields that are not Users fields.
+				// Ignore any fields that are not Matrix fields.
 				if (get_class($event->field) != \craft\fields\Matrix::class) {
 					return;
 				}
+
+				// Remove any explicitly defined content table, it can be figured out/generated from the handle.
+				unset($event->settings['typesettings']['contentTable']);
 
 				$event->settings['typesettings']['blocktypes'] = [];
 
@@ -63,10 +66,13 @@ class MatrixField
 			Blockonomicon::EVENT_LOAD_FIELD,
 			function (LoadFieldEvent $event) {
 
-				// Ignore any fields that are not Users fields.
+				// Ignore any fields that are not Matrix fields.
 				if ($event->settings['type'] != \craft\fields\Matrix::class) {
 					return;
 				}
+
+				// Remove any explicitly defined content table, it can be figured out/generated from the handle.
+				unset($event->settings['typesettings']['contentTable']);
 
 				// Create a list of existing blocks, keyed by handle, if possible.
 				$currentblocks = [];
@@ -130,7 +136,7 @@ class MatrixField
 			Blockonomicon::EVENT_RENDER_IMPORT_CONTROLS,
 			function (RenderImportControlsEvent $event) {
 
-				// Ignore any fields that are not Assets fields.
+				// Ignore any fields that are not Matrix fields.
 				if ($event->settings['type'] != \craft\fields\Matrix::class) {
 					return;
 				}

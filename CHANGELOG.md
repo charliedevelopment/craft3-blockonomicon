@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.1.6 - 2019-12-19
+
+### Fixed
+- Excluded the `contentTable` setting from export/import, as it being provided explicitly can cause a database table to not be generated for the field.
+
 ## 1.1.5 - 2019-02-26
 
 ### Fixed
